@@ -1,0 +1,24 @@
+# == Schema Information
+#
+# Table name: appointments
+#
+#  id         :bigint           not null, primary key
+#  user_id    :bigint           not null
+#  schedule   :datetime
+#  status     :string
+#  clinic_id  :bigint           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
+one:
+  user: one
+  schedule: 2022-03-27 23:00:09
+  status: MyString
+  clinic: one
+
+two:
+  user: two
+  schedule: 2022-03-27 23:00:09
+  status: MyString
+  clinic: two

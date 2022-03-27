@@ -1,0 +1,241 @@
+.login-card {
+  background-color: transparent;
+}
+
+.doc_login-form {
+  background-color: #fff;
+  border: 1px solid rgba(204,204,204,0.36);
+  margin-top: 130px !important;
+  padding-bottom: 3rem;
+}
+
+.cus_feedback-form {
+  background-color: #fff;
+  border: 1px solid rgba(204,204,204,0.36);
+  margin-top: 130px;
+}
+
+.form-control-user {
+  border-radius: 5rem !important;
+}
+
+.doc_login-form > .img-fluid {
+  margin-top: 50px;
+}
+
+.cus_feedback-form > .img-fluid {
+  margin-top: 50px;
+}
+
+.sidebar .sidebar-brand {
+  text-transform: none;
+}
+
+.dropdown-menu {
+  background-color: #0188DF;
+  background-clip: padding-box;
+  border-right: 5px solid #0188DF;
+  border-radius: 0rem;
+  border-top: none;
+  border-bottom: none;
+  border-left: none;
+  -webkit-box-shadow: inset 0px 0px 19px -7px rgba(0,0,0,0.37);
+  -moz-box-shadow: inset 0px 0px 19px -7px rgba(0,0,0,0.37);
+  box-shadow: inset 0px 0px 19px -7px rgba(0,0,0,0.37);
+}
+
+.dropdown-item {
+  color: hsla(0,0%,100%,.8);
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: .5rem;
+  font-size: 20px;
+  padding: .5rem 1rem;
+}
+
+.dropdown-item:focus, .dropdown-item:hover {
+  color: #ffffff;
+  text-decoration: none;
+  background-color: rgba(0,0,0,0.13);
+}
+
+.dropdown-menu > .dropdown-item > i {
+  font-size: 20px;
+  margin-right: .25rem;
+}
+
+.dropdown-menu > .dropdown-item {
+  padding: 1rem;
+}
+
+.dropdown-menu > .dropdown-item > i:hover {
+  color: #fff;
+}
+
+footer.sticky-footer {
+  padding: 1rem 0;
+  flex-shrink: 0;
+}
+
+.sidebar .nav-item .nav-link.active {
+  font-weight: normal;
+}
+
+.btn-info:not(:disabled):not(.disabled).active:focus, .btn-info:not(:disabled):not(.disabled):active:focus, .show > .btn-info.dropdown-toggle:focus {
+  box-shadow: none;
+}
+
+.btn-info.focus, .btn-info:focus {
+  box-shadow: none;
+}
+
+.btn-primary:not(:disabled):not(.disabled).active:focus, .btn-primary:not(:disabled):not(.disabled):active:focus, .show > .btn-primary.dropdown-toggle:focus {
+  box-shadow: none;
+}
+
+.btn-primary.focus, .btn-primary:focus {
+  box-shadow: none;
+}
+
+.modal-footer {
+  display: inline;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: normal;
+  padding: .75rem;
+  border-top: 1px solid #e3e6f0;
+  border-bottom-right-radius: calc(.3rem - 1px);
+  border-bottom-left-radius: calc(.3rem - 1px);
+}
+
+.dropdown .dropdown-list .dropdown-item {
+  white-space: normal;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  line-height: 1.3rem;
+  border: none;
+}
+
+.counter {
+  padding: 8px;
+  color: #ccc;
+}
+
+.results tr[visible='false'], .no-result {
+  display: none;
+}
+
+.counter {
+  padding: 8px;
+  color: #ccc;
+}
+
+th {
+  position: sticky;
+}
+
+.db-icon {
+  width: 150px;
+}
+
+.res-nf-col {
+  padding: 200px 0px;
+}
+
+.today_bookings td {
+  font-size: 14px;
+  cursor: pointer;
+}
+.patient_list td {
+  font-size: 14px;
+  cursor: pointer;
+}
+.staff_list td {
+  font-size: 14px;
+  cursor: pointer;
+}
+.announcement_list td {
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.card-header {
+  box-shadow: 0 .15rem 1.75rem 0 rgba(58,59,69,.15) !important;
+}
+
+.action-btn {
+  border-radius: 50%;
+  margin-left: 10px;
+}
+
+@media (max-width: 768px) {
+  .doc_login-form:first-child {
+    /*margin-top: 0;*/
+    /*margin-bottom: 50px;*/
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .cus_feedback-form:first-child {
+    /*margin-top: 0;*/
+    /*margin-bottom: 50px;*/
+    display: none;
+  }
+}
+
+.topbar #sidebarToggleTop {
+  height: 2.5rem;
+  width: 2.5rem;
+  background-color: #dddfeb;
+}
+
+@media (max-width: 768px) {
+  .nav-dropdown > .dropdown-menu > .dropdown-item {
+    font-size: 10.6px;
+    padding: .5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  a.dropdown-toggle.nav-link::after {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-dropdown {
+    z-index: 99999;
+    width: 104px;
+  }
+}
+
+.nav-dropdown {
+  margin-bottom: 0 !important;
+}
+
+.form-group.pull-right.col-xl-12 > .row > .col-sm-4 {
+  margin-bottom: 15px;
+}
+
+
+.book-app-form > .row > .col-12 {
+  margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+  .db-amt {
+    font-size: 15px;
+  }
+}
+
+.data-card > .card-body {
+  padding: 10px;
+}
+
+@media (max-width: 768px) {
+  .data-card > .card-body > .row > .col-auto > i {
+    font-size: 16px;
+  }
+}

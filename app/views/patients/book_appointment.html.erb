@@ -1,0 +1,103 @@
+<%
+	def time_iterate(start_time, end_time, step, &block)
+		begin
+			yield(start_time)
+		end while (start_time += step) <= end_time
+	end
+%>
+
+<%
+	date_time_now = DateTime.now
+	duration = @clinic.appointment_duration.minutes
+	time_start = @clinic.start_time.localtime
+	time_end = @clinic.end_time.localtime
+	date_time_start = date_time_now.beginning_of_day + time_start.hour.hours + time_start.min.minutes
+	date_time_end = date_time_now.beginning_of_day + time_end.hour.hours + time_end.min.minutes
+%>
+<div style="display:flex;">
+	<%= render 'layouts/sidebar' %>
+	<div class="d-flex flex-column" style="background-color:#f8f9fc;width:100%;overflow-x:hidden;">
+		<%= render 'navbar' %>
+		<div class="container">
+			<div class="row mb-3">
+				<div class="col-md-12">
+						<div class="row">
+							<div class="col">
+								<div class="card shadow mb-3">
+									<div class="card-header py-3">
+										<h5>
+											<%= date_time_now.strftime("%A, %B %d") %>
+										</h5>
+									</div>
+									<div class="card-body">
+										<div class="col-md-12 search-table-col">
+											<div class="form-row">
+												<div class="col-md-12">
+													<div class="select-clinic">
+														<%= select_tag :clinic, options_for_select(@clinics.collect { |c| [c.name, c.id] }, params[:clinic_id]), { include_blank: 'Select Clinic', style: 'width: 20%;float:right;margin-bottom:1rem;' } %>
+													</div>
+													<%= link_to patient_book_appointment_path, remote: true do %>
+														Week View
+													<% end %>
+													<div id="calendar-option">
+														<table class="table table-bordered">
+															<thead>
+																<tr>
+																	<th scope="col">Time</th>
+																	<th scope="col"></th>
+																</tr>
+															</thead>
+															<tbody>
+																<% time_iterate(date_time_start, date_time_end, duration) do |date_time| %>
+																	<tr>
+																		<%
+																			x = date_time.beginning_of_day + date_time.hour.hours + date_time.min.minutes
+																			app = Appointment.find_by(schedule: x)
+																		%>
+																		<td>
+																			<%= date_time.strftime("%H:%M %p") %>
+																			<% if app.present? %>
+																				<%  if current_user.appointments.include? app %>
+																					<span style="margin-left:1rem;" class="badge badge-dark">Yours!</span>
+																				<% else %>
+																					<span style="margin-left:1rem;" class="badge badge-warning">Taken</span>
+																				<% end %>
+																			<% else %>
+																				<span style="margin-left:1rem;" class="badge badge-success">Available</span>
+																			<% end %>
+																		</td>
+																		<td data-date="#{date}">
+																			<% if app.present? %>
+																				<% if current_user.appointments.include? app %>
+																					<b> YOUR APPOINTMENT </b>
+																				<% else %>
+																					<b>- TAKEN -</b>
+																				<% end %>
+																			<% else %>
+																				<%= link_to 'Set Appointment', patient_create_appointment_path(schedule: x, clinic_id: @clinic.id), method: :post %>
+																			<% end %>
+																		</td>
+																	</tr>
+																<% end %>
+															</tbody>
+														</table>
+													</div>
+												</div>
+											</div>
+											<div class="form-group"><button class="btn btn-primary btn-sm" type="submit"><strong>Book Appointment</strong></button></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	$(document).ready(function(){
+		console.log("Heeeeeeeeeeeeere!")
+	})
+</script>

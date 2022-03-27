@@ -1,0 +1,61 @@
+<nav class="navbar navbar-light navbar-expand shadow mb-4 topbar static-top bg-gradient-primary">
+	<div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+		<ul class="nav navbar-nav flex-nowrap ml-auto">
+			<li class="nav-item dropdown no-arrow mx-1" role="presentation">
+				<div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#"><span class="badge badge-danger badge-counter">3+</span><i class="fas fa-bell fa-fw"></i></a>
+					<div class="dropdown-menu dropdown-menu-right dropdown-list dropdown-menu-right animated--grow-in"
+						role="menu" id="notification-panel">
+						<h6 class="dropdown-header">alerts notifications</h6>
+						<a class="shadow-lg d-flex align-items-center dropdown-item" href="#">
+							<div class="mr-3">
+								<div class="bg-primary icon-circle"><i class="fas fa-file-alt text-white"></i></div>
+							</div>
+							<div><span class="small text-gray-500">December 12, 2019</span>
+								<p>Your appointment request 29281 is confirmed</p>
+							</div>
+						</a>
+						<a class="shadow-lg d-flex align-items-center dropdown-item" href="#">
+							<div class="mr-3">
+								<div class="bg-success icon-circle"><i class="fas fa-donate text-white"></i></div>
+							</div>
+							<div><span class="small text-gray-500">December 7, 2019</span>
+								<p>Your appointment request 45678 is confirmed</p>
+							</div>
+						</a>
+						<a class="shadow-lg d-flex align-items-center dropdown-item" href="#">
+							<div class="mr-3">
+								<div class="bg-warning icon-circle"><i class="fas fa-exclamation-triangle text-white"></i></div>
+							</div>
+							<div><span class="small text-gray-500">December 2, 2019</span>
+								<p>You have changed your profile details</p>
+							</div>
+						</a><a class="text-center dropdown-item small text-gray-500" href="#">Show All Alerts</a></div>
+				</div>
+			</li>
+			<div class="d-none d-sm-block topbar-divider">
+			</div>
+			<li class="nav-item dropdown no-arrow" role="presentation">
+				<div class="nav-item dropdown no-arrow">
+					<a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#">
+						<span class="d-none d-lg-inline mr-2 text-white-600 small">
+							<%= current_user.fullname %>
+						</span>
+						<img class="border rounded-circle img-profile" src="assets/img/doctor-book.jpg">
+					</a>
+					<div class="dropdown-menu shadow dropdown-menu-right animated--grow-in how" role="menu">
+						<a class="dropdown-item" role="presentation" href="patient_account.html">
+							<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Account
+						</a>
+						<a class="dropdown-item" role="presentation" href="patient_settings.html">
+							<i class="fas fa-cog fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Setting
+						</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" role="presentation" href="index.html">
+							<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Logout
+						</a>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+</nav>

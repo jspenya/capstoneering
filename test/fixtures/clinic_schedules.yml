@@ -1,0 +1,24 @@
+# == Schema Information
+#
+# Table name: clinic_schedules
+#
+#  id         :bigint           not null, primary key
+#  day        :string
+#  start_time :time
+#  end_time   :time
+#  clinic_id  :bigint           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
+one:
+  day: MyString
+  start_time: 2022-03-27 23:18:34
+  end_time: 2022-03-27 23:18:34
+  clinic: one
+
+two:
+  day: MyString
+  start_time: 2022-03-27 23:18:34
+  end_time: 2022-03-27 23:18:34
+  clinic: two

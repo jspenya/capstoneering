@@ -1,0 +1,30 @@
+<% if user_signed_in? %>
+	<nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
+		<div class="container-fluid d-flex flex-column p-0">
+			<a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+				<div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-heartbeat"></i></div>
+				<div class="sidebar-brand-text mx-3"><span>WEBDASS</span></div>
+			</a>
+			<hr class="sidebar-divider my-0">
+			<ul class="nav navbar-nav text-light" id="accordionSidebar">
+				<li class="nav-item" role="presentation">
+					<%= link_to patient_dashboard_path, class: 'nav-link shadow-lg active' do %>
+						<i class="fas fa-tachometer-alt"></i>
+						<span><strong>Dashboard</strong></span>
+					<% end %>
+				</li>
+				<li class="nav-item" role="presentation">
+					<%= link_to patient_book_appointment_path, class: "nav-link shadow-lg" do %>
+						<i class="fas fa-user"></i>
+						<span><strong>Book Appointment</strong></span>
+					<% end %>
+				</li>
+				<li class="nav-item" role="presentation"><a class="nav-link shadow-lg" href="patient_appointment_history.html"><i class="fas fa-laptop-medical"></i><span><strong>Appointment History</strong></span></a></li>
+				<li class="nav-item" role="presentation"><a class="nav-link shadow-lg" href="patient_reschedule.html"><i class="fas fa-calendar"></i><span><strong>Reschedule</strong></span></a></li>
+				<li class="nav-item" role="presentation"><a class="nav-link shadow-lg" href="patient_queue.html"><i class="fas fa-user-friends"></i><span><strong>Queue</strong></span></a></li>
+				<li class="nav-item" role="presentation"><a class="nav-link shadow-lg" href="patient_announcement.html"><i class="fas fa-bullhorn"></i><span><strong>Announcements</strong></span></a></li>
+				<li class="nav-item" role="presentation"><a class="nav-link shadow-lg" href="#"><i class="fas fa-comment-medical"></i><span><strong>Feedback</strong></span></a></li>
+			</ul>
+		</div>
+	</nav>
+<% end %>
