@@ -21,6 +21,8 @@ class Secretary < User
 	has_many :clinics
 
 	def self.default_scope
-    where(role: 2)
+    where(role: 3)
   end
+
+  scope :my_default_scope, ->(){ where(role: 3) }
 end

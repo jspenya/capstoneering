@@ -23,4 +23,6 @@ class Doctor < User
   def self.default_scope
     where(role: 2)
   end
+
+  scope :my_default_scope, ->(){ where(role: 2) }
 end
