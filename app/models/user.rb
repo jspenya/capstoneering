@@ -27,7 +27,7 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :appointments, :allow_destroy => true
 
   def fullname
-    @fullname ||= firstname + " " + lastname
+    @fullname ||= firstname.capitalize + " " + lastname.capitalize
   end
 
   def appointments_in_a_day datetime

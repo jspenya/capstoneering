@@ -22,4 +22,7 @@ class Patient < User
 	def self.default_scope
     where(role: 1)
   end
+
+  scope :my_default_scope, ->(){ where(role: 1) }
+
 end

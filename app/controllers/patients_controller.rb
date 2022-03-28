@@ -1,7 +1,61 @@
-class PatientsController <  UsersController #ApplicationController
-  before_action :set_patient, only: %i[ dashboard book_appointment ]
+class PatientsController <  ApplicationController
+  before_action :set_patient, only: %i[ show edit update destroy ] # only: %i[ dashboard book_appointment ]
   before_action :set_patients #, only: %i[ dashboard book_appointment ]
-  before_action :authenticate_user!
+  # before_action :authenticate_patient!
+
+  def new
+    @patient = Patient.new
+  end
+
+  # GET /patients/1/edit
+  def edit
+  end
+
+  # POST /patients or /patients.json
+  def create
+
+    # this if block is a kludge; i do not know why rails does not understand fully enums
+    if (my_role = params[:patient][:role])&.to_i != 0
+      params[:patient][:role] = Patient.roles.find{|k,v| v==params[:patient][:role].to_i}.first
+    end
+
+    @patient = Patient.new(patient_params)
+
+    respond_to do |format|
+      if @patient.save
+        format.html { redirect_to patient_url(@patient), notice: "Patient was successfully created." }
+        format.json { render :show, status: :created, location: @patient }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @patient.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PATCH/PUT /patients/1 or /patients/1.json
+  def update
+    respond_to do |format|
+      if @patient.update(patient_params)
+        format.html { redirect_to patient_url(@patient), notice: "Patient was successfully updated." }
+        format.json { render :show, status: :ok, location: @patient }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @patient.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /patients/1 or /patients/1.json
+  def destroy
+    @patient.destroy
+
+    respond_to do |format|
+      format.html { redirect_to patients_url, notice: "Patient was successfully destroyed." }
+      format.json { head :no_content }
+    end
+  end
+
+
 
   def dashboard
     @appointments_to_attend = @patient.appointments.where('schedule > ?', DateTime.now)
@@ -20,9 +74,9 @@ class PatientsController <  UsersController #ApplicationController
   end
 
   def create_appointment
-    @appointment = current_user.appointments.new(
+    @appointment = current_patient.appointments.new(
       schedule: params[:schedule],
-      user_id: current_user.id,
+      patient_id: current_patient.id,
       clinic_id: params[:clinic_id]
     )
     if @appointment.save
@@ -37,12 +91,21 @@ class PatientsController <  UsersController #ApplicationController
     @appointments = Appointment.current_week
   end
 
+
+
   private
+
   def set_patient
-    @patient = params[:user_id] || current_user
+    @patient = Patient.find(params[:id]) # || current_patient
   end
 
   def set_patients
-    @patients = Patient.all
+    @patients = Patient.my_default_scope #.all
   end
+
+  # Only allow a list of trusted parameters through.
+  def patient_params
+    params.require(:patient).permit(:email, :firstname, :lastname, :birthdate, :gender, :role)
+  end
+
 end
