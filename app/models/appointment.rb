@@ -16,8 +16,8 @@ class Appointment < ApplicationRecord
   belongs_to :clinic
   # belongs_to :appointment_slot
 
-  validates :schedule, uniqueness: true
-  # validate :only_one_appointment_in_a_day, on: :create
+  validates :schedule, uniqueness: { scope: :clinic }
+  validate :only_one_appointment_in_a_day, on: :create
 
   scope :current_week, ->{
     start = Time.zone.now
@@ -31,6 +31,10 @@ class Appointment < ApplicationRecord
   #   range.delete_if! { |day| day == day.saturday? || day.sunday? }
   #   where(schedule: )
   # }
+  scope :upcoming_appointments_today, -> {
+    start = DateTime.now
+    where(schedule: start..start.end_of_day )
+  }
 
   def only_one_appointment_in_a_day
     if user.appointments_in_a_day(schedule) >= 1

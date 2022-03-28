@@ -33,14 +33,17 @@
 										<div class="col-md-12 search-table-col">
 											<div class="form-row">
 												<div class="col-md-12">
-													<div class="select-clinic">
-														<%= select_tag :clinic, options_for_select(@clinics.collect { |c| [c.name, c.id] }, params[:clinic_id]), { include_blank: 'Select Clinic', style: 'width: 20%;float:right;margin-bottom:1rem;' } %>
-													</div>
+													<%= form_tag(patient_book_appointment_path, method: :get) do %>
+														<div class="select-clinic" style="float:right;margin-bottom:1rem">
+															<%= select_tag :clinic_id, options_for_select(@clinics.collect { |c| [c.name, c.id] }, params[:clinic_id]), { include_blank: 'Select Clinic', style: 'width: 100%;margin-bottom:1rem;' } %>
+															<%= submit_tag 'Set Clinic', style: 'float:right;' %>
+														</div>
+													<% end %>
 													<%= link_to patient_book_appointment_path, remote: true do %>
 														Week View
 													<% end %>
 													<div id="calendar-option">
-														<table class="table table-bordered">
+														<table class="table table-hover">
 															<thead>
 																<tr>
 																	<th scope="col">Time</th>
@@ -52,7 +55,7 @@
 																	<tr>
 																		<%
 																			x = date_time.beginning_of_day + date_time.hour.hours + date_time.min.minutes
-																			app = Appointment.find_by(schedule: x)
+																			app = Appointment.find_by(schedule: x, clinic: @clinic)
 																		%>
 																		<td>
 																			<%= date_time.strftime("%H:%M %p") %>
@@ -69,7 +72,9 @@
 																		<td data-date="#{date}">
 																			<% if app.present? %>
 																				<% if current_user.appointments.include? app %>
-																					<b> YOUR APPOINTMENT </b>
+																					<b>
+																						<%= link_to 'Cancel this Appointment', app, method: :delete, style: 'text-decoration:none;', data: { confirm: "Are you sure you want to cancel?" } %>
+																					</b>
 																				<% else %>
 																					<b>- TAKEN -</b>
 																				<% end %>
