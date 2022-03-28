@@ -39,9 +39,14 @@
 															<%= submit_tag 'Set Clinic', style: 'float:right;' %>
 														</div>
 													<% end %>
-													<%= link_to patient_book_appointment_path, remote: true do %>
-														Week View
-													<% end %>
+													<div style="display:flex;">
+														<%= button_to patient_book_appointment_path, remote: true, method: :get, class: 'btn btn-primary' do %>
+															Day View
+														<% end %>
+														<%= button_to patient_book_appointment_path(week: true), remote: true, method: :get, class: 'btn btn-primary', style:'margin-left:1rem;' do %>
+															Week View
+														<% end %>
+													</div>
 													<div id="calendar-option">
 														<table class="table table-hover">
 															<thead>

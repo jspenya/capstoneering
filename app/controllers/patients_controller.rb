@@ -7,6 +7,7 @@ class PatientsController < ApplicationController
 	end
 
 	def book_appointment
+		Rails.logger.info("Heeeeeere") if params[:week].present?
 		@clinics = Clinic.all
 		@clinic = Clinic.first
 		@clinic = Clinic.find(params[:clinic_id]) if params[:clinic_id].present?
