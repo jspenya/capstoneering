@@ -1,5 +1,6 @@
-class PatientsController < ApplicationController
+class PatientsController <  UsersController #ApplicationController
 	before_action :set_patient, only: %i[ dashboard book_appointment ]
+	before_action :set_patients #, only: %i[ dashboard book_appointment ]
 	before_action :authenticate_user!
 
 	def dashboard
@@ -38,6 +39,10 @@ class PatientsController < ApplicationController
 
 	private
 	def set_patient
-		@patient = current_user
+		@patient = params[:user_id] || current_user
+	end
+
+	def set_patients
+		@patients = Patient.all
 	end
 end
