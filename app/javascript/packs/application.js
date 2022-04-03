@@ -17,7 +17,11 @@ global.$ = require("jquery")
 require("aos_stuff")
 require("jquery-ui")
 require("jquery.easy-autocomplete")
-require("autocomplete-rails")
+require ("jquery")
+// require ("jquery_ujs")
+// require ("jquery-ui/widgets/autocomplete")
+require("packs/autocomplete-rails")
+require("packs/jquery-ui")
 
 $(function(){
 	// Plain jquery

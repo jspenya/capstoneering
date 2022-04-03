@@ -1,3 +1,4 @@
+<%# qs = Appointment.doctor_appointments_today.to_a.map{ |a| {user_id: a.user_id, clinic_id: a.clinic_id, schedule: a.schedule, queue_type: 2} } %>
 <div style="display:flex;">
 	<%= render 'layouts/sidebar' %>
 	<div class="d-flex flex-column" style="background-color:#f8f9fc;width:100%;overflow-x:hidden;">
@@ -16,6 +17,14 @@
 											<div class="col-md-12 search-table-col">
 												<div class="form-group pull-right col-xl-12">
 													<div class="row">
+														<div>
+															<% if @in_progress.present? %>
+																<h1>
+																	In Progress: 
+																	<%= @in_progress&.patient&.fullname %>
+																</h1>
+															<% end %>
+														</div>
 														<div class="col-sm-4 col-xl-3">
 															<button class="btn btn-primary btn-block" type="button" data-toggle="modal" data-target="#add-queue-modal">
 																<strong>Add to Queue</strong>
@@ -24,6 +33,9 @@
 														<div class="col-sm-4 col-xl-3 offset-xl-6">
 															<input class="form-control-sm search form-control" type="text" placeholder="Search by typing here..">
 														</div>
+														<div class="col-sm-4 col-xl-3 offset-xl-6">
+															<%= link_to 'Next', next_patient_doctor_clinic_queues_path, method: :post %>
+														</div>
 													</div>
 												</div>
 												<div class="table-responsive table results clinic_list text-nowrap">
@@ -31,7 +43,9 @@
 														<thead>
 															<tr>
 																<th class="text-nowrap" id="trs-hd">Patient Name</th>
+																<th class="text-nowrap" id="trs-hd">Schedule</th>
 																<th class="text-nowrap" id="trs-hd">Type</th>
+																<th class="text-nowrap" id="trs-hd">Status</th>
 																<th class="text-center" id="trs-hd">Action</th>
 															</tr>
 														</thead>
@@ -41,9 +55,25 @@
 																	<td class="text-nowrap"><%= cq.patient.fullname %></td>
 																	<td class="text-nowrap">
 																		<% if cq.queue_type == "walkin" %>
+																			<%= cq.schedule.strftime("%I:%M %p") %>
+																		<% else %>
+																			<%= cq.schedule.strftime("%I:%M %p") %>	
+																		<% end %>
+																	</td>
+																	<td class="text-nowrap">
+																		<% if cq.queue_type == "walkin" %>
 																			Walk-in
 																		<% else %>
 																			Scheduled
+																		<% end %>
+																	</td>
+																	<td class="text-nowrap">
+																		<% if cq.status == "in_queue" %>
+																			In Queue
+																		<% elsif cq.status == "in_progress" %>
+																			In Progress
+																		<% else %>
+																			Finished
 																		<% end %>
 																	</td>
 																	<td class="text-center">
@@ -159,25 +189,20 @@
 							</h2>
 						</div>
 						<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-							<div class="card-body">
+							<div class="card-body" style="padding-bottom: 5em;">
 								<div class="col-md-12 search-table-col">
 									<%= form_with(model: @patient, url: add_existing_patient_to_queue_path, method: :post) do |form| %>
 										<div class="form-row">
 											<div class="col-12 col-xl-12">
-												<div class="form-group">
+												<div class="form-group ui-front">
 													<label for="email">
-														<strong>Patient</strong>
+														<strong>Find patient by Email</strong>
 													</label>
-													<%= form.text_field :email, list: 'patient-email' %>
-													<datalist id="first-name">
-														<% @patients.find_each do |p| %>
-															<option value="<%= p.email %>"></option>
-														<% end %>
-													</datalist>
+													<%= form.autocomplete_field :email, queue_autocomplete_patient_doctor_clinic_queues_path, :id_element => "#patient_id", 'data-auto-focus' => true %>
 												</div>
 											</div>
 										</div>
-										<div class="form-group" style="margin-top:1.5rem;">
+										<div class="form-group" style="margin:3rem 0;">
 											<%= form.submit 'Submit', class:'btn btn-primary btn-sm' %>
 										</div>
 									<% end %>

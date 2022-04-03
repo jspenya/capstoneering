@@ -7,19 +7,15 @@
 %>
 
 <%
-# byebug
 	date_time_now = DateTime.now
 
 	days_from_this_week = (date_time_now.beginning_of_week..date_time_now.end_of_week).to_a
 
-	# days_from_this_week.delete_if { |weekday| !@clinic.clinic_schedules.map{ |c| c.day }.include?(weekday) }
-# byebug
-	# Check if day in current week is == clinic schedule
-	clinic_days = days_from_this_week.select{ |weekday| (@clinic.clinic_schedules.map{|c| c.day}).include?(weekday.strftime("%A")) }
+	# clinic_days = days_from_this_week.select{ |weekday| (@clinic.clinic_schedules.map{|c| c.day}).include?(weekday.strftime("%A")) }
 
-	duration = @clinic.appointment_duration.minutes
-	time_start = @clinic.clinic_schedules.first.start_time.localtime
-	time_end = @clinic.clinic_schedules.first.end_time.localtime
+	duration = 15.minutes
+	time_start = ClinicSchedule.last.start_time
+	time_end = ClinicSchedule.last.end_time
 	date_time_start = date_time_now.beginning_of_day + time_start.hour.hours + time_start.min.minutes
 	date_time_end = date_time_now.beginning_of_day + time_end.hour.hours + time_end.min.minutes
 %>
@@ -39,7 +35,7 @@
 												<div class="card-header" id="headingOne">
 													<h2 class="mb-0">
 														<button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="text-decoration:none;">
-															Book an Appointment for an Existing Patient
+															Book an Appointment for New Patient
 															<i style="margin-left:1rem;" class="fas fa-chevron-down"></i>
 														</button>
 													</h2>
@@ -141,12 +137,7 @@
 																			<label for="email">
 																				<strong>Patient</strong>
 																			</label>
-																			<%= form.text_field :email, list: 'patient-email' %>
-																			<datalist id="first-name">
-																				<% @patients.find_each do |p| %>
-																					<option value="<%= p.email %>"></option>
-																				<% end %>
-																			</datalist>
+																			<%= form.autocomplete_field :email, autocomplete_patient_doctor_path, :id_element => "#patient_id", 'data-auto-focus' => true %>
 																		</div>
 																	</div>
 																</div>
@@ -164,7 +155,11 @@
 																			</strong>
 																		</label>
 																		<div>
-																			<%= form.datetime_field :appointment_schedule, start_year: DateTime.now.year, style: 'padding:0.6em;width:100%;' %>
+																			<% @c_schedules = [] %>
+																			<% time_iterate(date_time_start, date_time_end, duration) do |date_time| %>
+																				<% @c_schedules << date_time %>
+																			<% end %>
+																			<%= form.select :appointment_schedule, options_for_select(@c_schedules.map{|c| c.strftime("%I:%M %p")}), { include_blank: 'Select a schedule' } %>
 																		</div>
 																	</div>
 																</div>

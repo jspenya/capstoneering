@@ -7,6 +7,9 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  schedule   :datetime
+#  queue_type :integer
+#  clinic_id  :bigint           not null
+#  status     :integer
 #
 require "test_helper"
 

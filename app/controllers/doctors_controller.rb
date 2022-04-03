@@ -3,8 +3,16 @@ class DoctorsController <  ApplicationController
   before_action :set_patients #, only: %i[ dashboard book_appointment ]
   # before_action :authenticate_patient!
   # before_action :setup_queue_index, only: [:queue_show]
-  # autocomplete :patient, :term
+  autocomplete :patient, :email
   # before_action :force_json, only: :search
+
+  def autocomplete_patient
+    term = params[:term]
+    # brand_id = params[:brand_id]
+    # country = params[:country]
+    patients = Patient.my_default_scope.where('email ILIKE ?', "%#{term}%").all
+    render :json => patients.map { |d| {:id => d.id, :label => d.email, :value => d.email} }
+  end
 
   def search
     # @patients = Patient.where(lastname: params[:query])
@@ -77,24 +85,11 @@ class DoctorsController <  ApplicationController
     end
   end
 
-
-
-  # def dashboard
-  #   patient = current_user
-  #   @appointments_to_attend = patient.appointments.where('schedule > ?', DateTime.now)
-  # end
-
 	def book_appointment
 		@clinics = Clinic.all
-		@clinic = Clinic.first
-		@clinic = Clinic.find(params[:clinic_id]) if params[:clinic_id].present?
-
-    # respond_to do |format|
-    #   format.html {  }
-    #   format.js
-    # end
     @patient = Patient.new()
     @patients = Patient.all
+    # @clinic_schedules = 
   end
 
   def book_existing_patient_appointment
@@ -165,19 +160,6 @@ class DoctorsController <  ApplicationController
 
     @clinic_schedules = ClinicSchedule.all
     @days_of_the_week = Date::DAYNAMES
-  end
-
-
-  def autocomplete
-    results = AutocompleteSearchService.new(params[:q]).call
-    render json: results
-  end
-
-  def autocomplete_patient
-    term = params[:term]
-    terms = make_terms_from term
-    @patients = Patient.where(terms)
-    render :json => @patients.map { |patient| {:id => patient.id, :label => patient.fullname, :value => patient.fullname} }
   end
 
   def make_terms_from term

@@ -39,7 +39,7 @@ class ClinicSchedulesController < ApplicationController
       if @clinic_schedule.save
           format.html { redirect_to clinic_clinic_schedules_url, notice: "Clinic Schedule created successfully!" }
       else
-        format.html { redirect_to clinic_clinic_schedules_url, alert: "Schedule was not created." }
+        format.html { redirect_to clinic_clinic_schedules_url, alert: "Schedule was not created. #{@clinic_schedule.errors.first.message}" }
       end
     end
   end

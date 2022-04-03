@@ -76,7 +76,7 @@
 																			app = Appointment.find_by(schedule: x, clinic: @clinic)
 																		%>
 																		<td>
-																			<%= date_time.strftime("%H:%M %p") %>
+																			<%= date_time.strftime("%I:%M %p") %>
 																			<% if app.present? %>
 																				<%  if current_user.appointments.include? app %>
 																					<span style="margin-left:1rem;" class="badge badge-dark">Yours!</span>

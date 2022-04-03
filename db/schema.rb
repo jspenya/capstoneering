@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_01_081934) do
+ActiveRecord::Schema.define(version: 2022_04_03_172005) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 2022_04_01_081934) do
     t.datetime "schedule"
     t.integer "queue_type"
     t.bigint "clinic_id", null: false
+    t.integer "status"
     t.index ["clinic_id"], name: "index_clinic_queues_on_clinic_id"
     t.index ["user_id"], name: "index_clinic_queues_on_user_id"
   end

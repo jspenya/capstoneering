@@ -91,33 +91,3 @@
 		</div>
 	</div>
 <% end %>
-
-<script>
-	document.addEventListener("turbolinks:load", function() {
-	$input = $("[data-behavior='autocomplete']")
-
-	var options = {
-		getValue: "lastname",
-		url: function(phrase){
-			return "/search.json?q=" + phrase;
-		},
-		categories: [
-			{
-				listLocation: "patients",
-				header: "<strong>Patients</strong>"
-			}
-		],
-		list: {
-			onChooseEvent: function(){
-				var url = $input.getSelectedItemData().url
-				console.log(url)
-				$input.val("")
-				Turbolinks.visit(url)
-			}
-		}
-	}
-
-	$input.easyAutocomplete(options)
-});
-
-</script>

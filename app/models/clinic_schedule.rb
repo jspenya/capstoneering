@@ -14,5 +14,7 @@ class ClinicSchedule < ApplicationRecord
   belongs_to :clinic
 
   validates :day, uniqueness: { scope: :clinic,
-    message: "cannot have same days." }
+    message: "Clinic schedule cannot be within the same day." }
+  
+    validates :day, uniqueness: { message: "Schedule already exists in other clinic." }
 end

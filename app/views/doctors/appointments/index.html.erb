@@ -10,8 +10,21 @@
 								<div class="card shadow mb-3">
 									<div class="card-body">
 										<div class="row">
-
-										</div>
+											<% unless @appointments.present? %>
+												<h1>
+													No appointments for today!
+												</h1>	
+											<% else %>
+												Yes
+											<% end %>
+											<% unless @clinic.clinic_schedules.present? %>
+												<h1>
+													No clinic for today!
+												</h1>	
+											<% else %>
+												Yes clinic
+											<% end %>
+										</div>	
 									</div>
 								</div>
 							</div>

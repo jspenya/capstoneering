@@ -12,7 +12,6 @@
  *
  *= require_tree .
  *= require_self
- *= require jquery-ui
  *= require_appointments
  *= require_bootstrap.min
  *= require_feedback
@@ -20,6 +19,11 @@
  *= require_easy-autocomplete
  *= require_easy-autocomplete.themes
  *= require_styles_for
+ *= require_autocomplete
  */
 
  @import "bootstrap";
+
+.ui-widget.ui-widget-content{
+  background-color: #fff !important;
+}

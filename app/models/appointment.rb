@@ -20,6 +20,7 @@ class Appointment < ApplicationRecord
   validate :only_one_appointment_in_a_day, on: :create
   validate :reject_past_dates, on: :create
   validate :only_on_clinic_day_schedule, on: :create
+  validate :deny_patient_already_in_queue, on: :create
 
   accepts_nested_attributes_for :clinic
 
@@ -80,7 +81,13 @@ class Appointment < ApplicationRecord
 
   def only_set_appointments_1_month
     if schedule > (DateTime.now + 30.days)
-      errors.add(:name, 'Patient cannot over a month.')
+      errors.add(:name, 'Patient cannot set an appointment over a month.')
+    end
+  end
+
+  def deny_patient_already_in_queue
+    if ClinicQueue.queue_today.pluck(:user_id).include? self.user_id
+      errors.add(:Error, ' : Patient is already in queue.')
     end
   end
 end

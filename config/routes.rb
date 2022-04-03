@@ -15,7 +15,11 @@ Rails.application.routes.draw do
 
   resource :doctor do
     resources :appointments, module: :doctors
-    resources :clinic_queues, module: :doctors
+    resources :clinic_queues, module: :doctors do
+      get :queue_autocomplete_patient, on: :collection
+      post :next_patient, on: :collection
+    end
+    get :autocomplete_patient, on: :collection
   end
 
   get '/dashboard', to: 'patients#dashboard', as: 'patient_dashboard'
