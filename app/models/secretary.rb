@@ -15,6 +15,7 @@
 #  remember_created_at    :datetime
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  mobile_number          :string
 #
 class Secretary < User
   has_many :appointments

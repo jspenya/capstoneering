@@ -1,0 +1,192 @@
+<div style="display:flex;">
+	<%= render 'layouts/sidebar' %>
+	<div class="d-flex flex-column" style="background-color:#f8f9fc;width:100%;overflow-x:hidden;">
+		<%= render 'navbar' %>
+		<div class="container">
+			<div class="row mb-3">
+				<div class="col-md-12">
+						<div class="row">
+							<div class="col">
+								<div class="card shadow mb-3">
+									<div class="card-body">
+										<div class="card-header py-3">
+											<p class="text-primary m-0 font-weight-bold"><%= @clinic.name %> | Today's Queue</p>
+										</div>
+										<div class="card-body">
+											<div class="col-md-12 search-table-col">
+												<div class="form-group pull-right col-xl-12">
+													<div class="row">
+														<div class="col-sm-4 col-xl-3">
+															<button class="btn btn-primary btn-block" type="button" data-toggle="modal" data-target="#add-queue-modal">
+																<strong>Add to Queue</strong>
+															</button>
+														</div>
+														<div class="col-sm-4 col-xl-3 offset-xl-6">
+															<input class="form-control-sm search form-control" type="text" placeholder="Search by typing here..">
+														</div>
+													</div>
+												</div>
+												<div class="table-responsive table results clinic_list text-nowrap">
+													<table class="table">
+														<thead>
+															<tr>
+																<th class="text-nowrap" id="trs-hd">Patient Name</th>
+																<th class="text-nowrap" id="trs-hd">Type</th>
+																<th class="text-center" id="trs-hd">Action</th>
+															</tr>
+														</thead>
+														<tbody>
+															<% @clinic_queues.each do |cq| %>
+																<tr class="text-nowrap">
+																	<td class="text-nowrap"><%= cq.patient.fullname %></td>
+																	<td class="text-nowrap">
+																		<% if cq.queue_type == "walkin" %>
+																			Walk-in
+																		<% else %>
+																			Scheduled
+																		<% end %>
+																	</td>
+																	<td class="text-center">
+																		<%= link_to doctor_clinic_queue_path(cq), method: :delete, data: { confirm: "Are you sure you want to remove patient from queue?" }, class:"btn btn-danger action-btn" do %>
+																			<i class="fa fa-trash"></i>
+																		<% end %>
+																	</td>
+																</tr>
+															<% end %>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" role="dialog" tabindex="-1" id="add-queue-modal">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">
+				<strong>Add Patient to Queue</strong></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="accordion" id="accordionExample">
+					<div class="card">
+						<div class="card-header" id="headingOne">
+							<h2 class="mb-0">
+								<button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="text-decoration:none;">
+									Unregistered Patients
+									<i style="margin-left:1rem;" class="fas fa-chevron-down"></i>
+								</button>
+							</h2>
+						</div>
+						<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+							<div class="card-body">
+								<div class="col-md-12">
+									<div class="row">
+										<div class="col">
+											<div class="card shadow mb-3">
+												<div class="card-body">
+													<div class="col-md-12 search-table-col">
+														<%= form_with(model: @patient, url: add_patient_to_queue_path, method: :post) do |form| %>
+															<div class="form-row">
+																<div class="col-12 col-xl-6">
+																	<div class="form-group">
+																		<label for="email">
+																			<strong>Contact Number</strong>
+																		</label>
+																		<%= form.text_field :mobile_number, placeholder: 'Contact Number' %>
+																	</div>
+																</div>
+																<div class="col-12 col-xl-6">
+																	<div class="form-group">
+																		<label for="first_name">
+																			<strong>Email</strong><br>
+																		</label>
+																		<%= form.text_field :email, placeholder: 'Email goes here' %>
+																	</div>
+																</div>
+															</div>
+															<div class="form-row">
+																<div class="col-12 col-xl-6">
+																	<div class="form-group">
+																		<label for="email">
+																			<strong>Patient's First name</strong>
+																		</label>
+																		<%= form.text_field :firstname, placeholder: "Type patient's first name" %>
+																	</div>
+																</div>
+																<div class="col-12 col-xl-6">
+																	<div class="form-group">
+																		<label for="first_name">
+																			<strong>Patient's Last name</strong><br>
+																		</label>
+																		<%= form.text_field :lastname, placeholder: "Type patient's last name" %>
+																	</div>
+																</div>
+															</div>
+															<%= form.hidden_field :password, value: "testing 123" %>
+															<%= form.hidden_field :password_confirmation, value: "testing 123" %>
+															<div class="form-group" style="margin-top:1.5rem;">
+																<%= form.submit 'Submit', class:'btn btn-primary btn-sm' %>
+															</div>
+														<% end %>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-header" id="headingTwo">
+							<h2 class="mb-0">
+								<button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="text-decoration:none;">
+									Registered Patients
+									<i style="margin-left:1rem;" class="fas fa-chevron-down"></i>
+								</button>
+							</h2>
+						</div>
+						<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+							<div class="card-body">
+								<div class="col-md-12 search-table-col">
+									<%= form_with(model: @patient, url: add_existing_patient_to_queue_path, method: :post) do |form| %>
+										<div class="form-row">
+											<div class="col-12 col-xl-12">
+												<div class="form-group">
+													<label for="email">
+														<strong>Patient</strong>
+													</label>
+													<%= form.text_field :email, list: 'patient-email' %>
+													<datalist id="first-name">
+														<% @patients.find_each do |p| %>
+															<option value="<%= p.email %>"></option>
+														<% end %>
+													</datalist>
+												</div>
+											</div>
+										</div>
+										<div class="form-group" style="margin-top:1.5rem;">
+											<%= form.submit 'Submit', class:'btn btn-primary btn-sm' %>
+										</div>
+									<% end %>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

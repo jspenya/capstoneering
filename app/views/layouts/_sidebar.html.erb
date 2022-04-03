@@ -8,22 +8,83 @@
 			<hr class="sidebar-divider my-0">
 			<ul class="nav navbar-nav text-light" id="accordionSidebar">
 				<li class="nav-item" role="presentation">
+				<% if current_user.doctor? %>
+					<%= link_to doctor_dashboard_path, class: 'nav-link shadow-lg active' do %>
+						<i class="fas fa-tachometer-alt"></i>
+						<span><strong>Dashboard</strong></span>
+					<% end %>
+				<% elsif current_user.patient? %>
 					<%= link_to patient_dashboard_path, class: 'nav-link shadow-lg active' do %>
 						<i class="fas fa-tachometer-alt"></i>
 						<span><strong>Dashboard</strong></span>
 					<% end %>
+				<% else %>
+				<% end %>
 				</li>
 				<li class="nav-item" role="presentation">
+				<% if current_user.doctor? %>
+					<%= link_to doctor_book_appointment_path, class: "nav-link shadow-lg" do %>
+						<i class="fas fa-user"></i>
+						<span><strong>Book Appointment</strong></span>
+					<% end %>
+				<% elsif current_user.patient? %>
 					<%= link_to patient_book_appointment_path, class: "nav-link shadow-lg" do %>
 						<i class="fas fa-user"></i>
 						<span><strong>Book Appointment</strong></span>
 					<% end %>
+				<% else %>
+				<% end %>
 				</li>
-				<li class="nav-item" role="presentation"><a class="nav-link shadow-lg" href="patient_appointment_history.html"><i class="fas fa-laptop-medical"></i><span><strong>Appointment History</strong></span></a></li>
-				<li class="nav-item" role="presentation"><a class="nav-link shadow-lg" href="patient_reschedule.html"><i class="fas fa-calendar"></i><span><strong>Reschedule</strong></span></a></li>
-				<li class="nav-item" role="presentation"><a class="nav-link shadow-lg" href="patient_queue.html"><i class="fas fa-user-friends"></i><span><strong>Queue</strong></span></a></li>
-				<li class="nav-item" role="presentation"><a class="nav-link shadow-lg" href="patient_announcement.html"><i class="fas fa-bullhorn"></i><span><strong>Announcements</strong></span></a></li>
-				<li class="nav-item" role="presentation"><a class="nav-link shadow-lg" href="#"><i class="fas fa-comment-medical"></i><span><strong>Feedback</strong></span></a></li>
+				<li class="nav-item">
+					<% if current_user.doctor? %>
+						<%= link_to doctor_appointments_path, class: "nav-link shadow-lg" do %>
+							<i class="fas fa-laptop-medical"></i>
+							<span><strong>Appointments</strong></span>
+						<% end %>
+					<% end %>
+				</li>
+				<li class="nav-item">
+					<% if current_user.patient? %>
+						<%= link_to patient_book_appointment_path, class: "nav-link shadow-lg" do %>
+							<i class="fas fa-laptop-medical"></i>
+							<span>
+								<strong>My Appointments</strong>
+							</span>
+						<% end %>
+					<% end %>
+				</li>
+				<% if current_user.doctor? %>
+					<li class="nav-item" role="presentation">
+						<div class="nav-item dropdown shadow-lg nav-dropdown">
+							<a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" href="#">
+								<i class="fas fa-tasks"></i>
+								<span>
+									<strong>Resource</strong>
+								</span>
+							</a>
+							<div class="dropdown-menu dropdown-menu-left" role="menu" id="">
+								<%= link_to doctor_patients_path, class: "dropdown-item",data: { role: "patient" } do %>
+									<i class="fas fa-bed"></i><strong>Patients</strong>
+								<% end %>
+								<%= link_to doctor_clinics_path, class: "dropdown-item",data: { role: "clinic" } do %>
+									<i class="fas fa-clinic-medical"></i><strong>Clinics</strong>
+								<% end %>
+							</div>
+						</div>
+					</li>
+				<% end %>
+				<% if current_user.doctor? %>
+					<li class="nav-item" role="presentation">
+						<%= link_to doctor_clinic_queues_path, class: "nav-link shadow-lg" do %>
+							<i class="fas fa-user-friends"></i>
+							<span>
+								<strong>Queue</strong>
+							</span>
+						<% end %>
+					</li>
+				<% end %>
+				<%# <li class="nav-item" role="presentation"><a class="nav-link shadow-lg" href="patient_announcement.html"><i class="fas fa-bullhorn"></i><span><strong>Announcements</strong></span></a></li>
+				<li class="nav-item" role="presentation"><a class="nav-link shadow-lg" href="#"><i class="fas fa-comment-medical"></i><span><strong>Feedback</strong></span></a></li> %>
 			</ul>
 		</div>
 	</nav>

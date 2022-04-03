@@ -28,6 +28,14 @@ gem 'jquery-ui-rails'
 
 gem 'bootstrap', '~> 5.1.3'
 
+gem 'rails-autocomplete'
+
+gem 'ransack'
+
+gem 'simple_form'
+
+gem 'whenever', require: false
+
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
 gem 'webpacker', '~> 5.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks

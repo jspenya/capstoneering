@@ -1,0 +1,2 @@
+module ClinicSchedulesHelper
+end

@@ -18,6 +18,10 @@ class Appointment < ApplicationRecord
 
   validates :schedule, uniqueness: { scope: :clinic }
   validate :only_one_appointment_in_a_day, on: :create
+  validate :reject_past_dates, on: :create
+  validate :only_on_clinic_day_schedule, on: :create
+
+  accepts_nested_attributes_for :clinic
 
   scope :current_week, ->{
     start = Time.zone.now
@@ -31,6 +35,11 @@ class Appointment < ApplicationRecord
   #   range.delete_if! { |day| day == day.saturday? || day.sunday? }
   #   where(schedule: )
   # }
+
+  scope :doctor_appointments_today, -> {
+    where(schedule: DateTime.now.beginning_of_day..DateTime.now.end_of_day)
+  }
+
   scope :upcoming_appointments_today, -> {
     start = DateTime.now
     where(schedule: start..start.end_of_day )
@@ -39,6 +48,39 @@ class Appointment < ApplicationRecord
   def only_one_appointment_in_a_day
     if user.appointments_in_a_day(schedule) >= 1
       errors.add(:base, "Patient cannot have more than 1 appointment a day.")
+    end
+  end
+
+  def reject_past_dates
+    if schedule < DateTime.now
+      errors.add(:base, "Cannot book an appointment in the past.")
+    end
+  end
+
+  def only_on_clinic_day_schedule
+    clinic_days = self.clinic.clinic_schedules.pluck(:day)
+    unless clinic_days.include?(schedule.strftime("%A"))
+      errors.add(:base, "Can only book an appointment on clinic day!")
+    end
+  end
+
+  def only_on_clinic_schedules
+    if schedule > self.clinic.clinic_schedules
+    end
+  end
+
+  def patient_no_same_day_rescheduling
+    if user.patient?
+      return unless schedule < DateTime.now.end_of_day && schedule > DateTime.now.beginning_of_day
+      return unless scheduled_changed?
+
+      errors.add(:name, 'Patient cannot reschedule within the day.')
+    end
+  end
+
+  def only_set_appointments_1_month
+    if schedule > (DateTime.now + 30.days)
+      errors.add(:name, 'Patient cannot over a month.')
     end
   end
 end

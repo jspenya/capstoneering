@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_27_181836) do
+ActiveRecord::Schema.define(version: 2022_04_01_081934) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,17 @@ ActiveRecord::Schema.define(version: 2022_03_27_181836) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["clinic_id"], name: "index_appointments_on_clinic_id"
     t.index ["user_id"], name: "index_appointments_on_user_id"
+  end
+
+  create_table "clinic_queues", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "schedule"
+    t.integer "queue_type"
+    t.bigint "clinic_id", null: false
+    t.index ["clinic_id"], name: "index_clinic_queues_on_clinic_id"
+    t.index ["user_id"], name: "index_clinic_queues_on_user_id"
   end
 
   create_table "clinic_schedules", force: :cascade do |t|
@@ -44,6 +55,8 @@ ActiveRecord::Schema.define(version: 2022_03_27_181836) do
     t.time "start_time"
     t.time "end_time"
     t.integer "appointment_duration"
+    t.string "room_number"
+    t.boolean "active"
     t.index ["end_time"], name: "index_clinics_on_end_time"
     t.index ["start_time"], name: "index_clinics_on_start_time"
     t.index ["user_id"], name: "index_clinics_on_user_id"
@@ -62,12 +75,15 @@ ActiveRecord::Schema.define(version: 2022_03_27_181836) do
     t.datetime "remember_created_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "mobile_number"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "appointments", "clinics"
   add_foreign_key "appointments", "users"
+  add_foreign_key "clinic_queues", "clinics"
+  add_foreign_key "clinic_queues", "users"
   add_foreign_key "clinic_schedules", "clinics"
   add_foreign_key "clinics", "users"
 end

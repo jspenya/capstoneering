@@ -1,0 +1,123 @@
+<div style="display:flex;">
+	<%= render 'layouts/sidebar' %>
+	<div class="d-flex flex-column" id="content-wrapper" style="background-color:#f8f9fc;width:100%;overflow-x:hidden;">
+		<div id="content">
+			<%= render 'navbar' %>
+			<div class="container-fluid">
+				<div class="d-sm-flex justify-content-between align-items-center mb-4">
+					<h3 class="text-dark mb-0" style="margin-left:1rem;">
+						<b>
+							Today's Queue
+						</b>
+					</h3>
+					<div class="col-sm-4 col-xl-3">
+						<button class="btn btn-primary btn-block" type="button" data-toggle="modal" data-target="#add-walkin-patient-modal">
+							<strong>Add Walk-In to Queue</strong>
+						</button>
+						<button class="btn btn-primary btn-block" type="button" data-toggle="modal" data-target="#add-patient-modal">
+							<strong>Add Patient to Queue</strong>
+						</button>
+					</div>
+				</div>
+				<div class="container">
+					<div class="row">
+						<div class="col">
+							<ul class="list-group">
+								<% @clinic_queues.each do |q| %>
+									<li class="list-group-item">
+										<%= q.patient.fullname %>
+									</li>
+								<% end %>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<%= form_with(model: @patient, url: doctor_add_walkin_to_queue_path(@patient), method: :post ) do |form| %>
+	<div class="modal fade" role="dialog" tabindex="-1" id="add-walkin-patient-modal">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">
+						<strong>Add new Walk-in Patient</strong>
+					</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-row">
+						<div class="col-xl-6">
+							<div class="form-group">
+								<label>
+									<strong>First Name</strong>
+								</label>
+								<%= form.text_field :firstname %>
+							</div>
+						</div>
+						<div class="col-xl-6">
+							<div class="form-group">
+								<label><strong>Last Name</strong></label>
+								<%= form.text_field :lastname %>
+							</div>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="col-xl-6">
+							<div class="form-group">
+								<label><strong>Contact Number</strong></label>
+								<%= form.text_field :mobile_number %>
+							</div>
+						</div>
+						<div class="col-xl-6">
+							<div class="form-group">
+								<label>
+									<strong>Email Address</strong>
+								</label>
+								<%= form.text_field :email %>
+							</div>
+						</div>
+						<%= form.hidden_field :role, value: "patient" %>
+						<%= form.hidden_field :password, value: 'testing 123' %>
+						<%= form.hidden_field :password_confirmation, value: 'testing 123' %>
+					</div>
+				</div>
+				<div class="modal-footer text-right"><button class="btn btn-warning" type="button" data-dismiss="modal"><strong>Close</strong></button>
+				<%= form.submit %>
+			</div>
+		</div>
+	</div>
+<% end %>
+
+<script>
+	document.addEventListener("turbolinks:load", function() {
+	$input = $("[data-behavior='autocomplete']")
+
+	var options = {
+		getValue: "lastname",
+		url: function(phrase){
+			return "/search.json?q=" + phrase;
+		},
+		categories: [
+			{
+				listLocation: "patients",
+				header: "<strong>Patients</strong>"
+			}
+		],
+		list: {
+			onChooseEvent: function(){
+				var url = $input.getSelectedItemData().url
+				console.log(url)
+				$input.val("")
+				Turbolinks.visit(url)
+			}
+		}
+	}
+
+	$input.easyAutocomplete(options)
+});
+
+</script>

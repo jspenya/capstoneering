@@ -12,4 +12,7 @@
 #
 class ClinicSchedule < ApplicationRecord
   belongs_to :clinic
+
+  validates :day, uniqueness: { scope: :clinic,
+    message: "cannot have same days." }
 end

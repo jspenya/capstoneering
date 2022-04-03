@@ -11,24 +11,24 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :user_id %>
-    <%= form.text_field :user_id %>
+  <div class="">
+    <%= form.label :user_id, 'Patient: ' %>
+    <%= form.select :user_id, options_from_collection_for_select(@patients, 'id', 'fullname') %>
   </div>
 
-  <div class="field">
-    <%= form.label :clinic_id %>
-    <%= form.text_field :clinic_id %>
+  <div class="">
+    <%= form.hidden_field :clinic_id, value: params[:clinic_id] %>
   </div>
 
-  <div class="field">
-    <%= form.label :schedule %>
-    <%= form.datetime_select :schedule %>
+  <div class="">
+    <%#= form.label :schedule %>
+    <%#= form.datetime_select :schedule %>
+    <%= form.hidden_field :schedule, value: params[:schedule].to_time %>
   </div>
 
-  <div class="field">
-    <%= form.label :status %>
-    <%= form.text_field :status %>
+  <div class="">
+    <%#= form.label :status %>
+    <%#= form.text_field :status %>
   </div>
 
   <div class="actions">

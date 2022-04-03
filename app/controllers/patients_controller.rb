@@ -23,11 +23,15 @@ class PatientsController <  ApplicationController
 
     respond_to do |format|
       if @patient.save
-        format.html { redirect_to patient_url(@patient), notice: "Patient was successfully created." }
-        format.json { render :show, status: :created, location: @patient }
+        if current_user.doctor?
+          format.html { redirect_to doctor_patients_path, notice: "Patient created successfully!" }
+          # format.json { render :show, status: :created, location: @patient }
+        end
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @patient.errors, status: :unprocessable_entity }
+        if current_user.doctor?
+          format.html { redirect_to doctor_book_appointment_path, alert: "Appointment was not created. #{@appointment.errors.first.full_message}" }
+          # format.json { render json: @patient.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
@@ -58,25 +62,14 @@ class PatientsController <  ApplicationController
 
 
   def dashboard
-    @appointments_to_attend = @patient.appointments.where('schedule > ?', DateTime.now)
-  end
-
-	def book_appointment
-		Rails.logger.info("Heeeeeere") if params[:week].present?
-		@clinics = Clinic.all
-		@clinic = Clinic.first
-		@clinic = Clinic.find(params[:clinic_id]) if params[:clinic_id].present?
-
-    respond_to do |format|
-      format.html {  }
-      format.js
-    end
+    patient = current_user
+    @appointments_to_attend = patient.appointments.where('schedule > ?', DateTime.now)
   end
 
   def create_appointment
     @appointment = current_patient.appointments.new(
       schedule: params[:schedule],
-      patient_id: current_patient.id,
+      user_id: current_patient.id,
       clinic_id: params[:clinic_id]
     )
     if @appointment.save
@@ -91,7 +84,26 @@ class PatientsController <  ApplicationController
     @appointments = Appointment.current_week
   end
 
+  def book_appointment
+		@clinics = Clinic.all
+		@clinic = Clinic.first
+		@clinic = Clinic.find(params[:clinic_id]) if params[:clinic_id].present?
+    @patient = Patient.new()
+    @patients = Patient.all
+  end
 
+  def book_existing_patient_appointment
+    @appointment = current_user.appointments.new(
+      schedule: params[:patient][:appointment_schedule],
+      clinic_id: params[:patient][:clinic_id]
+    )
+
+    if @appointment.save
+      redirect_to patient_book_appointment_url, notice: "Appointment set successfully!"
+    else
+      redirect_to patient_book_appointment_url, alert: " #{@appointment.errors.first.full_message}"
+    end
+  end
 
   private
 
@@ -103,9 +115,13 @@ class PatientsController <  ApplicationController
     @patients = Patient.my_default_scope #.all
   end
 
+  def current_patient
+    @patient = current_user
+  end
+
   # Only allow a list of trusted parameters through.
   def patient_params
-    params.require(:patient).permit(:email, :firstname, :lastname, :birthdate, :gender, :role)
+    params.require(:patient).permit(:email, :firstname, :lastname, :birthdate, :gender, :mobile_number, :role, :password, :password_confirmation)
   end
 
 end

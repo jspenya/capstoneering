@@ -6,7 +6,9 @@ class ApplicationController < ActionController::Base
     if current_user.patient?
       patient_dashboard_path
     elsif current_user.doctor?
-      # doctor_dashboard_path
+      doctor_dashboard_path
+    elsif current_user.secretary?
+      secretary_dashboard_path
     else
     end
   end

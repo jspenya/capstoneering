@@ -1,0 +1,205 @@
+<%
+	def time_iterate(start_time, end_time, step, &block)
+		begin
+			yield(start_time)
+		end while (start_time += step) <= end_time
+	end
+%>
+
+<%
+# byebug
+	date_time_now = DateTime.now
+
+	days_from_this_week = (date_time_now.beginning_of_week..date_time_now.end_of_week).to_a
+
+	# days_from_this_week.delete_if { |weekday| !@clinic.clinic_schedules.map{ |c| c.day }.include?(weekday) }
+# byebug
+	# Check if day in current week is == clinic schedule
+	clinic_days = days_from_this_week.select{ |weekday| (@clinic.clinic_schedules.map{|c| c.day}).include?(weekday.strftime("%A")) }
+
+	duration = @clinic.appointment_duration.minutes
+	time_start = @clinic.clinic_schedules.first.start_time.localtime
+	time_end = @clinic.clinic_schedules.first.end_time.localtime
+	date_time_start = date_time_now.beginning_of_day + time_start.hour.hours + time_start.min.minutes
+	date_time_end = date_time_now.beginning_of_day + time_end.hour.hours + time_end.min.minutes
+%>
+<div style="display:flex;">
+	<%= render 'layouts/sidebar' %>
+	<div class="d-flex flex-column" style="background-color:#f8f9fc;width:100%;overflow-x:hidden;">
+		<%= render 'navbar' %>
+		<div class="container">
+			<div class="row mb-3">
+				<div class="col-md-12">
+						<div class="row">
+							<div class="col">
+								<div class="card shadow mb-3">
+									<div class="card-body">
+										<div class="accordion" id="accordionExample">
+											<div class="card">
+												<div class="card-header" id="headingOne">
+													<h2 class="mb-0">
+														<button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="text-decoration:none;">
+															Book an Appointment for an Existing Patient
+															<i style="margin-left:1rem;" class="fas fa-chevron-down"></i>
+														</button>
+													</h2>
+												</div>
+												<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+													<div class="card-body">
+														<div class="col-md-12">
+															<div class="row">
+																<div class="col">
+																	<div class="card shadow mb-3">
+																		<div class="card-body">
+																			<div class="col-md-12 search-table-col">
+																				<%= form_with(model: @patient, url: book_patient_appointment_path, method: :post) do |form| %>
+																					<div class="form-row">
+																						<div class="col-12 col-xl-6">
+																							<div class="form-group">
+																								<label for="email">
+																									<strong>Contact Number</strong>
+																								</label>
+																								<%= form.text_field :mobile_number, placeholder: 'Contact Number' %>
+																							</div>
+																						</div>
+																						<div class="col-12 col-xl-6">
+																							<div class="form-group">
+																								<label for="first_name">
+																									<strong>Email</strong><br>
+																								</label>
+																								<%= form.text_field :email, placeholder: 'Email goes here' %>
+																							</div>
+																						</div>
+																					</div>
+																					<div class="form-row">
+																						<div class="col-12 col-xl-6">
+																							<div class="form-group">
+																								<label for="email">
+																									<strong>Patient's First name</strong>
+																								</label>
+																								<%= form.text_field :firstname, placeholder: "Type patient's first name" %>
+																							</div>
+																						</div>
+																						<div class="col-12 col-xl-6">
+																							<div class="form-group">
+																								<label for="first_name">
+																									<strong>Patient's Last name</strong><br>
+																								</label>
+																								<%= form.text_field :lastname, placeholder: "Type patient's last name" %>
+																							</div>
+																						</div>
+																					</div>
+																					<div class="form-row">
+																						<div class="col-12 col-xl-6">
+																							<label for="first_name">
+																									<strong>Clinic</strong><br>
+																								</label>
+																							<%= form.select :clinic_id, options_for_select(@clinics.map{ |k| [k.name, k.id] }), { include_blank: 'Select a Clinic' } %>
+																						</div>
+																						<div class="col-12 col-xl-6">
+																							<label for="first_name">
+																								<strong>
+																									Schedule
+																								</strong>
+																							</label>
+																							<div>
+																								<%= form.datetime_field :appointment_schedule, start_year: DateTime.now.year, style: 'padding:0.6em;width:100%;' %>
+																							</div>
+																						</div>
+																					</div>
+																					<%= form.hidden_field :password, value: "testing 123" %>
+																					<%= form.hidden_field :password_confirmation, value: "testing 123" %>
+																					<div class="form-group" style="margin-top:1.5rem;">
+																						<%= form.submit 'Submit', class:'btn btn-primary btn-sm' %>
+																					</div>
+																				<% end %>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="card">
+												<div class="card-header" id="headingTwo">
+													<h2 class="mb-0">
+														<button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="text-decoration:none;">
+															Book for Existing Patient
+															<i style="margin-left:1rem;" class="fas fa-chevron-down"></i>
+														</button>
+													</h2>
+												</div>
+												<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+													<div class="card-body">
+														<div class="col-md-12 search-table-col">
+															<%= form_with(model: @patient, url: book_existing_patient_appointment_path, method: :post) do |form| %>
+																<div class="form-row">
+																	<div class="col-12 col-xl-12">
+																		<div class="form-group">
+																			<label for="email">
+																				<strong>Patient</strong>
+																			</label>
+																			<%= form.text_field :email, list: 'patient-email' %>
+																			<datalist id="first-name">
+																				<% @patients.find_each do |p| %>
+																					<option value="<%= p.email %>"></option>
+																				<% end %>
+																			</datalist>
+																		</div>
+																	</div>
+																</div>
+																<div class="form-row">
+																	<div class="col-12 col-xl-6">
+																		<label for="first_name">
+																				<strong>Clinic</strong><br>
+																			</label>
+																		<%= form.select :clinic_id, options_for_select(@clinics.map{ |k| [k.name, k.id] }), { include_blank: 'Select a Clinic' } %>
+																	</div>
+																	<div class="col-12 col-xl-6">
+																		<label for="first_name">
+																			<strong>
+																				Schedule
+																			</strong>
+																		</label>
+																		<div>
+																			<%= form.datetime_field :appointment_schedule, start_year: DateTime.now.year, style: 'padding:0.6em;width:100%;' %>
+																		</div>
+																	</div>
+																</div>
+																<div class="form-group" style="margin-top:1.5rem;">
+																	<%= form.submit 'Submit', class:'btn btn-primary btn-sm' %>
+																</div>
+															<% end %>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+(function() {
+  var select2sReady;
+
+  select2sReady = function() {
+    return $('.auto-select2').each(function() {
+      return $(this).select2($(this).data());
+    });
+  };
+
+  $(document).ready(select2sReady);
+
+  $(document).on('page:load', select2sReady);
+
+}).call(this);
+</script>

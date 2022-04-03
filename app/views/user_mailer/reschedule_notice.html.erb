@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Hi, <%= @user.firstname %></h1>
+    <p>
+      Sorry to inform you that your appointment has been cancelled. Please <%= link_to 'login', root_url %> to schedule another appoitnment.<br>
+    </p>
+    <p>Hope to see you again and have a great day!</p>
+  </body>
+</html>

@@ -15,9 +15,13 @@
 #  remember_created_at    :datetime
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  mobile_number          :string
 #
 class Patient < User
   has_many :appointments
+  has_many :clinic_queues
+
+  accepts_nested_attributes_for :appointments
 
 	def self.default_scope
     where(role: 1)

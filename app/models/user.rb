@@ -15,6 +15,7 @@
 #  remember_created_at    :datetime
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  mobile_number          :string
 #
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
@@ -24,6 +25,9 @@ class User < ApplicationRecord
   enum role: { patient: 1, doctor: 2, secretary: 3 }
   has_many :appointments, inverse_of: :user, dependent: :destroy
   has_many :clinics, dependent: :destroy
+  has_many :clinic_queues, dependent: :destroy
+  validates :email, uniqueness: true
+
   accepts_nested_attributes_for :appointments, :allow_destroy => true
 
   def fullname
