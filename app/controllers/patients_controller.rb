@@ -73,6 +73,7 @@ class PatientsController <  ApplicationController
       clinic_id: params[:clinic_id]
     )
     if @appointment.save
+      UserMailer.with(user: current_patient).appointment_created.deliver_now
       redirect_to patient_book_appointment_url, notice: "Appointment set successfully!"
     else
       redirect_to patient_book_appointment_url, notice: "Appointment was not created. #{@appointment.errors.first.full_message}"

@@ -33,11 +33,14 @@
 														<div class="col-sm-4 col-xl-3 offset-xl-6">
 															<input class="form-control-sm search form-control" type="text" placeholder="Search by typing here..">
 														</div>
-														<% if @in_progress %>
+														<% if @clinic_queues.present? %>
 															<div class="col-sm-4 col-xl-3 offset-xl-6">
 																<%= link_to 'Next', next_patient_doctor_clinic_queues_path, method: :post %>
 															</div>
 														<% end %>
+															<div class="col-sm-4 col-xl-3 offset-xl-6">
+																<%= link_to 'Cancel today\'s queue', cancel_todays_queue_doctor_clinic_queues_path, method: :post %>
+															</div>
 													</div>
 												</div>
 												<div class="table-responsive table results clinic_list text-nowrap">

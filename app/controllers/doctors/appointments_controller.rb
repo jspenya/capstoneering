@@ -10,8 +10,8 @@ class Doctors::AppointmentsController < DoctorsController
 	private
 	
 	def set_appointments
-		@appointments_upcoming_today = @clinic&.appointments&.upcoming_appointments_today
-		@appointments = @clinic&.appointments&.doctor_appointments_today
+		@appointments_upcoming_today = @clinic&.appointments&.upcoming_appointments_today.order(:schedule)
+		@appointments = @clinic&.appointments&.doctor_appointments_today.order(:schedule)
 	end
 
 	def set_appointment

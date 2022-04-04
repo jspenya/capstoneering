@@ -27,19 +27,37 @@ class Doctors::ClinicQueuesController < DoctorsController
 		# If current_time >= schedule sa ClinicQueue.where(scheduled)
 		# else 
 		# Go to ClinicQueue.where(not scheduled)
-		@in_progress.update(status: 3) if @in_progress
+
+		# Status 1 -> In Queue, Status 2 -> In Progress, Status 3 -> finished
+		# Queue Type 1 -> Walkin, Queue Type 2 -> Scheduled
+		if @in_progress
+			user_to_mail = @in_progress.patient
+
+			# UserMailer.with(user: user_to_mail).finished_queue.deliver_now
+			@in_progress.update(status: 3)
+		end
+
 		next_for_schedule = @clinic_queues.where(queue_type: 2).first
 		
+		# Check for current time
+		# If there are any Appointments nga nalabyan na wala na serve,
+		# Serve them next
+		# else serve walk-in patients
 		if next_for_schedule && DateTime.now >= next_for_schedule.schedule
-			# Status = 3 is finished
+			# UserMailer.with(user: user_to_mail).finished_queue.deliver_now
 			next_for_schedule.update(status: 2)
 			@in_progress = next_for_schedule
 		else
 			if next_for_queue = @clinic_queues.where(queue_type: 1).first
 				next_for_queue.update(status: 2)
+
+				user_to_mail = next_for_queue.patient
+
+				# UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
 				@in_progress = next_for_queue
 			else
 				if next_for_schedule
+					# UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
 					next_for_schedule.update(status: 2) 
 					@in_progress = next_for_schedule
 				end
@@ -55,6 +73,12 @@ class Doctors::ClinicQueuesController < DoctorsController
 		
 		# clinic_queue_to_be_in_progress = @clinic_queues.first
 		# clinic_queue_to_be_in_progress.update(status: 2) # Second in queue is In Progress
+	end
+
+	def cancel_todays_queue
+		ClinicQueue.queue_today.destroy_all
+	
+		redirect_to doctor_clinic_queues_url, notice: "Queue was cancelled for today."
 	end
 
 	def create
@@ -74,6 +98,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 		@clinic_queue = user.clinic_queues.new(schedule: DateTime.now, clinic_id: @clinic.id, queue_type: 1, status: 1)
 
     if @clinic_queue.save
+			# UserMailer.with(user: user).added_to_queue.deliver_now
       redirect_to doctor_clinic_queues_url, notice: "Patient added to queue successfully!"
     else
       redirect_to doctor_clinic_queues_url, alert: "There was a problem in adding patient to queue. #{@clinic_queue.errors.first.full_message}"
@@ -118,7 +143,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 	end
 
 	def set_in_progress
-		return nil if @clinic_queues.empty?
+		# return nil if @clinic_queues.empty?
 		@in_progress = ClinicQueue.queue_today.where(status: 2).last
 	end
 
