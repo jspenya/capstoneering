@@ -11,18 +11,35 @@
 									<div class="card-body">
 										<div class="row">
 											<% unless @appointments.present? %>
-												<h1>
-													No appointments for today!
-												</h1>	
+												<div class="card-body">
+													<div class="row">
+														<h5>
+															&#x1F680; You have no appointments for today, doc.
+														</h5>
+													</div>
+												</div>
 											<% else %>
-												Yes
+												<div class="card-header py-3">
+													<p class="text-primary m-0 font-weight-bold">Clinics list</p>
+												</div>
+												<div class="card-body">
+													<div class="row">
+														<div class="col-md-12">
+															<ul>
+																<% @appointments.each do |a| %>
+																	<li>
+																		<%= a.schedule %>
+																	</li>
+																<% end %>
+															</ul>
+														</div>
+													</div>
+												</div>
 											<% end %>
 											<% unless @clinic.clinic_schedules.present? %>
 												<h1>
 													No clinic for today!
 												</h1>	
-											<% else %>
-												Yes clinic
 											<% end %>
 										</div>	
 									</div>
