@@ -86,20 +86,17 @@
 																						</div>
 																					</div>
 																					<div class="form-row">
-																						<div class="col-12 col-xl-6">
-																							<label for="first_name">
-																									<strong>Clinic</strong><br>
-																								</label>
-																							<%= form.select :clinic_id, options_for_select(@clinics.map{ |k| [k.name, k.id] }), { include_blank: 'Select a Clinic' } %>
-																						</div>
-																						<div class="col-12 col-xl-6">
-																							<label for="first_name">
+																						<div class="col-12 col-xl-12">
+																							<label for="schedule">
 																								<strong>
 																									Schedule
+																									<i>
+																										(Clinic Name, Time & Date)
+																									</i>
 																								</strong>
 																							</label>
 																							<div>
-																								<%= form.datetime_field :appointment_schedule, start_year: DateTime.now.year, style: 'padding:0.6em;width:100%;' %>
+																								<%= form.autocomplete_field :appointment_schedule, autocomplete_schedule_doctor_path, :id_element => "#appointment_schedule", placeholder: "Typing 'cu mon 9 am ap 4' searches for 'CUMC Monday 9:00 AM April 4 2022'" %>
 																							</div>
 																						</div>
 																					</div>
@@ -137,29 +134,22 @@
 																			<label for="email">
 																				<strong>Patient</strong>
 																			</label>
-																			<%= form.autocomplete_field :email, autocomplete_patient_doctor_path, :id_element => "#patient_id", 'data-auto-focus' => true %>
+																			<%= form.autocomplete_field :email, autocomplete_patient_doctor_path, :id_element => "#patient_id", 'data-auto-focus' => true, placeholder: "Type patient's email" %>
 																		</div>
 																	</div>
 																</div>
 																<div class="form-row">
-																	<div class="col-12 col-xl-6">
-																		<label for="first_name">
-																				<strong>Clinic</strong><br>
-																			</label>
-																		<%= form.select :clinic_id, options_for_select(@clinics.map{ |k| [k.name, k.id] }), { include_blank: 'Select a Clinic' } %>
-																	</div>
-																	<div class="col-12 col-xl-6">
-																		<label for="first_name">
+																	<div class="col-12 col-xl-12">
+																		<label for="schedule">
 																			<strong>
 																				Schedule
+																				<i>
+																					(Clinic Name, Time & Date)
+																				</i>
 																			</strong>
 																		</label>
 																		<div>
-																			<% @c_schedules = [] %>
-																			<% time_iterate(date_time_start, date_time_end, duration) do |date_time| %>
-																				<% @c_schedules << date_time %>
-																			<% end %>
-																			<%= form.autocomplete_field :appointment_schedule, autocomplete_schedule_doctor_path, :id_element => "#appointment_schedule" %>
+																			<%= form.autocomplete_field :appointment_schedule, autocomplete_schedule_doctor_path, :id_element => "#appointment_schedule", placeholder: "Typing 'cu mon 9 am ap 4' searches for 'CUMC Monday 9:00 AM April 4 2022'" %>
 																		</div>
 																	</div>
 																</div>

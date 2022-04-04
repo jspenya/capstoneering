@@ -63,7 +63,6 @@ class Appointment < ApplicationRecord
   end
 
   def only_on_clinic_day_schedule
-    byebug
     clinic_days = self.clinic.clinic_schedules.pluck(:day)
     unless clinic_days.include?(schedule.strftime("%A"))
       errors.add(:base, "Can only book an appointment on clinic day!")

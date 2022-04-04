@@ -44,7 +44,7 @@
                         <button class="btn btn-warning action-btn" type="button" data-toggle="modal" data-target="#edit-clinic-modal">
                           <i class="far fa-edit"></i>
                         </button>
-                        <%= link_to clinic_path(clinic), method: :delete, data: { confirm: "Are you sure you want to delete this clinc?" }, class:"btn btn-danger action-btn" do %>
+                        <%= link_to doctor_destroy_clinic_path(clinic), method: :post, data: { confirm: "Are you sure you want to delete this clinc?" }, class:"btn btn-danger action-btn" do %>
                           <i class="fa fa-trash"></i>
                         <% end %>
                       </td>

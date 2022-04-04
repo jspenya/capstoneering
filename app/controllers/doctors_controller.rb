@@ -1,6 +1,7 @@
 class DoctorsController <  ApplicationController
   before_action :set_patient, only: %i[ show edit update destroy ] # only: %i[ dashboard book_appointment ]
   before_action :set_patients #, only: %i[ dashboard book_appointment ]
+  before_action :set_secretaries #, only: %i[ dashboard book_appointment ]
   # before_action :authenticate_patient!
   # before_action :setup_queue_index, only: [:queue_show]
   autocomplete :patient, :email
@@ -95,6 +96,13 @@ class DoctorsController <  ApplicationController
     end
   end
 
+  def destroy_clinic
+    clinic = Clinic.find(params[:id])
+    clinic.destroy
+    
+    redirect_to doctor_clinics_path, notice: "Clinic successfully deleted."
+  end
+
 	def book_appointment
 		@clinics = Clinic.all
     @patient = Patient.new()
@@ -103,7 +111,6 @@ class DoctorsController <  ApplicationController
   end
 
   def book_existing_patient_appointment
-    byebug
     user = User.find_by(email: params[:patient][:email])
     app_sched = params[:patient][:appointment_schedule]
 
@@ -134,9 +141,15 @@ class DoctorsController <  ApplicationController
 
     if @patient.save
       user = User.find(@patient.id)
+      app_sched = params[:patient][:appointment_schedule]
+
+      clinic, wday, time, ampm, date = app_sched.split("\s",5)
+      clinic_id = Clinic.find_by(name: clinic).id
+      dt = DateTime.parse(date + " " + time + " " + ampm)
+
       @appointment = user.appointments.new(
-        schedule: params[:patient][:appointment_schedule],
-        clinic_id: params[:patient][:clinic_id]
+        schedule: dt,
+        clinic_id: clinic_id
       )
       if @appointment.save
         redirect_to doctor_book_appointment_url, notice: "Appointment set successfully!"
@@ -168,6 +181,23 @@ class DoctorsController <  ApplicationController
 
   def patients_index
     @patient = Patient.new
+  end
+
+  def staffs_index
+    @clinics = Clinic.all
+    @clinic = Clinic.new
+
+    @secretary = Secretary.new
+  end
+
+  def create_staff
+    @secretary = Secretary.new(secretary_params)
+
+    if @secretary.save
+      redirect_to doctor_staffs_path, notice: "Staff successfully created!"
+    else
+      redirect_to doctor_staffs_path, alert: "There was an error. #{@secretary.errors.first.full_message}"
+    end
   end
 
   def clinics_index
@@ -226,6 +256,10 @@ class DoctorsController <  ApplicationController
     @patients = Patient.my_default_scope #.all
   end
 
+  def set_secretaries
+    @secretaries = Secretary.my_default_scope #.all
+  end
+
   def current_patient
     @patient = current_user
   end
@@ -233,6 +267,10 @@ class DoctorsController <  ApplicationController
   # Only allow a list of trusted parameters through.
   def patient_params
     params.require(:patient).permit(:email, :firstname, :lastname, :birthdate, :gender, :mobile_number, :password, :password_confirmation, :role )
+  end
+  
+  def secretary_params
+    params.require(:secretary).permit(:email, :firstname, :lastname, :birthdate, :gender, :mobile_number, :password, :password_confirmation, :role)
   end
 
   def clinic_queue_params

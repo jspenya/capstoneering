@@ -34,6 +34,9 @@ Rails.application.routes.draw do
   get '/doctor/book', to: 'doctors#book_appointment', as: 'doctor_book_appointment'
   get '/doctor/patients', to: 'doctors#patients_index', as: 'doctor_patients'
   get '/doctor/clinics', to: 'doctors#clinics_index', as: 'doctor_clinics'
+  get '/doctor/staffs', to: 'doctors#staffs_index', as: 'doctor_staffs'
+  post '/doctor/staffs', to: 'doctors#create_staff', as: 'doctor_staffs_create'
+  post '/doctor/clinics/:id', to: 'doctors#destroy_clinic', as: 'doctor_destroy_clinic'
   get '/doctor/queue', to: 'doctors#queue_index', as: 'doctor_queue'
 
   # post '/doctor/queue/patient/create', to: 'doctors#add_existing_patient_to_queue', as: 'add_existing_patient_to_queue'
