@@ -13,6 +13,16 @@ class DoctorsController <  ApplicationController
     patients = Patient.my_default_scope.where('email ILIKE ?', "%#{term}%").all
     render :json => patients.map { |d| {:id => d.id, :label => d.email, :value => d.email} }
   end
+  
+  def autocomplete_schedule
+    term = params[:term]
+    terms = term.split
+    
+    str = terms.join('.*?\s')
+    re = Regexp.new(str, Regexp::IGNORECASE)  
+    as = available_slots.grep re
+    render :json => as.map{ |s| { :label => s, :value => s } }
+  end
 
   def search
     # @patients = Patient.where(lastname: params[:query])
@@ -93,11 +103,17 @@ class DoctorsController <  ApplicationController
   end
 
   def book_existing_patient_appointment
+    byebug
     user = User.find_by(email: params[:patient][:email])
+    app_sched = params[:patient][:appointment_schedule]
+
+    clinic, wday, time, ampm, date = app_sched.split("\s",5)
+    clinic_id = Clinic.find_by(name: clinic).id
+    dt = DateTime.parse(date + " " + time + " " + ampm)
 
     @appointment = user.appointments.new(
-      schedule: params[:patient][:appointment_schedule],
-      clinic_id: params[:patient][:clinic_id]
+      schedule: dt,
+      clinic_id: clinic_id
     )
 
     if @appointment.save
@@ -221,5 +237,48 @@ class DoctorsController <  ApplicationController
 
   def clinic_queue_params
     params.require(:clinic_queue).permit(:user_id)
+  end
+
+  def time_iterate(start_time, end_time, step, &block)
+    begin
+      yield(start_time)
+    end while (start_time += step) <= end_time
+  end
+
+  def available_slots
+    c =
+      Clinic.all.map{|c| 
+        [c.clinic_schedules.map{ |cs| 
+            ( 
+              x = []
+              time_iterate(cs.start_time, cs.end_time, 15.minutes) do |dt|
+                x << [ c.name + " " + cs.day + " " + dt.strftime("%l:%M %p") ]
+              end
+              x
+            )
+          }
+        ] 
+      }.flatten
+    
+    d = Date.today.beginning_of_month..Date.today.end_of_month
+    y = d.map{ |d|
+      dow = d.strftime("%A")
+      a_d = c.grep /#{dow}/i
+    
+      a_d.map{|a| a + " " + d.strftime("%B %e %Y") }
+      }
+    
+    array_of_all_slots = y.flatten
+    
+    days_taken = Appointment.current_month.map{ |a| 
+      cname = Clinic.find( a.clinic_id ).name
+      t = a.schedule.strftime("%l:%M %p")
+      aday = a.schedule.strftime("%A")
+      adate = a.schedule.to_date.strftime("%B %e %Y") 
+    
+      [cname, aday, t, adate].join(" ")
+    }
+    
+    available_slots = array_of_all_slots - days_taken
   end
 end

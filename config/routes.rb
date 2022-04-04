@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       post :cancel_todays_queue, on: :collection
     end
     get :autocomplete_patient, on: :collection
+    get :autocomplete_schedule, on: :collection
   end
 
   get '/dashboard', to: 'patients#dashboard', as: 'patient_dashboard'

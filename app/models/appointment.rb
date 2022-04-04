@@ -41,6 +41,10 @@ class Appointment < ApplicationRecord
     where(schedule: DateTime.now.beginning_of_day..DateTime.now.end_of_day)
   }
 
+  scope :current_month, -> {
+    where(schedule: DateTime.now.beginning_of_month..DateTime.now.end_of_month)
+  }
+
   scope :upcoming_appointments_today, -> {
     start = DateTime.now
     where(schedule: start..start.end_of_day )
@@ -59,6 +63,7 @@ class Appointment < ApplicationRecord
   end
 
   def only_on_clinic_day_schedule
+    byebug
     clinic_days = self.clinic.clinic_schedules.pluck(:day)
     unless clinic_days.include?(schedule.strftime("%A"))
       errors.add(:base, "Can only book an appointment on clinic day!")

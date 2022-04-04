@@ -159,17 +159,7 @@
 																			<% time_iterate(date_time_start, date_time_end, duration) do |date_time| %>
 																				<% @c_schedules << date_time %>
 																			<% end %>
-																			<%= form.select :appointment_schedule, options_for_select(Clinic.all.map{|c| [c.clinic_schedules.map{ |cs| 
-																					( 
-																						x = []
-																						time_iterate(cs.start_time, cs.end_time, 15.minutes) do |dt|
-																							x << [ c.name + " " + cs.day + " " + dt.strftime("%I:%M %p") ]
-																						end
-																						x
-																					)
-																				}
-																			] 
-																		}.flatten), { include_blank: 'Select a schedule' } %>
+																			<%= form.autocomplete_field :appointment_schedule, autocomplete_schedule_doctor_path, :id_element => "#appointment_schedule" %>
 																		</div>
 																	</div>
 																</div>
