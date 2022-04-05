@@ -1,0 +1,9 @@
+# config/sidekiq.yml
+
+:schedule:
+  hello_world:
+    cron: '0 * * * * *'   # Runs once per minute
+    class: HardJob
+  auto_queue:
+    cron: '0 * * * * *'   # Runs once per minute
+    class: AutomateQueue

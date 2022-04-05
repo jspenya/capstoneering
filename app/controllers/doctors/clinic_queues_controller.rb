@@ -3,7 +3,7 @@ class Doctors::ClinicQueuesController < DoctorsController
   # before_action :set_patient
   before_action :set_clinic
   before_action :set_clinic_queue
-  before_action :set_in_progress, only: :index
+  before_action :set_in_progress, only: [:index, :start_queue]
 	autocomplete :patient, :email
 
 	def index
@@ -21,11 +21,11 @@ class Doctors::ClinicQueuesController < DoctorsController
   end
 
 	def next_patient
-		return if @clinic_queues.nil? 
+		return if @clinic_queues.nil?
 		return if @clinic_queues.empty?
 
 		# If current_time >= schedule sa ClinicQueue.where(scheduled)
-		# else 
+		# else
 		# Go to ClinicQueue.where(not scheduled)
 
 		# Status 1 -> In Queue, Status 2 -> In Progress, Status 3 -> finished
@@ -38,7 +38,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 		end
 
 		next_for_schedule = @clinic_queues.where(queue_type: 2).first
-		
+
 		# Check for current time
 		# If there are any Appointments nga nalabyan na wala na serve,
 		# Serve them next
@@ -58,26 +58,49 @@ class Doctors::ClinicQueuesController < DoctorsController
 			else
 				if next_for_schedule
 					# UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
-					next_for_schedule.update(status: 2) 
+					next_for_schedule.update(status: 2)
 					@in_progress = next_for_schedule
 				end
-			end 
+			end
 		end
 
 		redirect_to doctor_clinic_queues_url
-		
+
 		# clinic_queue_to_be_finished = @clinic_queues.first
 		# clinic_queue_to_be_finished.update(status: 3) # First in queue is finished
 
 		# redirect_to doctor_clinic_queues_url
-		
+
 		# clinic_queue_to_be_in_progress = @clinic_queues.first
 		# clinic_queue_to_be_in_progress.update(status: 2) # Second in queue is In Progress
 	end
 
+	def start_queue
+		qs = Appointment.doctor_appointments_today.to_a.map{|a| {user_id: a.user_id, clinic_id: a.clinic_id, schedule: a.schedule, queue_type: 2, status: 1} }
+
+		ClinicQueue.create! qs
+
+		# clinic_queues = @clinic_queues.pluck(:id)
+		# in_progress = 1
+
+		# set_worker_schedule(clinic_queues, in_progress)
+
+		redirect_to doctor_clinic_queues_url, notice: "Started queue."
+	end
+
+	# def set_worker_schedule clinic_queues, in_progress
+  #   Sidekiq.set_schedule(
+  #     "auto_queue",
+  #     {
+  #       'cron' => "* * * * *", 'class' => "AutomateQueue",
+  #       'args' => [{ clinic_queues: clinic_queues, in_progress: in_progress }]
+  #     }
+  #   )
+  # end
+
 	def cancel_todays_queue
 		ClinicQueue.queue_today.destroy_all
-	
+
 		redirect_to doctor_clinic_queues_url, notice: "Queue was cancelled for today."
 	end
 

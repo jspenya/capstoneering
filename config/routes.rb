@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
   # resources :users
+  require 'sidekiq/web'
+  Rails6Webdass::Application.routes.draw do
+    authenticate :user, lambda { |u| u.doctor? || u.secretary? } do
+      mount Sidekiq::Web => "/sidekiq" # mount Sidekiq::Web in your Rails app
+    end
+  end
+
   resources :appointments
   resources :clinics do
     resources :clinic_schedules
@@ -19,6 +26,7 @@ Rails.application.routes.draw do
       get :queue_autocomplete_patient, on: :collection
       post :next_patient, on: :collection
       post :cancel_todays_queue, on: :collection
+      post :start_queue, on: :collection
     end
     get :autocomplete_patient, on: :collection
     get :autocomplete_schedule, on: :collection
