@@ -171,7 +171,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 	end
 
 	def set_clinic_queue
-		@clinic_queues = ClinicQueue.queue_today.where(status: 1).order('queue_type DESC, schedule')
+		@clinic_queues = ClinicQueue.queue_today.where(status: 1).order('schedule')
 	end
 
 	def set_in_progress

@@ -18,7 +18,7 @@
 								<ul>
 									<li>
 										<h3>
-											<%= appointment.schedule.localtime.strftime("%I:%M %p") %> ·
+											<%= appointment.schedule.in_time_zone("Hong Kong").strftime("%I:%M %p") %> ·
 											<%= link_to 'Reschedule', '#' %>
 										</h3>
 									</li>

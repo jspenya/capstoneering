@@ -38,15 +38,15 @@ class Appointment < ApplicationRecord
   # }
 
   scope :doctor_appointments_today, -> {
-    where(schedule: DateTime.now.beginning_of_day..DateTime.now.end_of_day)
+    where(schedule: Time.now.utc.to_date.beginning_of_day..Time.now.utc.to_date.end_of_day)
   }
 
   scope :current_month, -> {
-    where(schedule: DateTime.now.beginning_of_month..DateTime.now.end_of_month)
+    where(schedule: Time.now.utc.to_date.beginning_of_month..Time.now.utc.to_date.end_of_month)
   }
 
   scope :upcoming_appointments_today, -> {
-    start = DateTime.now
+    start = Time.now.utc.to_date
     where(schedule: start..start.end_of_day )
   }
 
