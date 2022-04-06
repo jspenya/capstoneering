@@ -70,6 +70,8 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'pry-rails', :group => :development
   gem "awesome_print", require:"ap"
+  gem 'faker'
+  gem 'populator'
 end
 
 group :development do
