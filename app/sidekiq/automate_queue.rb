@@ -15,6 +15,7 @@ class AutomateQueue
 
 		# Status 1 -> In Queue, Status 2 -> In Progress, Status 3 -> finished
 		# Queue Type 1 -> Walkin, Queue Type 2 -> Scheduled
+		# byebug
 		if in_progress
 			user_to_mail = in_progress.patient
 
@@ -32,7 +33,8 @@ class AutomateQueue
 		# If there are any Appointments nga nalabyan na wala na serve,
 		# Serve them next
 		# else serve walk-in patients
-		if next_for_schedule && DateTime.now >= next_for_schedule.schedule
+		if next_for_schedule && DateTime.now >= next_for_schedule.schedule.asctime.in_time_zone("Hong Kong")
+			user_to_mail = next_for_schedule.patient
 			UserMailer.with(user: user_to_mail).finished_queue.deliver_now
 			next_for_schedule.update(status: 2)
 			in_progress = next_for_schedule
@@ -43,7 +45,8 @@ class AutomateQueue
 				UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
 				in_progress = next_for_queue
 			else
-				if next_for_schedule && DateTime.now >= next_for_schedule.schedule
+				if next_for_schedule && DateTime.now >= next_for_schedule.schedule.asctime.in_time_zone("Hong Kong")
+					user_to_mail = next_for_schedule.patient
 					UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
 					next_for_schedule.update(status: 2)
 					in_progress = next_for_schedule
