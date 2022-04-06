@@ -9,10 +9,14 @@ class DoctorsController <  ApplicationController
 
   def autocomplete_patient
     term = params[:term]
-    # brand_id = params[:brand_id]
-    # country = params[:country]
-    patients = Patient.my_default_scope.where('email ILIKE ?', "%#{term}%").all
-    render :json => patients.map { |d| {:id => d.id, :label => d.email, :value => d.email} }
+    terms = make_terms_from term
+
+    patients = Patient.where(terms).all
+    render :json => patients.map { |d| {:id => d.id, :label => d.fullname_and_email, :value => d.fullname_and_email} }
+  end
+
+  def make_terms_from term
+    terms = term.split.map{|t| "lastname ilike '%%%s%%'" % t}.join(" or ")    
   end
   
   def autocomplete_schedule
@@ -111,7 +115,10 @@ class DoctorsController <  ApplicationController
   end
 
   def book_existing_patient_appointment
-    user = User.find_by(email: params[:patient][:email])
+    user_field = params[:patient][:email]
+    f_name, l_name, email = user_field.split(" ")
+
+    user = User.find_by(email: email)
     app_sched = params[:patient][:appointment_schedule]
 
     clinic, wday, time, ampm, date = app_sched.split("\s",5)
@@ -208,9 +215,9 @@ class DoctorsController <  ApplicationController
     @days_of_the_week = Date::DAYNAMES
   end
 
-  def make_terms_from term
-    terms = term.split.map{|t| "mobile_number ilike '%%%s%%'" % t}.join(" or ")
-  end
+  # def make_terms_from term
+  #   terms = term.split.map{|t| "mobile_number ilike '%%%s%%'" % t}.join(" or ")
+  # end
 
   def queue_index
     @clinic_queues = ClinicQueue.where(schedule: DateTime.now.beginning_of_day..DateTime.now.end_of_day)

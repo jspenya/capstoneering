@@ -16,8 +16,14 @@ class Doctors::ClinicQueuesController < DoctorsController
 
 	def queue_autocomplete_patient
     term = params[:term]
-    patients = Patient.my_default_scope.where('email ILIKE ?', "%#{term}%").all
-    render :json => patients.map { |d| {:id => d.id, :label => d.email, :value => d.email} }
+    terms = make_terms_from term
+
+    patients = Patient.where(terms).all
+    render :json => patients.map { |d| {:id => d.id, :label => d.fullname_and_email, :value => d.fullname_and_email} }
+  end
+
+	def make_terms_from term
+    terms = term.split.map{|t| "lastname ilike '%%%s%%'" % t}.join(" or ")    
   end
 
 	def next_patient
@@ -116,7 +122,10 @@ class Doctors::ClinicQueuesController < DoctorsController
 	end
 
 	def add_existing_patient_to_queue
-		user = User.find_by(email: params[:patient][:email])
+		user_field = params[:patient][:email]
+    f_name, l_name, email = user_field.split(" ")
+
+    user = User.find_by(email: email)
 
 		@clinic_queue = user.clinic_queues.new(schedule: DateTime.now, clinic_id: @clinic.id, queue_type: 1, status: 1)
 

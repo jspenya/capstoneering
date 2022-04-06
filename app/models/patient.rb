@@ -29,4 +29,7 @@ class Patient < User
 
   scope :my_default_scope, ->(){ where(role: 1) }
 
+  def fullname_and_email
+    @fullname_and_email ||= " #{firstname} #{lastname} #{email} "
+  end
 end
