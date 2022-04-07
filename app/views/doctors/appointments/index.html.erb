@@ -28,7 +28,7 @@
 															<ul>
 																<% @appointments.each do |a| %>
 																	<li>
-																		<%= a.schedule.in_time_zone("Hong Kong").strftime("%I:%M %p") %> - <b><%= a.patient.fullname %></b>
+																		<%= a.schedule.strftime("%I:%M %p") %> - <b><%= a.patient.fullname %></b>
 																	</li>
 																<% end %>
 															</ul>

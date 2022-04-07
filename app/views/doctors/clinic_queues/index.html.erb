@@ -1,17 +1,4 @@
 <%# qs = Appointment.doctor_appointments_today.to_a.map{ |a| {user_id: a.user_id, clinic_id: a.clinic_id, schedule: a.schedule, queue_type: 2} } %>
-<%
-	def time_iterate(start_time, end_time, step, &block)
-		begin
-			yield(start_time)
-		end while (start_time += step) <= end_time
-	end
-%>
-<%
-	clinic_schedule = @clinic&.clinic_schedules.find_by(day: Date.today.strftime("%A"))
-	st = clinic_schedule.start_time
-	et = clinic_schedule.end_time
-	appointment_duration = 1.minutes
-%>
 <div style="display:flex;">
 	<%= render 'layouts/sidebar' %>
 	<div class="d-flex flex-column" style="background-color:#f8f9fc;width:100%;overflow-x:hidden;">
@@ -67,8 +54,8 @@
 													<table class="table">
 														<thead>
 															<tr>
-																<th class="text-nowrap" id="trs-hd">Schedule</th>
 																<th class="text-nowrap" id="trs-hd">Patient Name</th>
+																<th class="text-nowrap" id="trs-hd">Schedule</th>
 																<th class="text-nowrap" id="trs-hd">Type</th>
 																<th class="text-nowrap" id="trs-hd">Status</th>
 																<th class="text-center" id="trs-hd">Action</th>
@@ -77,8 +64,14 @@
 														<tbody>
 															<% @clinic_queues.each do |cq| %>
 																<tr class="text-nowrap">
-																	<td class="text-nowrap"><%= cq.schedule.strftime("%I:%M %p") %></td>
-																	<td class="text-nowrap"><%= cq.patient.fullname if cq.patient %></td>
+																	<td class="text-nowrap"><%= cq.patient.fullname %></td>
+																	<td class="text-nowrap">
+																		<% if cq.queue_type == "walkin" %>
+																			-
+																		<% else %>
+																			<%= cq.schedule.strftime("%I:%M %p") %>
+																		<% end %>
+																	</td>
 																	<td class="text-nowrap">
 																		<% if cq.queue_type == "walkin" %>
 																			Walk-in

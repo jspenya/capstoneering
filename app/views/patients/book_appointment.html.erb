@@ -18,8 +18,8 @@
 	clinic_days = days_from_this_week.select{ |weekday| (@clinic.clinic_schedules.map{|c| c.day}).include?(weekday.strftime("%A")) }
 
 	duration = @clinic.appointment_duration.minutes
-	time_start = @clinic.clinic_schedules.first.start_time.in_time_zone("Hong Kong")
-	time_end = @clinic.clinic_schedules.first.end_time.in_time_zone("Hong Kong")
+	time_start = @clinic.clinic_schedules.first.start_time.localtime
+	time_end = @clinic.clinic_schedules.first.end_time.localtime
 	date_time_start = date_time_now.beginning_of_day + time_start.hour.hours + time_start.min.minutes
 	date_time_end = date_time_now.beginning_of_day + time_end.hour.hours + time_end.min.minutes
 %>
