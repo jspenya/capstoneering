@@ -38,12 +38,10 @@
 															<span>
 																<%= link_to 'Cancel today\'s queue', cancel_todays_queue_doctor_clinic_queues_path, method: :post, class:'btn btn-warning btn-block', style: 'margin-top:1rem;' %>
 															</span>
-															<span>
-																<%= button_to 'Next', next_patient_doctor_clinic_queues_path, method: :post, class:'btn btn-warning btn-block', :disabled => "true", style: 'margin-top:1rem;' %>
-															</span>
 														</div>
 														<% if @clinic_queues.present? %>
 															<div class="col-sm-4 col-xl-3 offset-xl-6">
+																<%= link_to 'Next', next_patient_doctor_clinic_queues_path, method: :post %>
 															</div>
 														<% end %>
 															<div class="col-sm-4 col-xl-3 offset-xl-6">
