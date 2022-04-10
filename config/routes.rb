@@ -3,6 +3,10 @@ Rails.application.routes.draw do
   get 'clinic_special_cases/create'
   get 'clinic_special_cases/update'
   resources :users
+  # resources :users
+  get '/webhook', to: 'callback#index'
+  post '/webhook', to: 'callback#received_data'
+  
   require 'sidekiq/web'
   Rails6Webdass::Application.routes.draw do
     authenticate :user, lambda { |u| u.doctor? || u.secretary? } do
