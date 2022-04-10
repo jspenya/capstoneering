@@ -3,12 +3,11 @@ class Doctors::ClinicQueuesController < DoctorsController
   # before_action :set_patient
   before_action :set_clinic
   before_action :set_clinic_queue
-  before_action :set_in_progress, only: [:index, :start_queue]
+  before_action :set_in_progress, only: [:index, :start_queue, :next_patient]
 	autocomplete :patient, :email
 
 	def index
 		# @clinics = Clinic.all
-
 		@patient  = Patient.new
 		@patients = Patient.all
 		# @in_progress = ClinicQueue.queue_today.where(status: 2).last
@@ -27,8 +26,9 @@ class Doctors::ClinicQueuesController < DoctorsController
   end
 
 	def next_patient
-		return if @clinic_queues.nil?
-		return if @clinic_queues.empty?
+		# return if @clinic_queues.nil?
+		# return if @clinic_queues.empty?
+		# byebug
 
 		# If current_time >= schedule sa ClinicQueue.where(scheduled)
 		# else
@@ -63,9 +63,14 @@ class Doctors::ClinicQueuesController < DoctorsController
 				@in_progress = next_for_queue
 			else
 				if next_for_schedule
-					# UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
-					next_for_schedule.update(status: 2)
-					@in_progress = next_for_schedule
+					if @in_progress = next_for_schedule
+						next_for_schedule.update(status: 3)
+						UserMailer.with(user: user_to_mail).finished_queue.deliver_now
+					# else
+					# 	next_for_schedule.update(status: 2)
+					# 	UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
+					# 	@in_progress = next_for_schedule
+					end
 				end
 			end
 		end

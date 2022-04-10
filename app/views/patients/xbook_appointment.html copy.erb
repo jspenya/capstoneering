@@ -1,3 +1,24 @@
+<%
+	def time_iterate(start_time, end_time, step, &block)
+		begin
+			yield(start_time)
+		end while (start_time += step) <= end_time
+	end
+%>
+
+<%
+	date_time_now = DateTime.now
+
+	days_from_this_week = (date_time_now.beginning_of_week..date_time_now.end_of_week).to_a
+
+	# clinic_days = days_from_this_week.select{ |weekday| (@clinic.clinic_schedules.map{|c| c.day}).include?(weekday.strftime("%A")) }
+
+	duration = 15.minutes
+	time_start = ClinicSchedule.last.start_time
+	time_end = ClinicSchedule.last.end_time
+	date_time_start = date_time_now.beginning_of_day + time_start.hour.hours + time_start.min.minutes
+	date_time_end = date_time_now.beginning_of_day + time_end.hour.hours + time_end.min.minutes
+%>
 <div style="display:flex;">
 	<%= render 'layouts/sidebar' %>
 	<div class="d-flex flex-column" style="background-color:#f8f9fc;width:100%;overflow-x:hidden;">
@@ -151,3 +172,19 @@
 		</div>
 	</div>
 </div>
+<script>
+(function() {
+  var select2sReady;
+
+  select2sReady = function() {
+    return $('.auto-select2').each(function() {
+      return $(this).select2($(this).data());
+    });
+  };
+
+  $(document).ready(select2sReady);
+
+  $(document).on('page:load', select2sReady);
+
+}).call(this);
+</script>
