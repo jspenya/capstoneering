@@ -88,9 +88,13 @@ class AppointmentsController < ApplicationController
                 x << [ c.name + " " + cs.day + " " + dt.strftime("%l:%M %p") ]
               end
               if current_user.doctor? || current_user.secretary?
-                x.take(15)
-              else
                 x
+              else
+                if special_case = cs.clinic_special_cases.find_by(day: Date.today)
+                  x.take(special_case.slots)
+                else
+                  x.take(15)
+                end
               end
             )
           }

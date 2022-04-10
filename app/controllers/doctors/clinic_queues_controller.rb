@@ -52,7 +52,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 		# Serve them next
 		# else serve walk-in patients
 		if next_for_schedule # && DateTime.now >= next_for_schedule.schedule
-			# UserMailer.with(user: user_to_mail).finished_queue.deliver_now
+			UserMailer.with(user: user_to_mail).finished_queue.deliver_now
 			next_for_schedule.update(status: 2)
 			@in_progress = next_for_schedule
 		else
@@ -61,7 +61,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 
 				user_to_mail = next_for_queue.patient
 
-				# UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
+				UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
 				@in_progress = next_for_queue
 			else
 				if next_for_schedule
@@ -102,7 +102,17 @@ class Doctors::ClinicQueuesController < DoctorsController
 	end
 
   def cancel_todays_queue
-    ClinicQueue.queue_today.destroy_all
+    # ClinicQueue.queue_today.destroy_all
+    clinic_queue_today = ClinicQueue.queue_today
+    clinic_schedule_to_move_to = clinic_queue_today.last.clinic.clinic_schedules.where.not(day: Date.today.strftime("%A")).first.day.to_date
+    
+    clinic_queue_today.find_each do |cq|
+      date_for_resched = Date.new(clinic_schedule_to_move_to.year, clinic_schedule_to_move_to.month, clinic_schedule_to_move_to.day)
+      date_time_for_resched = DateTime.new(date_for_resched.year, date_for_resched.month, date_for_resched.day, cq.schedule.hour, cq.schedule.min)
+      
+      cq.update(schedule: date_time_for_resched)
+      UserMailer.with(user: cq.patient, date: cq.schedule).queue_cancelled.deliver_now
+    end
 
     redirect_to doctor_clinic_queues_url, notice: "Queue was cancelled for today."
   end

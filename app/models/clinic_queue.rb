@@ -13,6 +13,7 @@
 #
 class ClinicQueue < ApplicationRecord
   belongs_to :patient, class_name: 'User', foreign_key: 'user_id'
+  belongs_to :clinic
   validates :user_id, uniqueness: true
 
   enum queue_type: { walkin: 1, scheduled: 2 }

@@ -52,16 +52,14 @@ class UserMailer < ApplicationMailer
 	end
 
 	def queue_cancelled
-		@users = params[:users]
+		@user = params[:user]
+    @date = params[:date]
 
-		@users.each do |user|
-			@user = user
-			# @appointment = user.appointment #Attach appointment
+    # @appointment = user.appointment #Attach appointment
 
-			mail(
-				to: user.email,
-				subject: "Hi #{user.firstname}. Your appointment is cancelled."
-			)
-		end
+    mail(
+      to: @user.email,
+      subject: "Hi #{@user.firstname}. Your appointment is cancelled."
+    )
   end
 end

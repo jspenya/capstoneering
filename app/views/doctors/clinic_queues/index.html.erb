@@ -35,9 +35,11 @@
 															<span>
 																<%= link_to 'Start queue', start_queue_doctor_clinic_queues_path, method: :post, class:'btn btn-primary btn-block', style: 'margin-top:1rem;' %>
 															</span>
-															<span>
-																<%= link_to 'Cancel today\'s queue', cancel_todays_queue_doctor_clinic_queues_path, method: :post, class:'btn btn-warning btn-block', style: 'margin-top:1rem;' %>
-															</span>
+                              <% if @clinic_queues.present? %>
+                                <span>
+                                  <%= link_to 'Cancel today\'s queue', cancel_todays_queue_doctor_clinic_queues_path, method: :post, class:'btn btn-warning btn-block', style: 'margin-top:1rem;' %>
+                                </span>
+                              <% end %>
 															<span>
 																<%= link_to 'Next', next_patient_doctor_clinic_queues_path, method: :post, class:'btn btn-success btn-block', style: 'margin-top:1rem;' %>
 															</span>

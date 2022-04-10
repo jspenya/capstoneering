@@ -20,6 +20,7 @@ class Clinic < ApplicationRecord
 
   has_many :clinic_schedules, dependent: :destroy
   has_many :appointments, dependent: :destroy
+  has_many :clinic_queues, dependent: :destroy
 
   accepts_nested_attributes_for :user, :doctor, :secretary, :appointments, :clinic_schedules
 end

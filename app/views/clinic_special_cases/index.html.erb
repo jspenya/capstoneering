@@ -7,7 +7,7 @@
         <div class="card shadow">
 					<div class="card-header py-3">
 						<p class="text-primary m-0 font-weight-bold">
-							Special Cases for <%= @clinic_schedule.clinic.name %> Schedule
+							Special Cases | <%= @clinic_schedule.clinic.name %> <%= @clinic_schedule.day %> Schedule
 						</p>
 					</div>
 					<div class="card-body">
@@ -38,26 +38,28 @@
 									</thead>
 									<tbody>
                     <% @clinic_special_cases.find_each do |sc| %>
-                      <td class="text-nowrap">
-                        <%= sc.reason %>
-                      </td>
-                      <td class="text-nowrap">
-                        <%= sc.day.strftime("%h %-d, %Y") || "-" %>
-                      </td>
-                      <td class="text-nowrap">
-                        <%= sc.slots || "-" %>
-                      </td>
-                      <td class="text-nowrap">
-                        <%= sc.start_time || "-" %>
-                      </td>
-                      <td class="text-nowrap">
-                        <%= sc.end_time || "-" %>
-                      </td>
-                      <td class="text-nowrap">
-                        <%= link_to clinic_schedule_clinic_special_case_path(id: sc), method: :delete, data: { confirm: "Are you sure you want to delete this clinic special case?" }, class:"btn btn-danger action-btn" do %>
-                          <i class="fa fa-trash"></i>
-                        <% end %>
-                      </td>
+											<tr class="text-nowrap">
+                        <td class="text-nowrap">
+                          <%= sc.reason %>
+                        </td>
+                        <td class="text-nowrap">
+                          <%= sc.day.strftime("%h %-d, %Y") || "-" %>
+                        </td>
+                        <td class="text-nowrap">
+                          <%= sc.slots || "-" %>
+                        </td>
+                        <td class="text-nowrap">
+                          <%= sc.start_time || "-" %>
+                        </td>
+                        <td class="text-nowrap">
+                          <%= sc.end_time || "-" %>
+                        </td>
+                        <td class="text-nowrap">
+                          <%= link_to clinic_schedule_clinic_special_case_path(id: sc), method: :delete, data: { confirm: "Are you sure you want to delete this clinic special case?" }, class:"btn btn-danger action-btn" do %>
+                            <i class="fa fa-trash"></i>
+                          <% end %>
+                        </td>
+                      </tr>
                     <% end %>
 									</tbody>
 								</table>
@@ -87,7 +89,7 @@
               <div class="form-group">
                 <div>
                   <%= form.label :description%>
-                  <%= form.text_field :reason, class: "form-control"%>
+                  <%= form.text_field :reason, class: "form-control", required: true %>
                 </div>
               </div>
             </div>
@@ -103,29 +105,13 @@
               <div class="form-group">
                 <div>
                   <%= form.label :slots %>
-                  <%= form.number_field :slots, class: "form-control" %>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-12">
-              <div class="form-group">
-                <div>
-                  <%= form.label :start_time %>
-                  <%= form.time_field :start_time, class: "form-control" %>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-12">
-              <div class="form-group">
-                <div>
-                  <%= form.label :end_time%>
-                  <%= form.time_field :end_time, class: "form-control"%>
-                  <%= form.hidden_field :clinic_schedule_id, value: @clinic_schedule.id%>
+                  <%= form.number_field :slots, class: "form-control", required: true %>
                 </div>
               </div>
             </div>
           </div>
 				</div>
+        <%= form.hidden_field :clinic_schedule_id, value: @clinic_schedule.id%>
 				<div class="modal-footer text-right">
 					<button class="btn btn-warning" type="button" data-dismiss="modal">
 						<strong>Close</strong>
