@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_03_172005) do
+ActiveRecord::Schema.define(version: 2022_04_10_154538) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,18 +22,20 @@ ActiveRecord::Schema.define(version: 2022_04_03_172005) do
     t.bigint "clinic_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "priority_number"
     t.index ["clinic_id"], name: "index_appointments_on_clinic_id"
     t.index ["user_id"], name: "index_appointments_on_user_id"
   end
 
   create_table "clinic_queues", force: :cascade do |t|
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.datetime "schedule"
     t.integer "queue_type"
     t.bigint "clinic_id", null: false
     t.integer "status"
+    t.boolean "skip_for_now", default: false
     t.index ["clinic_id"], name: "index_clinic_queues_on_clinic_id"
     t.index ["user_id"], name: "index_clinic_queues_on_user_id"
   end
@@ -45,7 +47,20 @@ ActiveRecord::Schema.define(version: 2022_04_03_172005) do
     t.bigint "clinic_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "slots", default: 15
     t.index ["clinic_id"], name: "index_clinic_schedules_on_clinic_id"
+  end
+
+  create_table "clinic_special_cases", force: :cascade do |t|
+    t.date "day"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.string "reason"
+    t.bigint "clinic_schedule_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "slots"
+    t.index ["clinic_schedule_id"], name: "index_clinic_special_cases_on_clinic_schedule_id"
   end
 
   create_table "clinics", force: :cascade do |t|
@@ -86,5 +101,6 @@ ActiveRecord::Schema.define(version: 2022_04_03_172005) do
   add_foreign_key "clinic_queues", "clinics"
   add_foreign_key "clinic_queues", "users"
   add_foreign_key "clinic_schedules", "clinics"
+  add_foreign_key "clinic_special_cases", "clinic_schedules"
   add_foreign_key "clinics", "users"
 end

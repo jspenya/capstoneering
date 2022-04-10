@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'clinic_special_cases/create'
+  get 'clinic_special_cases/update'
   # resources :users
   require 'sidekiq/web'
   Rails6Webdass::Application.routes.draw do
@@ -18,7 +20,9 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   get 'home/index', to: 'home#index'
   resources :patients
-  resources :clinic_schedules
+  resources :clinic_schedules do
+    resources :clinic_special_cases
+  end
 
   resource :doctor do
     resources :appointments, module: :doctors
@@ -27,6 +31,7 @@ Rails.application.routes.draw do
       post :next_patient, on: :collection
       post :cancel_todays_queue, on: :collection
       post :start_queue, on: :collection
+      post :toggle_skip_for_now, on: :member
     end
     get :autocomplete_patient, on: :collection
     get :autocomplete_schedule, on: :collection

@@ -49,28 +49,28 @@
 														<thead>
 															<tr>
 																<th class="text-nowrap" id="trs-hd">Patient Name</th>
-																<th class="text-nowrap" id="trs-hd">Schedule</th>
 																<th class="text-nowrap" id="trs-hd">Type</th>
 																<th class="text-nowrap" id="trs-hd">Status</th>
+																<th class="text-nowrap" id="trs-hd">Skip Option</th>
 																<th class="text-center" id="trs-hd">Action</th>
 															</tr>
 														</thead>
 														<tbody>
 															<% @clinic_queues.each do |cq| %>
 																<tr class="text-nowrap">
-																	<td class="text-nowrap"><%= cq.patient.fullname %></td>
 																	<td class="text-nowrap">
-																		<% if cq.queue_type == "walkin" %>
-																			-
-																		<% else %>
-																			<%= cq.schedule.strftime("%I:%M %p") %>
-																		<% end %>
-																	</td>
+                                    <%= cq.patient.fullname %>
+                                    <% if cq.skip_for_now? %>
+                                      <span class="badge badge-pill badge-warning">
+                                        Skipped
+                                      </span>
+                                    <% end %>
+                                  </td>
 																	<td class="text-nowrap">
 																		<% if cq.queue_type == "walkin" %>
 																			Walk-in
 																		<% else %>
-																			Scheduled
+																			Appointment
 																		<% end %>
 																	</td>
 																	<td class="text-nowrap">
@@ -82,8 +82,17 @@
 																			Finished
 																		<% end %>
 																	</td>
-																	<td class="text-center">
-																		<%= link_to doctor_clinic_queue_path(cq), method: :delete, data: { confirm: "Are you sure you want to remove patient from queue?" }, class:"btn btn-danger action-btn" do %>
+                                    <% if cq.skip_for_now? %>
+                                      <td class="text-nowrap">
+                                        <%= link_to 'Add back to Queue', toggle_skip_for_now_doctor_clinic_queue_path(cq), method: :post, data: { confirm: "Are you sure you want to add #{cq.patient.firstname} back to queue?" }, class:"btn btn-light" %>
+                                      </td>
+                                    <% else %>
+                                      <td class="text-nowrap">
+                                        <%= link_to 'Skip Patient Queue', toggle_skip_for_now_doctor_clinic_queue_path(cq), method: :post, data: { confirm: "Are you sure you want to temporarily skip #{cq.patient.firstname}?" }, class:"btn btn-dark" %>
+                                      </td>
+                                    <% end %>
+                                  <td class="text-center">
+																		<%= link_to doctor_clinic_queue_path(cq), method: :delete, data: { confirm: "Are you sure you want to remove #{cq.patient.firstname} from queue?" }, class:"btn btn-danger action-btn" do %>
 																			<i class="fa fa-trash"></i>
 																		<% end %>
 																	</td>

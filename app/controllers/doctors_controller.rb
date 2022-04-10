@@ -156,7 +156,7 @@ class DoctorsController <  ApplicationController
 
       @appointment = user.appointments.new(
         schedule: dt,
-        clinic_id: clinic_id
+        clinic_id: clinic_id 
       )
       if @appointment.save
         redirect_to doctor_book_appointment_url, notice: "Appointment set successfully!"
@@ -299,7 +299,11 @@ class DoctorsController <  ApplicationController
               time_iterate(cs.start_time, cs.end_time, 15.minutes) do |dt|
                 x << [ c.name + " " + cs.day + " " + dt.strftime("%l:%M %p") ]
               end
-              x
+              if current_user.doctor? || current_user.secretary?
+                x.take(15)
+              else
+                x
+              end
             )
           }
         ] 

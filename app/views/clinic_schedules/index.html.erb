@@ -33,6 +33,7 @@
 											<th class="text-nowrap" id="trs-hd">Start Time</th>
 											<th class="text-nowrap" id="trs-hd">End Time</th>
 											<th class="text-center" id="trs-hd">Action</th>
+											<th class="text-center" id="trs-hd">Special Cases</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -40,10 +41,10 @@
 											<tr class="text-nowrap">
 												<td class="text-nowrap"><%= cs.day %></td>
 												<td class="text-nowrap">
-													<%= cs.start_time.strftime("%I:%S %p") %>
+													<%= cs.start_time.strftime("%I:%M %p") %>
 												</td>
 												<td class="text-nowrap">
-													<%= cs.end_time.strftime("%I:%S %p") %>
+													<%= cs.end_time.strftime("%I:%M %p") %>
 												</td>
 												<td class="text-center">
 													<button class="btn btn-warning action-btn" type="button" data-toggle="modal" data-target="#edit-clinic-modal">
@@ -53,6 +54,9 @@
                           <i class="fa fa-trash"></i>
 													<% end %>
 												</td>
+                        <td class="text-center">
+                          <%= link_to 'Add Special Case', clinic_schedule_clinic_special_cases_path(clinic_schedule_id: cs.id), class: 'btn btn-primary' %>
+                        </td>
 											</tr>
 										<% end %>
 									</tbody>

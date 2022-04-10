@@ -36,6 +36,8 @@ class Doctors::ClinicQueuesController < DoctorsController
 
 		# Status 1 -> In Queue, Status 2 -> In Progress, Status 3 -> finished
 		# Queue Type 1 -> Walkin, Queue Type 2 -> Scheduled
+    @clinic_queues = @clinic_queues.where(skip_for_now: false)
+
 		if @in_progress
 			user_to_mail = @in_progress.patient
 
@@ -49,7 +51,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 		# If there are any Appointments nga nalabyan na wala na serve,
 		# Serve them next
 		# else serve walk-in patients
-		if next_for_schedule && DateTime.now >= next_for_schedule.schedule
+		if next_for_schedule # && DateTime.now >= next_for_schedule.schedule
 			# UserMailer.with(user: user_to_mail).finished_queue.deliver_now
 			next_for_schedule.update(status: 2)
 			@in_progress = next_for_schedule
@@ -99,6 +101,23 @@ class Doctors::ClinicQueuesController < DoctorsController
 		redirect_to doctor_clinic_queues_url, notice: "Started queue."
 	end
 
+  def cancel_todays_queue
+    ClinicQueue.queue_today.destroy_all
+
+    redirect_to doctor_clinic_queues_url, notice: "Queue was cancelled for today."
+  end
+
+  def toggle_skip_for_now
+    clinic_queue = ClinicQueue.find(params[:id])
+    
+    if clinic_queue.skip_for_now?
+      clinic_queue.update(skip_for_now: false)
+      redirect_to doctor_clinic_queues_path, notice: "#{clinic_queue.patient.fullname} is added back to the queue."
+    else
+      clinic_queue.update(skip_for_now: true)
+      redirect_to doctor_clinic_queues_path, notice: "#{clinic_queue.patient.fullname} is skipped for now."
+    end
+  end
 	# def set_worker_schedule clinic_queues, in_progress
   #   Sidekiq.set_schedule(
   #     "auto_queue",
@@ -109,11 +128,6 @@ class Doctors::ClinicQueuesController < DoctorsController
   #   )
   # end
 
-	def cancel_todays_queue
-		ClinicQueue.queue_today.destroy_all
-
-		redirect_to doctor_clinic_queues_url, notice: "Queue was cancelled for today."
-	end
 
 	def create
 		@patient = Patient.new(patient_params)

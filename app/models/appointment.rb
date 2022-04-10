@@ -19,6 +19,7 @@ class Appointment < ApplicationRecord
   validates :schedule, uniqueness: { scope: :clinic }
   validate :only_one_appointment_in_a_day, on: :create
   validate :reject_past_dates, on: :create
+  validate :check_special_case, on: :create
   validate :only_on_clinic_day_schedule, on: :create
   validate :deny_patient_already_in_queue, on: :create
 
@@ -48,6 +49,15 @@ class Appointment < ApplicationRecord
   scope :upcoming_appointments_today, -> {
     start = DateTime.now
     where(schedule: start..start.end_of_day )
+  }
+
+  scope :upcoming, -> {
+    start = DateTime.now
+    where(schedule: start..start.end_of_month.next_month)
+  }
+
+  scope :appointments_on_this_day, -> (date) {
+    where(schedule: date.beginning_of_day..date.end_of_day).count
   }
 
   def only_one_appointment_in_a_day
@@ -92,6 +102,15 @@ class Appointment < ApplicationRecord
   def deny_patient_already_in_queue
     if ClinicQueue.queue_today.pluck(:user_id).include? self.user_id
       errors.add(:Error, ' : Patient is already in queue.')
+    end
+  end
+
+  def check_special_case
+    special_case = ClinicSpecialCase.find_by(day: schedule.to_date)
+    return unless special_case.present?
+
+    if Appointment.where(schedule: special_case.day.beginning_of_day..special_case.day.end_of_day).count > special_case.slots
+      errors.add(:slots, "are full for this day.")
     end
   end
 end

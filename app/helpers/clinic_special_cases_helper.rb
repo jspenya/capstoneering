@@ -1,0 +1,2 @@
+module ClinicSpecialCasesHelper
+end
