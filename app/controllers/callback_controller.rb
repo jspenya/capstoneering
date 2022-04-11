@@ -47,10 +47,29 @@ class CallbackController < ApplicationController
     text_message_received = received_message.dig("text")
     # Check if message contains text
 
-    if text_message_received
-      # Create the payload for a basic text message
+    if text_message_received.include? 'appointment: '
+      date = text_message_received.split("\s", 2).last
+      d = Date.parse(date)
+      dt = DateTime.new(d.year, d.month, d.day, DateTime.now.hour, DateTime.now.min)
+
+      Appointment.new
       response = {
-        "text": "You send the message #{text_message_received}. Now send me an image!"
+        "text": "Yo!"
+      }
+    elsif text_message_received.include? 'name:'
+      # Create the user
+      password_hex = SecureRandom.hex(5)
+      user, nickname, email = text_message_received.split("\s", 3)
+      nickname = nickname.chomp(',')
+      u = User.new(firstname: nickname, email: email, password: 'testing 123', password_confirmation: 'testing 123' )
+      u.save
+
+      response = {
+        "text": "Thanks for the info, #{u.firstname}. What day would you like to set the appointment?\n\nReply in this format:\n\nex. \*appointment: April 18 2022\*"
+      }
+    else
+      response = {
+        "text": "Hi! What's your nickname & email?\n\nReply in this format:\n\n\*name: Steph, coolsteph@gmail.com\*"
       }
     end
     # Sends the response message
@@ -77,6 +96,6 @@ class CallbackController < ApplicationController
 
   private
   def page_access_token
-    "EAADZA3dkwy1sBAMFOgHG2YADC5gc8u3LVK0Y46qnH5davokVMP6mwReut6RZBmhvuUS1Tgygqi0xn2sEZClMvOdBRxmZBRMbtvZBot67mcGFWNV71fbxP6etN30xXjVa26vO2g28lPcIZCwWhUBZAsiYfbxHFQROsPdLoI7D8zTv4S63S7HdeIGoAlYOaeRpZAAZD"
+    "EAADZA3dkwy1sBACyVeKF70n1leMCMEBXnZBh1qyaBQ3LmcmoYfKxapDdRqpEwIGGFAC9urIn73dnWxfliDoEpwHpZBkkBtrUyBuqoR2VqfZBm33NvqR3B6lgZARruVmjpX1LFOvfYJ0czqiLFSIsOslsil8z1jwJC0oJ0EmXsbV0j25RhZATzipFm6MBmZADnMZD"
   end
 end
