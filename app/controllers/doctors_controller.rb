@@ -16,15 +16,15 @@ class DoctorsController <  ApplicationController
   end
 
   def make_terms_from term
-    terms = term.split.map{|t| "lastname ilike '%%%s%%'" % t}.join(" or ")    
+    terms = term.split.map{|t| "lastname ilike '%%%s%%'" % t}.join(" or ")
   end
-  
+
   def autocomplete_schedule
     term = params[:term]
     terms = term.split
-    
+
     str = terms.join('.*?\s')
-    re = Regexp.new(str, Regexp::IGNORECASE)  
+    re = Regexp.new(str, Regexp::IGNORECASE)
     as = available_slots.grep re
     render :json => as.map{ |s| { :label => s, :value => s } }
   end
@@ -103,7 +103,7 @@ class DoctorsController <  ApplicationController
   def destroy_clinic
     clinic = Clinic.find(params[:id])
     clinic.destroy
-    
+
     redirect_to doctor_clinics_path, notice: "Clinic successfully deleted."
   end
 
@@ -111,7 +111,7 @@ class DoctorsController <  ApplicationController
 		@clinics = Clinic.all
     @patient = Patient.new()
     @patients = Patient.all
-    # @clinic_schedules = 
+    # @clinic_schedules =
   end
 
   def book_existing_patient_appointment
@@ -156,7 +156,7 @@ class DoctorsController <  ApplicationController
 
       @appointment = user.appointments.new(
         schedule: dt,
-        clinic_id: clinic_id 
+        clinic_id: clinic_id
       )
       if @appointment.save
         redirect_to doctor_book_appointment_url, notice: "Appointment set successfully!"
@@ -275,7 +275,7 @@ class DoctorsController <  ApplicationController
   def patient_params
     params.require(:patient).permit(:email, :firstname, :lastname, :birthdate, :gender, :mobile_number, :password, :password_confirmation, :role )
   end
-  
+
   def secretary_params
     params.require(:secretary).permit(:email, :firstname, :lastname, :birthdate, :gender, :mobile_number, :password, :password_confirmation, :role)
   end
@@ -292,9 +292,9 @@ class DoctorsController <  ApplicationController
 
   def available_slots
     c =
-      Clinic.all.map{|c| 
-        [c.clinic_schedules.map{ |cs| 
-            ( 
+      Clinic.all.map{|c|
+        [c.clinic_schedules.map{ |cs|
+            (
               x = []
               time_iterate(cs.start_time, cs.end_time, 15.minutes) do |dt|
                 x << [ c.name + " " + cs.day + " " + dt.strftime("%l:%M %p") ]
@@ -310,28 +310,28 @@ class DoctorsController <  ApplicationController
               end
             )
           }
-        ] 
+        ]
       }.flatten
-    
-    d = Date.today.beginning_of_month..Date.today.end_of_month
+
+    d = Date.today.beginning_of_month..Date.today.end_of_month.next_month
     y = d.map{ |d|
       dow = d.strftime("%A")
       a_d = c.grep /#{dow}/i
-    
+
       a_d.map{|a| a + " " + d.strftime("%B %e %Y") }
       }
-    
+
     array_of_all_slots = y.flatten
-    
-    days_taken = Appointment.current_month.map{ |a| 
+
+    days_taken = Appointment.current_month.map{ |a|
       cname = Clinic.find( a.clinic_id ).name
       t = a.schedule.strftime("%l:%M %p")
       aday = a.schedule.strftime("%A")
-      adate = a.schedule.to_date.strftime("%B %e %Y") 
-    
+      adate = a.schedule.to_date.strftime("%B %e %Y")
+
       [cname, aday, t, adate].join(" ")
     }
-    
+
     available_slots = array_of_all_slots - days_taken
   end
 end

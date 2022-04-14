@@ -12,10 +12,10 @@
 #
 class ClinicSchedule < ApplicationRecord
   belongs_to :clinic
-  has_many :clinic_special_cases
-  
+  has_many :clinic_special_cases, dependent: :destroy
+
   validates :day, uniqueness: { scope: :clinic,
     message: "Clinic schedule cannot be within the same day." }
-  
+
     validates :day, uniqueness: { message: "Schedule already exists in other clinic." }
 end

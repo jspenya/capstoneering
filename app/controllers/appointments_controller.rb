@@ -10,9 +10,9 @@ class AppointmentsController < ApplicationController
   def autocomplete_schedule
     term = params[:term]
     terms = term.split
-    
+
     str = terms.join('.*?\s')
-    re = Regexp.new(str, Regexp::IGNORECASE)  
+    re = Regexp.new(str, Regexp::IGNORECASE)
     as = available_slots.grep re
     render :json => as.map{ |s| { :label => s, :value => s } }
   end
@@ -25,29 +25,29 @@ class AppointmentsController < ApplicationController
       firstname: params[:firstname],
       lastname: params[:lastname],
       email: params[:email],
-      encrypted_password: User.new(password: password_hex).encrypted_password,
+      password: password_hex,
+      password_confirmation: password_hex,
     )
 
     if @patient.save
       user = User.find(@patient.id)
-      app_sched = params[:patient][:appointment_schedule]
-    else
-    end
+      app_sched = params[:appointment_schedule]
 
-    respond_to do |format|
+      clinic, wday, time, ampm, date = app_sched.split("\s",5)
+      clinic_id = Clinic.find_by(name: clinic).id
+      dt = DateTime.parse(date + " " + time + " " + ampm)
+
+      @appointment = user.appointments.new(
+        schedule: dt,
+        clinic_id: clinic_id
+      )
       if @appointment.save
-				if current_user.doctor?
-					format.html { redirect_to doctor_book_appointment_path, notice: "Appointment successfully set." }
-					# format.json { render :show, status: :created, location: @appointment }
-				end
-        redirect_to root_path, notice: "Appointment set successfully! Please check your SMS inbox or email for your appointment details."
+        redirect_to root_path, notice: "Appointment set successfully!"
       else
-				if current_user.doctor?
-					format.html { redirect_to doctor_book_appointment_path, alert: "Appointment was not created. #{@appointment.errors.first.full_message}" }
-					# format.json { render json: @appointment.errors, status: :unprocessable_entity }
-          redirect_to root_path, notice: "Appointment was not created. #{@appointment.errors.first.full_message}"
-				end
+        redirect_to doctor_book_appointment_url, alert: " #{@appointment.errors.first.full_message}"
       end
+    else
+      redirect_to new_appointment_path, alert: "#{@patient.errors.first.full_message}"
     end
   end
 
@@ -78,48 +78,50 @@ class AppointmentsController < ApplicationController
 		params.require(:appointment).permit(:user_id, :clinic_id, :schedule, :status)
 	end
 
+  def time_iterate(start_time, end_time, step, &block)
+    begin
+      yield(start_time)
+    end while (start_time += step) <= end_time
+  end
+
   def available_slots
     c =
-      Clinic.all.map{|c| 
-        [c.clinic_schedules.map{ |cs| 
-            ( 
+      Clinic.all.map{|c|
+        [c.clinic_schedules.map{ |cs|
+            (
               x = []
               time_iterate(cs.start_time, cs.end_time, 15.minutes) do |dt|
                 x << [ c.name + " " + cs.day + " " + dt.strftime("%l:%M %p") ]
               end
-              if current_user.doctor? || current_user.secretary?
-                x
+              if special_case = cs.clinic_special_cases.find_by(day: Date.today)
+                x.take(special_case.slots)
               else
-                if special_case = cs.clinic_special_cases.find_by(day: Date.today)
-                  x.take(special_case.slots)
-                else
-                  x.take(15)
-                end
+                x.take(15)
               end
             )
           }
-        ] 
+        ]
       }.flatten
-    
-    d = Date.today.beginning_of_month..Date.today.end_of_month
+
+    d = Date.today.beginning_of_month..Date.today.end_of_month.next_month
     y = d.map{ |d|
       dow = d.strftime("%A")
       a_d = c.grep /#{dow}/i
-    
+
       a_d.map{|a| a + " " + d.strftime("%B %e %Y") }
       }
-    
+
     array_of_all_slots = y.flatten
-    
-    days_taken = Appointment.current_month.map{ |a| 
+
+    days_taken = Appointment.current_month.map{ |a|
       cname = Clinic.find( a.clinic_id ).name
       t = a.schedule.strftime("%l:%M %p")
       aday = a.schedule.strftime("%A")
-      adate = a.schedule.to_date.strftime("%B %e %Y") 
-    
+      adate = a.schedule.to_date.strftime("%B %e %Y")
+
       [cname, aday, t, adate].join(" ")
     }
-    
+
     available_slots = array_of_all_slots - days_taken
   end
 end

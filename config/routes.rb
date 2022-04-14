@@ -9,7 +9,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :appointments
+  resources :appointments do
+    get :autocomplete_schedule, on: :collection
+  end
   resources :clinics do
     resources :clinic_schedules
   end

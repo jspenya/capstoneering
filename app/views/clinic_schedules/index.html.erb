@@ -33,7 +33,7 @@
 											<th class="text-nowrap" id="trs-hd">Start Time</th>
 											<th class="text-nowrap" id="trs-hd">End Time</th>
 											<th class="text-center" id="trs-hd">Action</th>
-											<th class="text-center" id="trs-hd">Special Cases</th>
+											<th class="text-center" id="trs-hd">Special Schedules</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -55,7 +55,7 @@
 													<% end %>
 												</td>
                         <td class="text-center">
-                          <%= link_to 'Add Special Case', clinic_schedule_clinic_special_cases_path(clinic_schedule_id: cs.id), class: 'btn btn-primary' %>
+                          <%= link_to 'Add Special Schedule', clinic_schedule_clinic_special_cases_path(clinic_schedule_id: cs.id), class: 'btn btn-primary' %>
                         </td>
 											</tr>
 										<% end %>
