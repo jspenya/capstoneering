@@ -60,7 +60,7 @@ class AppointmentsController < ApplicationController
   end
 
 	def appointments_history
-		@appointments = Appointment.where('schedule > ?', DateTime.now)
+		@appointments = Appointment.where('schedule > ?', Time.now.utc)
 	end
 
 	private

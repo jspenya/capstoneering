@@ -39,20 +39,20 @@ class Appointment < ApplicationRecord
   # }
 
   scope :doctor_appointments_today, -> {
-    where(schedule: DateTime.now.beginning_of_day..DateTime.now.end_of_day)
+    where(schedule: Time.now.utc.beginning_of_day..Time.now.utc.end_of_day)
   }
 
   scope :current_month, -> {
-    where(schedule: DateTime.now.beginning_of_month..DateTime.now.end_of_month)
+    where(schedule: Time.now.utc.beginning_of_month..Time.now.utc.end_of_month)
   }
 
   scope :upcoming_appointments_today, -> {
-    start = DateTime.now
+    start = Time.now.utc
     where(schedule: start..start.end_of_day )
   }
 
   scope :upcoming, -> {
-    start = DateTime.now
+    start = Time.now.utc
     where(schedule: start..start.end_of_month.next_month)
   }
 
@@ -67,7 +67,7 @@ class Appointment < ApplicationRecord
   end
 
   def reject_past_dates
-    if schedule < DateTime.now
+    if schedule < Time.now.utc
       errors.add(:base, "Cannot book an appointment in the past.")
     end
   end
@@ -86,7 +86,7 @@ class Appointment < ApplicationRecord
 
   def patient_no_same_day_rescheduling
     if user.patient?
-      return unless schedule < DateTime.now.end_of_day && schedule > DateTime.now.beginning_of_day
+      return unless schedule < Time.now.utc.end_of_day && schedule > Time.now.utc.beginning_of_day
       return unless scheduled_changed?
 
       errors.add(:name, 'Patient cannot reschedule within the day.')
@@ -94,7 +94,7 @@ class Appointment < ApplicationRecord
   end
 
   def only_set_appointments_1_month
-    if schedule > (DateTime.now + 30.days)
+    if schedule > (Time.now.utc + 30.days)
       errors.add(:name, 'Patient cannot set an appointment over a month.')
     end
   end

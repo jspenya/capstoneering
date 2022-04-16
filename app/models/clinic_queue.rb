@@ -20,6 +20,6 @@ class ClinicQueue < ApplicationRecord
   enum status: { in_queue: 1, in_progress: 2, finished: 3 }
 
   scope :queue_today, -> {
-    where(schedule: DateTime.now.beginning_of_day..DateTime.now.end_of_day)
+    where(schedule: Time.now.utc.beginning_of_day..Time.now.utc.end_of_day)
   }
 end

@@ -33,7 +33,7 @@ class AutomateQueue
 		# If there are any Appointments nga nalabyan na wala na serve,
 		# Serve them next
 		# else serve walk-in patients
-		if next_for_schedule && DateTime.now >= next_for_schedule.schedule.asctime.in_time_zone("Hong Kong")
+		if next_for_schedule && Time.now.utc >= next_for_schedule.schedule.asctime.in_time_zone("Hong Kong")
 			user_to_mail = next_for_schedule.patient
 			UserMailer.with(user: user_to_mail).finished_queue.deliver_now
 			next_for_schedule.update(status: 2)
@@ -45,7 +45,7 @@ class AutomateQueue
 				UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
 				in_progress = next_for_queue
 			else
-				if next_for_schedule && DateTime.now >= next_for_schedule.schedule.asctime.in_time_zone("Hong Kong")
+				if next_for_schedule && Time.now.utc >= next_for_schedule.schedule.asctime.in_time_zone("Hong Kong")
 					user_to_mail = next_for_schedule.patient
 					UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
 					next_for_schedule.update(status: 2)

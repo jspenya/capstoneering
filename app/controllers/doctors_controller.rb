@@ -44,8 +44,8 @@ class DoctorsController <  ApplicationController
   def dashboard
     @appointments = Appointment.all
 
-    @appointments_to_attend = @appointments.where('schedule > ?', DateTime.now)
-    @appointments_served = @appointments.where('schedule < ? AND schedule > ?', DateTime.now, DateTime.now.beginning_of_day)
+    @appointments_to_attend = @appointments.where('schedule > ?', Time.now.utc)
+    @appointments_served = @appointments.where('schedule < ? AND schedule > ?', Time.now.utc, Time.now.utc.beginning_of_day)
   end
 
   def new
@@ -220,7 +220,7 @@ class DoctorsController <  ApplicationController
   # end
 
   def queue_index
-    @clinic_queues = ClinicQueue.where(schedule: DateTime.now.beginning_of_day..DateTime.now.end_of_day)
+    @clinic_queues = ClinicQueue.where(schedule: Time.now.utc.beginning_of_day..Time.now.utc.end_of_day)
     @patient = Patient.new
     @patients = Patient.pluck(:lastname).sort
 
@@ -234,10 +234,10 @@ class DoctorsController <  ApplicationController
 
   def setup_queue_index
     # byebug
-    if ClinicQueue.find_by(schedule: DateTime.now.beginning_of_day..DateTime.now.end_of_day ).present?
-      clinic_queue_id = ClinicQueue.find_by( schedule: DateTime.now.beginning_of_day..DateTime.now.end_of_day ).id
+    if ClinicQueue.find_by(schedule: Time.now.utc.beginning_of_day..Time.now.utc.end_of_day ).present?
+      clinic_queue_id = ClinicQueue.find_by( schedule: Time.now.utc.beginning_of_day..Time.now.utc.end_of_day ).id
     else
-      clinic_queue = ClinicQueue.create(schedule: DateTime.now.beginning_of_day)
+      clinic_queue = ClinicQueue.create(schedule: Time.now.utc.beginning_of_day)
 
       clinic_queue_id = clinic_queue.id
     end

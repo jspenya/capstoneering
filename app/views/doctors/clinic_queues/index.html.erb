@@ -11,100 +11,110 @@
 								<div class="card shadow mb-3">
 									<div class="card-body">
 										<div class="card-header py-3">
-											<p class="text-primary m-0 font-weight-bold"><%= @clinic.name %> | Today's Queue</p>
+                      <% if @clinic.present?  %>
+                        <p class="text-primary m-0 font-weight-bold"><%= @clinic.name %> | Today's Queue</p>
+                      <% else %>
+                        <% if current_user.doctor? %>
+                          <p class="text-primary m-0 font-weight-bold">You have no clinics yet. Click <%= link_to 'here', doctor_clinics_path %> to create one.</p>
+                        <% else %>
+                          <p class="text-primary m-0 font-weight-bold">You have no clinics yet. Contact your administrator or doctor to create one.</p>
+                        <% end %>
+                      <% end %>
 										</div>
-										<div class="card-body">
-											<div class="col-md-12 search-table-col">
-												<div class="form-group pull-right col-xl-12">
-													<div class="row">
-														<div>
-															<% if @in_progress.present? %>
-																<h1>
-																	In Progress:
-																	<%= @in_progress&.patient&.fullname %>
-																</h1>
-															<% end %>
-														</div>
-														<div class="col-sm-6 col-xl-3">
-															<button class="btn btn-primary btn-block" type="button" data-toggle="modal" data-target="#add-queue-modal">
-																<strong>Add to Queue</strong>
-															</button>
-														</div>
-														<div class="col-sm-6 col-xl-3 offset-xl-6">
-															<input class="form-control-sm search form-control" type="text" placeholder="Search by patient name here">
-															<span>
-																<%= link_to 'Start queue', start_queue_doctor_clinic_queues_path, method: :post, class:'btn btn-primary btn-block', style: 'margin-top:1rem;' %>
-															</span>
-                              <% if @clinic_queues.present? %>
+                    <% if @clinic.present?  %>
+                      <div class="card-body">
+                        <div class="col-md-12 search-table-col">
+                          <div class="form-group pull-right col-xl-12">
+                            <div class="row">
+                              <div>
+                                <% if @in_progress.present? %>
+                                  <h1>
+                                    In Progress:
+                                    <%= @in_progress&.patient&.fullname %>
+                                  </h1>
+                                <% end %>
+                              </div>
+                              <div class="col-sm-6 col-xl-3">
+                                <button class="btn btn-primary btn-block" type="button" data-toggle="modal" data-target="#add-queue-modal">
+                                  <strong>Add to Queue</strong>
+                                </button>
+                              </div>
+                              <div class="col-sm-6 col-xl-3 offset-xl-6">
+                                <input class="form-control-sm search form-control" type="text" placeholder="Search by patient name here">
                                 <span>
-                                  <%= link_to 'Cancel today\'s queue', cancel_todays_queue_doctor_clinic_queues_path, method: :post, class:'btn btn-warning btn-block', style: 'margin-top:1rem;' %>
+                                  <%= link_to 'Start queue', start_queue_doctor_clinic_queues_path, method: :post, class:'btn btn-primary btn-block', style: 'margin-top:1rem;' %>
                                 </span>
-                              <% end %>
-															<span>
-																<%= link_to 'Next', next_patient_doctor_clinic_queues_path, method: :post, class:'btn btn-success btn-block', style: 'margin-top:1rem;' %>
-															</span>
-														</div>
-													</div>
-												</div>
-												<div class="table-responsive table results clinic_list text-nowrap">
-													<table class="table">
-														<thead>
-															<tr>
-																<th class="text-nowrap" id="trs-hd">Patient Name</th>
-																<th class="text-nowrap" id="trs-hd">Type</th>
-																<th class="text-nowrap" id="trs-hd">Status</th>
-																<th class="text-nowrap" id="trs-hd">Skip Option</th>
-																<th class="text-center" id="trs-hd">Action</th>
-															</tr>
-														</thead>
-														<tbody>
-															<% @clinic_queues.each do |cq| %>
-																<tr class="text-nowrap">
-																	<td class="text-nowrap">
-                                    <%= cq.patient.fullname %>
-                                    <% if cq.skip_for_now? %>
-                                      <span class="badge badge-pill badge-warning">
-                                        Skipped
-                                      </span>
-                                    <% end %>
-                                  </td>
-																	<td class="text-nowrap">
-																		<% if cq.queue_type == "walkin" %>
-																			Walk-in
-																		<% else %>
-																			Appointment
-																		<% end %>
-																	</td>
-																	<td class="text-nowrap">
-																		<% if cq.status == "in_queue" %>
-																			In Queue
-																		<% elsif cq.status == "in_progress" %>
-																			In Progress
-																		<% else %>
-																			Finished
-																		<% end %>
-																	</td>
-                                    <% if cq.skip_for_now? %>
-                                      <td class="text-nowrap">
-                                        <%= link_to 'Add back to Queue', toggle_skip_for_now_doctor_clinic_queue_path(cq), method: :post, data: { confirm: "Are you sure you want to add #{cq.patient.firstname} back to queue?" }, class:"btn btn-light" %>
-                                      </td>
-                                    <% else %>
-                                      <td class="text-nowrap">
-                                        <%= link_to 'Skip Patient Queue', toggle_skip_for_now_doctor_clinic_queue_path(cq), method: :post, data: { confirm: "Are you sure you want to temporarily skip #{cq.patient.firstname}?" }, class:"btn btn-dark" %>
-                                      </td>
-                                    <% end %>
-                                  <td class="text-center">
-																		<%= link_to doctor_clinic_queue_path(cq), method: :delete, data: { confirm: "Are you sure you want to remove #{cq.patient.firstname} from queue?" }, class:"btn btn-danger action-btn" do %>
-																			<i class="fa fa-trash"></i>
-																		<% end %>
-																	</td>
-																</tr>
-															<% end %>
-														</tbody>
-													</table>
-												</div>
-											</div>
-										</div>
+                                <% if @clinic_queues.present? %>
+                                  <span>
+                                    <%= link_to 'Cancel today\'s queue', cancel_todays_queue_doctor_clinic_queues_path, method: :post, class:'btn btn-warning btn-block', style: 'margin-top:1rem;' %>
+                                  </span>
+                                <% end %>
+                                <span>
+                                  <%= link_to 'Next', next_patient_doctor_clinic_queues_path, method: :post, class:'btn btn-success btn-block', style: 'margin-top:1rem;' %>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="table-responsive table results clinic_list text-nowrap">
+                            <table class="table">
+                              <thead>
+                                <tr>
+                                  <th class="text-nowrap" id="trs-hd">Patient Name</th>
+                                  <th class="text-nowrap" id="trs-hd">Type</th>
+                                  <th class="text-nowrap" id="trs-hd">Status</th>
+                                  <th class="text-nowrap" id="trs-hd">Skip Option</th>
+                                  <th class="text-center" id="trs-hd">Action</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <% @clinic_queues.each do |cq| %>
+                                  <tr class="text-nowrap">
+                                    <td class="text-nowrap">
+                                      <%= cq.patient.fullname %>
+                                      <% if cq.skip_for_now? %>
+                                        <span class="badge badge-pill badge-warning">
+                                          Skipped
+                                        </span>
+                                      <% end %>
+                                    </td>
+                                    <td class="text-nowrap">
+                                      <% if cq.queue_type == "walkin" %>
+                                        Walk-in
+                                      <% else %>
+                                        Appointment
+                                      <% end %>
+                                    </td>
+                                    <td class="text-nowrap">
+                                      <% if cq.status == "in_queue" %>
+                                        In Queue
+                                      <% elsif cq.status == "in_progress" %>
+                                        In Progress
+                                      <% else %>
+                                        Finished
+                                      <% end %>
+                                    </td>
+                                      <% if cq.skip_for_now? %>
+                                        <td class="text-nowrap">
+                                          <%= link_to 'Add back to Queue', toggle_skip_for_now_doctor_clinic_queue_path(cq), method: :post, data: { confirm: "Are you sure you want to add #{cq.patient.firstname} back to queue?" }, class:"btn btn-light" %>
+                                        </td>
+                                      <% else %>
+                                        <td class="text-nowrap">
+                                          <%= link_to 'Skip Patient Queue', toggle_skip_for_now_doctor_clinic_queue_path(cq), method: :post, data: { confirm: "Are you sure you want to temporarily skip #{cq.patient.firstname}?" }, class:"btn btn-dark" %>
+                                        </td>
+                                      <% end %>
+                                    <td class="text-center">
+                                      <%= link_to doctor_clinic_queue_path(cq), method: :delete, data: { confirm: "Are you sure you want to remove #{cq.patient.firstname} from queue?" }, class:"btn btn-danger action-btn" do %>
+                                        <i class="fa fa-trash"></i>
+                                      <% end %>
+                                    </td>
+                                  </tr>
+                                <% end %>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    <% end %>
 									</div>
 								</div>
 							</div>

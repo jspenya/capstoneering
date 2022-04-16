@@ -3,7 +3,7 @@ class PatientDashboardsController < ApplicationController
 	before_action :authenticate_user!
 
 	def dashboard
-		@appointments_to_attend = @patient.appointments.where('schedule > ?', DateTime.now)
+		@appointments_to_attend = @patient.appointments.where('schedule > ?', Time.now.utc)
 	end
 
 	def book_appointment

@@ -63,7 +63,7 @@ class PatientsController <  ApplicationController
 
   def dashboard
     patient = current_user
-    @appointments_to_attend = patient.appointments.where('schedule > ?', DateTime.now)
+    @appointments_to_attend = patient.appointments.where('schedule > ?', Time.now.utc)
   end
 
   def create_appointment

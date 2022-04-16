@@ -1,6 +1,6 @@
 class ClinicQueuesController < ApplicationController
   def show
-    @clinic_queue = ClinicQueue.find_by( schedule: DateTime.now.beginning_of_day..DateTime.now.end_of_day )
+    @clinic_queue = ClinicQueue.find_by( schedule: Time.now.utc.beginning_of_day..Time.now.utc.end_of_day )
     @patient = Patient.new
   end
 
@@ -11,10 +11,10 @@ class ClinicQueuesController < ApplicationController
   end
 
   def setup_show_page
-    if ClinicQueue.find_by(schedule: DateTime.now.beginning_of_day..DateTime.now.end_of_day ).present?
-      clinic_queue_id = ClinicQueue.find_by( schedule: DateTime.now.beginning_of_day..DateTime.now.end_of_day ).id
+    if ClinicQueue.find_by(schedule: Time.now.utc.beginning_of_day..Time.now.utc.end_of_day ).present?
+      clinic_queue_id = ClinicQueue.find_by( schedule: Time.now.utc.beginning_of_day..Time.now.utc.end_of_day ).id
     else
-      clinic_queue = ClinicQueue.create(schedule: DateTime.now.beginning_of_day)
+      clinic_queue = ClinicQueue.create(schedule: Time.now.utc.beginning_of_day)
 
       clinic_queue_id = clinic_queue.id
     end

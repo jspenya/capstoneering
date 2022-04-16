@@ -52,7 +52,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 		# If there are any Appointments nga nalabyan na wala na serve,
 		# Serve them next
 		# else serve walk-in patients
-		if next_for_schedule # && DateTime.now >= next_for_schedule.schedule
+		if next_for_schedule # && Time.now.utc >= next_for_schedule.schedule
 			UserMailer.with(user: user_to_mail).finished_queue.deliver_now
 			next_for_schedule.update(status: 2)
 			@in_progress = next_for_schedule
@@ -90,6 +90,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 	end
 
 	def start_queue
+    byebug
 		return if ClinicQueue.queue_today.present?
 		qs = Appointment.doctor_appointments_today.to_a.map{|a| {user_id: a.user_id, clinic_id: a.clinic_id, schedule: a.schedule, queue_type: 2, status: 1} }
 
@@ -163,7 +164,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 	def create
 		@patient = Patient.new(patient_params)
     if @patient.save
-      @clinic_queue = ClinicQueue.create!(schedule: DateTime.now, user_id: @patient.id)
+      @clinic_queue = ClinicQueue.create!(schedule: Time.now.utc, user_id: @patient.id)
 
       redirect_to doctor_queue_path, notice: "Patient created successfully!"
     else
@@ -177,7 +178,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 
     user = User.find_by(email: email)
 
-		@clinic_queue = user.clinic_queues.new(schedule: DateTime.now, clinic_id: @clinic.id, queue_type: 1, status: 1)
+		@clinic_queue = user.clinic_queues.new(schedule: Time.now.utc, clinic_id: @clinic.id, queue_type: 1, status: 1)
 
     if @clinic_queue.save
 			# UserMailer.with(user: user).added_to_queue.deliver_now
@@ -199,7 +200,7 @@ class Doctors::ClinicQueuesController < DoctorsController
     if @patient.save
 			user = User.find(@patient.id)
 
-      @clinic_queue = ClinicQueue.create!(schedule: DateTime.now, user_id: user.id, clinic_id: @clinic.id, queue_type: 1, status: 1)
+      @clinic_queue = ClinicQueue.create!(schedule: Time.now.utc, user_id: user.id, clinic_id: @clinic.id, queue_type: 1, status: 1)
       redirect_to doctor_clinic_queues_url, notice: "Patient added to queue successfully!"
     else
       redirect_to doctor_clinic_queues_url, alert: "There was a problem in adding patient to queue. #{@clinic_queue.errors.first.full_message}"
@@ -215,9 +216,9 @@ class Doctors::ClinicQueuesController < DoctorsController
 
 	private
 	def set_clinic
-		clinic_id = ClinicSchedule.where(day: Date.today.strftime("%A")).first.clinic_id
+		clinic_id = ClinicSchedule.where(day: Date.today.strftime("%A"))&.first&.clinic_id
 
-		@clinic = Clinic.find(clinic_id)
+		@clinic = Clinic.find(clinic_id) if clinic_id
 	end
 
 	def set_clinic_queue
