@@ -105,36 +105,60 @@ class Doctors::ClinicQueuesController < DoctorsController
 	end
 
   def cancel_todays_queue
-    # ClinicQueue.queue_today.destroy_all
-		byebug
+    byebug
     clinic_queue_today = ClinicQueue.queue_today
-    clinic_schedule_day_to_move_to = clinic_queue_today.last.clinic.clinic_schedules.where.not(day: Date.today.strftime("%A")).first.day
 
+    clinic_schedule_day_to_move_to = clinic_queue_today.last.clinic.clinic_schedules.where.not(day: Date.today.strftime("%A")).first.day
+    # Need a way to find out if the 'clinic schedule to move to' 
+    # falls next week or not
 		clinic_schedule_date_to_move_to =
 			if clinic_schedule_day_to_move_to == 'Monday'
 				clinic_queue_today.last.clinic.clinic_schedules.where.not(day: Date.today.strftime("%A")).first.day.to_date.next_occurring(clinic_schedule_day_to_move_to.downcase.to_sym)
 			else
 				clinic_queue_today.last.clinic.clinic_schedules.where.not(day: Date.today.strftime("%A")).first.day.to_date
 			end
-
-		queue_today_ids = clinic_queue_today.pluck(:id)
-		for_queue_next_day = Appointment.where(schedule: clinic_schedule_date_to_move_to.beginning_of_day..clinic_schedule_date_to_move_to.end_of_day)
-
-		queue_next_day = ClinicQueue.create! for_queue_next_day
-
-		# queue_nextday_ids = clinic_queue_today.last.clinic.clinic_schedules.where.not(day: Date.today.strftime("%A")).first.clinic.clinic_queues.pluck(:id)
-
-		queue_next_day_ids = queue_next_day.pluck(:id)
-		# HOW DO I MERGE THESE QUEUES ;;;;;;;
-		build_queue_for_next(queue_today_ids, queue_nextday_ids)
-
+    
     clinic_queue_today.find_each do |cq|
       date_for_resched = Date.new(clinic_schedule_date_to_move_to.to_date.year, clinic_schedule_date_to_move_to.to_date.month, clinic_schedule_date_to_move_to.to_date.day)
       date_time_for_resched = DateTime.new(date_for_resched.year, date_for_resched.month, date_for_resched.day, cq.schedule.hour, cq.schedule.min)
 
-      cq.update(schedule: date_time_for_resched)
-      UserMailer.with(user: cq.patient, date: cq.schedule).queue_cancelled.deliver_now
+      UserMailer.with(user: cq.patient, date: date_time_for_resched).queue_cancelled.deliver_now
     end
+    
+    # Delete queue for the next day
+    queue_for_next_day = ClinicQueue.where(schedule: clinic_schedule_date_to_move_to)
+    queue_for_next_day.destroy_all
+    
+    # Delete queue for today
+    clinic_queue_today.destroy_all
+
+    # Rebuild the queue with alternating appointments
+		for_queue_next_day = Appointment
+                          .where(schedule: clinic_schedule_date_to_move_to.beginning_of_day..clinic_schedule_date_to_move_to.end_of_day)
+                          .order('schedule')
+    # for_queue_today    = clinic_queue_today.order('schedule DESC')
+
+    qs_next_day = for_queue_next_day.to_a.map{ |n| { user_id: n.user_id, clinic_id: n.clinic_id, schedule: n.schedule, queue_type: 2, status: 1 } }
+		# This cancels all of the patients in today's Queue
+    qs_for_today = Appointment.doctor_appointments_today.to_a.map{|a| {user_id: a.user_id, clinic_id: a.clinic_id, schedule: a.schedule + a.clinic.appointment_duration.minutes, queue_type: 2, status: 1} }
+
+    alternating_queue = qs_for_today.zip(qs_next_day).flatten.compact
+    # Queue (Alternating) for next day is built 
+    queue_next_day = ClinicQueue.create! alternating_queue
+
+		# queue_nextday_ids = clinic_queue_today.last.clinic.clinic_schedules.where.not(day: Date.today.strftime("%A")).first.clinic.clinic_queues.pluck(:id)
+
+		# queue_next_day_ids = queue_next_day.pluck(:id)
+		# HOW DO I MERGE THESE QUEUES ;;;;;;;
+		# build_queue_for_next(queue_today_ids, queue_nextday_ids)
+
+    # clinic_queue_today.find_each do |cq|
+    #   date_for_resched = Date.new(clinic_schedule_date_to_move_to.to_date.year, clinic_schedule_date_to_move_to.to_date.month, clinic_schedule_date_to_move_to.to_date.day)
+    #   date_time_for_resched = DateTime.new(date_for_resched.year, date_for_resched.month, date_for_resched.day, cq.schedule.hour, cq.schedule.min)
+
+    #   cq.update(schedule: date_time_for_resched + 15.minutes)
+    #   UserMailer.with(user: cq.patient, date: cq.schedule).queue_cancelled.deliver_now
+    # end
 
     redirect_to doctor_clinic_queues_url, notice: "Queue was cancelled for today."
   end
@@ -222,7 +246,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 	end
 
 	def set_clinic_queue
-		@clinic_queues = ClinicQueue.queue_today.where(status: 1).order('queue_type DESC, schedule')
+		@clinic_queues = ClinicQueue.queue_today.where(status: 1).order('queue_type DESC')
 	end
 
 	def set_in_progress
