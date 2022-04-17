@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   get 'clinic_special_cases/create'
   get 'clinic_special_cases/update'
-  # resources :users
+  resources :users
   require 'sidekiq/web'
   Rails6Webdass::Application.routes.draw do
     authenticate :user, lambda { |u| u.doctor? || u.secretary? } do

@@ -4,10 +4,9 @@
     <div id="content">
     <%= render 'layouts/navbar' %>
     <div class="container-fluid">
-      <h3 class="text-dark mb-4">All Patients</h3>
       <div class="card shadow">
         <div class="card-header py-3">
-          <p class="text-primary m-0 font-weight-bold">Patients list</p>
+          <p class="text-primary m-0 font-weight-bold">Staffs list</p>
         </div>
         <div class="card-body">
           <div class="col-md-12 search-table-col">
@@ -30,7 +29,6 @@
                       <th class="text-nowrap" id="trs-hd">Contact Number</th>
                       <th class="text-nowrap" id="trs-hd">Email</th>
                       <th id="trs-hd"></th>
-                      <th class="text-center" id="trs-hd">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -40,10 +38,14 @@
                         <td class="text-nowrap"><%= secretary.lastname %></td>
                         <td><%= secretary.mobile_number %></td>
                         <td><%= secretary.email %></td>
-                        <td class="text-center"><button class="btn btn-warning action-btn" type="button" data-toggle="modal" data-target="#edit-patient-modal">
-                          <i class="far fa-edit"></i>
-                        </button><button class="btn btn-danger action-btn" type="button" data-toggle="modal"
-                                data-target="#delete-patient-confirm"><i class="fa fa-trash"></i></button></td>
+                        <td class="text-center" style="display:flex;">
+                          <button class="btn btn-warning action-btn" type="button" data-toggle="modal" data-target="#edit-patient-modal">
+                            <i class="far fa-edit"></i>
+                          </button>
+                          <%= button_to user_path(secretary), method: :delete, class:"btn btn-danger action-btn" do %>
+                            <i class="fa fa-trash"></i>
+                          <% end %>
+                        </td>
                       </tr>
                     <% end %>
                   </tbody>

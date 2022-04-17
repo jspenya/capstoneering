@@ -191,9 +191,6 @@ class DoctorsController <  ApplicationController
   end
 
   def staffs_index
-    @clinics = Clinic.all
-    @clinic = Clinic.new
-
     @secretary = Secretary.new
   end
 
