@@ -7,7 +7,7 @@
 %>
 
 <%
-	date_time_now = Time.now.utc
+	date_time_now = DateTime.now
 
 	days_from_this_week = (date_time_now.beginning_of_week..date_time_now.end_of_week).to_a
 

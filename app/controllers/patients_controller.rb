@@ -3,6 +3,10 @@ class PatientsController <  ApplicationController
   before_action :set_patients #, only: %i[ dashboard book_appointment ]
   # before_action :authenticate_patient!
 
+  def index
+    @patients = Patient.all
+  end
+
   def new
     @patient = Patient.new
   end
@@ -38,20 +42,22 @@ class PatientsController <  ApplicationController
 
   # PATCH/PUT /patients/1 or /patients/1.json
   def update
+    user = User.find(@patient.id)
     respond_to do |format|
-      if @patient.update(patient_params)
-        format.html { redirect_to patient_url(@patient), notice: "Patient was successfully updated." }
-        format.json { render :show, status: :ok, location: @patient }
+      if user.update(patient_params)
+        format.html { redirect_to patients_url, notice: "Patient was successfully updated." }
+        format.json { render :show, status: :ok, location: user}
       else
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @patient.errors, status: :unprocessable_entity }
+        format.json { render json: user.errors, status: :unprocessable_entity }
       end
     end
   end
 
   # DELETE /patients/1 or /patients/1.json
   def destroy
-    @patient.destroy
+    user = User.find(@patient.id)
+    user.destroy
 
     respond_to do |format|
       format.html { redirect_to patients_url, notice: "Patient was successfully destroyed." }

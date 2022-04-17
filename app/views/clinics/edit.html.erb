@@ -1,0 +1,34 @@
+<div style="display:flex;">
+  <%= render 'layouts/sidebar' %>
+  <div class="d-flex flex-column" id="content-wrapper"  style="background-color:#f8f9fc;width:100%;overflow-x:hidden;">
+    <div id="content">
+    <%= render 'layouts/navbar' %>
+    <div class="container-fluid">
+        <div class="card shadow">
+            <div class="card-header py-3">
+              <p class="text-primary m-0 font-weight-bold">Edit Clinic: <%= @clinic.name.split('_').join(" ") %></p>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                  <%= simple_form_for(@clinic, url: clinic_path(@clinic)) do |form| %>
+                    <%= form.label :name %>
+                    <%= form.text_field :name, style:'text-transform: capitalize;' %>
+                    <%= form.label :room_number %>
+                    <%= form.text_field :room_number %>
+                    <%= form.label :appointment_duration %><br/>
+                    <%= form.number_field :appointment_duration %>
+                    <%= form.button :submit, 'Update Clinic Details', style: 'margin-top:2rem;width:100%;' %>
+                  <% end %>
+                </div>
+                <div class="col-md-3"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a></div>
+  </div>
+</div>

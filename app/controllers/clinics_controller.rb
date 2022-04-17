@@ -1,5 +1,6 @@
 class ClinicsController <  ApplicationController
   # before_action :authenticate_patient!
+  before_action :set_clinic, only: [:edit, :update, :destroy]
 
   def new
     @clinic = Clinic.new
@@ -7,32 +8,46 @@ class ClinicsController <  ApplicationController
 
   # GET /patients/1/edit
   def edit
+    @clinic = Clinic.find(params[:id])
   end
 
   # POST /patients or /patients.json
   def create
+    # If clinic name is more than 1 word
+    # we have to underscorize in order
+    # for us to query properly in autocomplete
+    clinic_name = params[:clinic][:name].split(" ").map{|c| c.capitalize}.join('_')
 
-    # this if block is a kludge; i do not know why rails does not understand fully enums
-    # if (my_role = params[:patient][:role])&.to_i != 0
-    #   params[:patient][:role] = Patient.roles.find{|k,v| v==params[:patient][:role].to_i}.first
-    # end
-
-    @clinic = Clinic.new(clinic_params)
+    @clinic = Clinic.new(
+      name: clinic_name,
+      user_id: params[:clinic][:user_id],
+      room_number: params[:clinic][:room_number],
+      appointment_duration: params[:clinic][:appointment_duration]
+    )
 
     respond_to do |format|
       if @clinic.save
         format.html { redirect_to doctor_clinics_url, notice: "Clinic was successfully created." }
       else
-        format.html { redirect_to doctor_clinics_url, alert: "There was an error in creating the clinic."}
+        format.html { redirect_to doctor_clinics_url, alert: "There was an error in creating the clinic. #{@clinic.errors.first.full_message}"}
       end
     end
   end
 
   # PATCH/PUT /patients/1 or /patients/1.json
   def update
+    # If clinic name is more than 1 word
+    # we have to underscorize in order
+    # for us to query properly in autocomplete
+    clinic_name = params[:clinic][:name].split(" ").map{|c| c.capitalize}.join('_')
+
     respond_to do |format|
-      if @clinic.update(patient_params)
-        format.html { redirect_to patient_url(@clinic), notice: "Patient was successfully updated." }
+      if @clinic.update(
+        name: clinic_name,
+        room_number: params[:clinic][:room_number],
+        appointment_duration: params[:clinic][:appointment_duration]
+      )
+        format.html { redirect_to doctor_clinics_url, notice: "Clinic was successfully updated." }
         format.json { render :show, status: :ok, location: @clinic }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -92,8 +107,8 @@ class ClinicsController <  ApplicationController
 
   private
 
-  def set_patient
-    @clinic = Patient.find(params[:id]) # || current_patient
+  def set_clinic
+    @clinic = Clinic.find(params[:id])
   end
 
   def set_patients
@@ -110,7 +125,7 @@ class ClinicsController <  ApplicationController
   end
 
   def clinic_params
-    params.require(:clinic).permit(:user_id, :name, :room_number, :status)
+    params.require(:clinic).permit(:user_id, :name, :room_number, :status, :appointment_duration)
   end
 
 end

@@ -47,12 +47,12 @@ class Appointment < ApplicationRecord
   }
 
   scope :upcoming_appointments_today, -> {
-    start = Time.now.utc
+    start = DateTime.now
     where(schedule: start..start.end_of_day )
   }
 
   scope :upcoming, -> {
-    start = Time.now.utc
+    start = DateTime.now
     where(schedule: start..start.end_of_month.next_month)
   }
 

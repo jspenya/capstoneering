@@ -296,7 +296,7 @@ class DoctorsController <  ApplicationController
         [c.clinic_schedules.map{ |cs|
             (
               x = []
-              time_iterate(cs.start_time, cs.end_time, 15.minutes) do |dt|
+              time_iterate(cs.start_time, cs.end_time, c.appointment_duration.minutes) do |dt|
                 x << [ c.name + " " + cs.day + " " + dt.strftime("%l:%M %p") ]
               end
               if current_user.doctor? || current_user.secretary?

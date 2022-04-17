@@ -15,9 +15,9 @@
                         <p class="text-primary m-0 font-weight-bold"><%= @clinic.name %> | Today's Queue</p>
                       <% else %>
                         <% if current_user.doctor? %>
-                          <p class="text-primary m-0 font-weight-bold">You have no clinics yet. Click <%= link_to 'here', doctor_clinics_path %> to create one.</p>
+                          <p class="text-primary m-0 font-weight-bold">You have no clinic schedule for today. Click <%= link_to 'here', doctor_clinics_path %> to add.</p>
                         <% else %>
-                          <p class="text-primary m-0 font-weight-bold">You have no clinics yet. Contact your administrator or doctor to create one.</p>
+                          <p class="text-primary m-0 font-weight-bold">You have no clinic schedule for today. Contact your administrator or doctor to create one.</p>
                         <% end %>
                       <% end %>
 										</div>

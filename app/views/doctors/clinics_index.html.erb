@@ -29,21 +29,20 @@
                   <tr>
                     <th class="text-nowrap" id="trs-hd">Clinic Name</th>
                     <th class="text-nowrap" id="trs-hd">Room Number</th>
-                    <th class="text-center" id="trs-hd">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   <% @clinics.each do |clinic| %>
                     <tr class="text-nowrap">
-                      <td class="text-nowrap"><%= clinic.name %></td>
+                      <td class="text-nowrap"><%= clinic.name.split('_').join(" ") %></td>
                       <td class="text-nowrap"><%= clinic.room_number %></td>
-                      <td class="text-center">
+                      <td class="text-center" style="display:flex;">
                         <%= link_to clinic_clinic_schedules_path(clinic), class:"btn btn-success action-btn", role:"button" do %>
                           <i class="fa fa-calendar"></i>
                         <% end %>
-                        <button class="btn btn-warning action-btn" type="button" data-toggle="modal" data-target="#edit-clinic-modal">
+                        <%= button_to edit_clinic_path(clinic), class: "btn btn-warning action-btn", method: :get do %>
                           <i class="far fa-edit"></i>
-                        </button>
+                        <% end %>
                         <%= link_to doctor_destroy_clinic_path(clinic), method: :post, data: { confirm: "Are you sure you want to delete this clinc?" }, class:"btn btn-danger action-btn" do %>
                           <i class="fa fa-trash"></i>
                         <% end %>
@@ -80,7 +79,7 @@
                     Clinic name
                   </strong>
                 </label>
-                <%= form.input :name %>
+                <%= form.input :name, input_html: { required: true } %>
               </div>
             </div>
           </div>
@@ -92,12 +91,12 @@
                     Appointment Duration (minutes)
                   </strong>
                 </label>
-                <%= form.number_field :appointment_duration %>
+                <%= form.number_field :appointment_duration, required: true %>
               </div>
             </div>
             <div class="col-xl-6">
               <div class="form-group">
-                <%= form.input :room_number%>
+                <%= form.input :room_number %>
                 <%= form.hidden_field :user_id, value: current_user.id %>
               </div>
             </div>

@@ -90,7 +90,6 @@ class Doctors::ClinicQueuesController < DoctorsController
 	end
 
 	def start_queue
-    byebug
 		return if ClinicQueue.queue_today.present?
 		qs = Appointment.doctor_appointments_today.to_a.map{|a| {user_id: a.user_id, clinic_id: a.clinic_id, schedule: a.schedule, queue_type: 2, status: 1} }
 
@@ -108,12 +107,14 @@ class Doctors::ClinicQueuesController < DoctorsController
     byebug
     clinic_queue_today = ClinicQueue.queue_today
 
-    clinic_schedule_day_to_move_to = clinic_queue_today.last.clinic.clinic_schedules.where.not(day: Date.today.strftime("%A")).first.day
+    clinic_schedule_day_to_move_to = clinic_queue_today.last.clinic.clinic_schedules.where.not(day: Date.today.strftime("%A"))&.first&.day
     # Need a way to find out if the 'clinic schedule to move to' 
     # falls next week or not
 		clinic_schedule_date_to_move_to =
 			if clinic_schedule_day_to_move_to == 'Monday'
 				clinic_queue_today.last.clinic.clinic_schedules.where.not(day: Date.today.strftime("%A")).first.day.to_date.next_occurring(clinic_schedule_day_to_move_to.downcase.to_sym)
+      elsif clinic_schedule_day_to_move_to.nil?
+				clinic_queue_today.last.clinic.clinic_schedules.first.day.to_date.next_occurring(clinic_queue_today.last.clinic.clinic_schedules.first.day.downcase.to_sym)
 			else
 				clinic_queue_today.last.clinic.clinic_schedules.where.not(day: Date.today.strftime("%A")).first.day.to_date
 			end
@@ -136,13 +137,18 @@ class Doctors::ClinicQueuesController < DoctorsController
 		for_queue_next_day = Appointment
                           .where(schedule: clinic_schedule_date_to_move_to.beginning_of_day..clinic_schedule_date_to_move_to.end_of_day)
                           .order('schedule')
-    # for_queue_today    = clinic_queue_today.order('schedule DESC')
+    
+    # Update the appointment schedule sa next day
+    for_queue_next_day.to_a.each_with_index.map{ |a, i| t = i * a.clinic.appointment_duration.minutes; a.update(schedule: a.schedule + t)  }
 
-    qs_next_day = for_queue_next_day.to_a.map{ |n| { user_id: n.user_id, clinic_id: n.clinic_id, schedule: n.schedule, queue_type: 2, status: 1 } }
+    # Update the appointment (today) schedules
+    Appointment.doctor_appointments_today.drop(1).each_with_index.map{ |a, i| t = i * a.clinic.appointment_duration.minutes; a.update(schedule: a.schedule + t)  }
+    
+    qs_next_day = for_queue_next_day.to_a.each_with_index.map{ |n, i| t = i * n.clinic.appointment_duration.minutes; { user_id: n.user_id, clinic_id: n.clinic_id, schedule: n.schedule + t, queue_type: 2, status: 1 } }
 		# This cancels all of the patients in today's Queue
-    qs_for_today = Appointment.doctor_appointments_today.to_a.map{|a| {user_id: a.user_id, clinic_id: a.clinic_id, schedule: a.schedule + a.clinic.appointment_duration.minutes, queue_type: 2, status: 1} }
+    qs_for_today = Appointment.doctor_appointments_today.to_a.drop(1).each_with_index.map{|a, i| t = i * a.clinic.appointment_duration.minutes; {user_id: a.user_id, clinic_id: a.clinic_id, schedule: a.schedule + t, queue_type: 2, status: 1} }
 
-    alternating_queue = qs_for_today.zip(qs_next_day).flatten.compact
+    alternating_queue = qs_next_day.zip(qs_for_today).flatten.compact
     # Queue (Alternating) for next day is built 
     queue_next_day = ClinicQueue.create! alternating_queue
 
