@@ -21,10 +21,13 @@
               <%= form.text_field :lastname, class:"form-control form-control-user", placeholder: "Last Name", required: true %>
             </div>
             <div class="col-xl-6 mt-4 mb-1">
-              <%= form.text_field :email, class:"form-control form-control-user", placeholder: "Email", required: true %>
+              <%= form.text_field :email, class:"form-control form-control-user", placeholder: "Email" %>
             </div>
             <div class="col-xl-6 mt-4 mb-1">
-              <%= form.text_field :mobile_number, class:"form-control form-control-user", placeholder: "Mobile Number",required: true %>
+              <div style="display:flex;">
+                <span style="margin:auto;margin-right:0.5rem;font-weight:bold;">+63</span>
+                <%= form.text_field :mobile_number, class: "form-control form-control-user", placeholder: "9-digit Mobile Number" %>
+              </div>
             </div>
             <div class="col-xl-12 mt-4 mb-1">
               <label for="schedule">
@@ -44,12 +47,14 @@
             <strong>Book Appointment</strong>
           </button>
         <% end %>
-        <div class="text-center">
-          <a class="small" href="login.html">Already have an account? login here</a>
+        <div class="text-center" style="margin-top:1rem;">
+          <%= link_to new_user_session_path do  %>
+            Already have an account? login here
+          <% end %>
         </div>
         <hr>
         <div class="text-center">
-          <a class="small" href="index.html">or go back to the Homepage</a>
+          <a class="small" href="/">or go back to the Homepage</a>
         </div>
         <br>
       </div>
