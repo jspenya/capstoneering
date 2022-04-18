@@ -91,5 +91,5 @@ Rails.application.configure do
   # office.webdass
   config.hosts << "office.webdass.com"
 
-  config.hosts << "8c69-103-62-152-146.ngrok.io"
+  config.hosts << "45d3-103-62-152-135.ngrok.io"
 end
