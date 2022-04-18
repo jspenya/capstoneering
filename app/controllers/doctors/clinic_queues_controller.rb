@@ -211,7 +211,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 		@clinic_queue = user.clinic_queues.new(schedule: Time.now.utc, clinic_id: @clinic.id, queue_type: 1, status: 1)
 
     if @clinic_queue.save
-			# UserMailer.with(user: user).added_to_queue.deliver_now
+			UserMailer.with(user: user).added_to_queue.deliver_now
       redirect_to doctor_clinic_queues_url, notice: "Patient added to queue successfully!"
     else
       redirect_to doctor_clinic_queues_url, alert: "There was a problem in adding patient to queue. #{@clinic_queue.errors.first.full_message}"
