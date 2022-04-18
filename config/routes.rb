@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  Rails.application.routes.default_url_options[:host]
   get 'clinic_special_cases/create'
   get 'clinic_special_cases/update'
   resources :users

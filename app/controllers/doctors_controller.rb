@@ -142,6 +142,7 @@ class DoctorsController <  ApplicationController
      firstname: params[:patient][:firstname],
      lastname: params[:patient][:lastname],
      email: params[:patient][:email],
+     mobile_number: params[:patient][:mobile_number],
      password: params[:patient][:password],
      password_confirmation: params[:patient][:password_confirmation]
     )

@@ -52,10 +52,13 @@
 																					<div class="form-row">
 																						<div class="col-12 col-xl-6">
 																							<div class="form-group">
-																								<label for="email">
+																								<label for="mobile_num">
 																									<strong>Contact Number</strong>
 																								</label>
-																								<%= form.text_field :mobile_number, placeholder: 'Contact Number', required: true %>
+                                                <div style="display:flex;">
+                                                  <span style="margin:auto;margin-right:1rem;font-weight:bold;">+63</span>
+                                                  <%= form.text_field :mobile_number, placeholder: 'e.g 9361234567', required: true %>
+                                                </div>
 																							</div>
 																						</div>
 																						<div class="col-12 col-xl-6">

@@ -11,6 +11,7 @@
 #  updated_at :datetime         not null
 #
 class Appointment < ApplicationRecord
+  include ActiveModel::Dirty
   belongs_to :user, inverse_of: :appointments
   belongs_to :patient, class_name: 'User', foreign_key: 'user_id'
   belongs_to :clinic
@@ -22,6 +23,9 @@ class Appointment < ApplicationRecord
   validate :check_special_case, on: :create
   validate :only_on_clinic_day_schedule, on: :create
   validate :deny_patient_already_in_queue, on: :create
+
+  after_create :send_appointment_creation_mail
+  after_create :send_appointment_creation_sms
 
   accepts_nested_attributes_for :clinic
 
@@ -112,5 +116,17 @@ class Appointment < ApplicationRecord
     if Appointment.where(schedule: special_case.day.beginning_of_day..special_case.day.end_of_day).count > special_case.slots
       errors.add(:slots, "are full for this day.")
     end
+  end
+
+  def send_appointment_creation_mail
+    UserMailer.with(user: self.user).appointment_created.deliver_now
+  end
+
+  def send_appointment_creation_sms
+    TwilioClient.new.send_text(self.user, appointment_creation_sms_text)
+  end
+
+  def appointment_creation_sms_text
+    "Hi #{self.user.firstname}, thank you for booking your appointment. See you on #{self.schedule.strftime("%B %d, %A")}!"
   end
 end

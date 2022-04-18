@@ -7,21 +7,17 @@ class TwilioClient
 
   def send_text(user, message)
     client.api.account.messages.create(
-      to: user.mobile_number,
-      from: '+15005550006',
+      to: "+63" + user.mobile_number,
+      from: '(254) 347-2656',
       body: message
     )
   end
 
   def account_sid
-    'ACabea2dd43285d813c01585d49851c061'
+    Rails.application.credentials.twilio[:account_sid]
   end
-
+  
   def account_auth_token
-   '608a1a16fb8104e9aa7a68ed2eee2b9d'
-  end
-
-  def phone_number
-    '+63676514239'
+    Rails.application.credentials.twilio[:auth_token]
   end
 end

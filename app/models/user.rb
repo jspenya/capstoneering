@@ -31,6 +31,7 @@ class User < ApplicationRecord
 
 
   accepts_nested_attributes_for :appointments, :allow_destroy => true
+  validates :mobile_number, phone: true
 
   def login
     @login || self.mobile_number || self.email
