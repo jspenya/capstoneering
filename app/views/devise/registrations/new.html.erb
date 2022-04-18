@@ -21,10 +21,13 @@
                 <%= f.text_field :lastname, class: "form-control form-control-user", autofocus: true, autocomplete: "lastname", required: true,  placeholder: "Enter your last name" %>
               </div>
               <div class="col-xl-6 mt-4 mb-1">
-                <%= f.email_field :email, class: "form-control form-control-user", autofocus: true, autocomplete: "email", required: true, placeholder: "Enter your email" %>
+                <%= f.email_field :email, class: "form-control form-control-user", autofocus: true, autocomplete: "email", placeholder: "Enter your email" %>
               </div>
               <div class="col-xl-6 mt-4 mb-1">
-                <%= f.text_field :mobile_number, class: "form-control form-control-user", placeholder: "Enter your mobile number" %>
+                <div style="display:flex;">
+                  <span style="margin:auto;margin-right:0.5rem;font-weight:bold;">+63</span>
+                  <%= f.text_field :mobile_number, class: "form-control form-control-user", placeholder: "9-digit Mobile Number" %>
+                </div>
               </div>
               <div class="col-xl-6 mt-4 mb-1">
                 <%= f.password_field :password, class: "form-control form-control-user", autocomplete: "new-password", placeholder: "Enter your password" %>
