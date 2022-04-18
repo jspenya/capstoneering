@@ -8,7 +8,7 @@
 			<hr class="sidebar-divider my-0">
 			<ul class="nav navbar-nav text-light" id="accordionSidebar">
 				<li class="nav-item" role="presentation">
-				<% if current_user.doctor? %>
+				<% if current_user.doctor? || current_user.secretary? %>
 					<%= link_to doctor_dashboard_path, class: 'nav-link shadow-lg active' do %>
 						<i class="fas fa-tachometer-alt"></i>
 						<span><strong>Dashboard</strong></span>
@@ -22,7 +22,7 @@
 				<% end %>
 				</li>
 				<li class="nav-item" role="presentation">
-				<% if current_user.doctor? %>
+				<% if current_user.doctor? || current_user.secretary? %>
 					<%= link_to doctor_book_appointment_path, class: "nav-link shadow-lg" do %>
 						<i class="fas fa-user"></i>
 						<span><strong>Book Appointment</strong></span>
@@ -36,7 +36,7 @@
 				<% end %>
 				</li>
 				<li class="nav-item">
-					<% if current_user.doctor? %>
+					<% if current_user.doctor? || current_user.secretary? %>
 						<%= link_to doctor_appointments_path, class: "nav-link shadow-lg" do %>
 							<i class="fas fa-laptop-medical"></i>
 							<span><strong>Appointments</strong></span>
@@ -45,7 +45,7 @@
 				</li>
 				<li class="nav-item">
 					<% if current_user.patient? %>
-						<%= link_to patient_book_appointment_path, class: "nav-link shadow-lg" do %>
+						<%= link_to patient_my_appointments_path, class: "nav-link shadow-lg" do %>
 							<i class="fas fa-laptop-medical"></i>
 							<span>
 								<strong>My Appointments</strong>
@@ -53,7 +53,7 @@
 						<% end %>
 					<% end %>
 				</li>
-				<% if current_user.doctor? %>
+				<% if current_user.doctor? || current_user.secretary? %>
 					<li class="nav-item" role="presentation">
 						<div class="nav-item dropdown shadow-lg nav-dropdown">
 							<a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" href="#">
@@ -69,14 +69,16 @@
 								<%= link_to doctor_clinics_path, class: "dropdown-item",data: { role: "clinic" } do %>
 									<i class="fas fa-clinic-medical"></i><strong>Clinics</strong>
 								<% end %>
-								<%= link_to doctor_staffs_path, class: "dropdown-item",data: { role: "staff" } do %>
-									<i class="fas fa-user-md"></i><strong>Staff</strong>
+                <% if current_user.doctor?  %>
+                  <%= link_to doctor_staffs_path, class: "dropdown-item",data: { role: "staff" } do %>
+                    <i class="fas fa-user-md"></i><strong>Staff</strong>
+                  <% end %>
 								<% end %>
 							</div>
 						</div>
 					</li>
 				<% end %>
-				<% if current_user.doctor? %>
+				<% if current_user.doctor? || current_user.secretary? %>
 					<li class="nav-item" role="presentation">
 						<%= link_to doctor_clinic_queues_path, class: "nav-link shadow-lg" do %>
 							<i class="fas fa-user-friends"></i>

@@ -27,7 +27,7 @@ class User < ApplicationRecord
   has_many :appointments, inverse_of: :user, dependent: :destroy
   has_many :clinics, dependent: :destroy
   has_many :clinic_queues, dependent: :destroy
-  validates :email, uniqueness: true
+  validates :mobile_number, uniqueness: true
 
 
   accepts_nested_attributes_for :appointments, :allow_destroy => true

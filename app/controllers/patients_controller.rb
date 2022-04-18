@@ -1,4 +1,5 @@
 class PatientsController <  ApplicationController
+  before_action :authenticate_user!
   before_action :set_patient, only: %i[ show edit update destroy ] # only: %i[ dashboard book_appointment ]
   before_action :set_patients #, only: %i[ dashboard book_appointment ]
   # before_action :authenticate_patient!
@@ -13,6 +14,26 @@ class PatientsController <  ApplicationController
 
   # GET /patients/1/edit
   def edit
+  end
+
+  def book_patient_appointment
+    user = current_user
+    app_sched = params[:patient][:appointment_schedule]
+
+    clinic, wday, time, ampm, date = app_sched.split("\s",5)
+    clinic_id = Clinic.find_by(name: clinic).id
+    dt = DateTime.parse(date + " " + time + " " + ampm)
+
+    @appointment = user.appointments.new(
+      schedule: dt,
+      clinic_id: clinic_id
+    )
+
+    if @appointment.save
+      redirect_to patient_book_appointment_url, notice: "Appointment set successfully!"
+    else
+      redirect_to patient_book_appointment_url, alert: " #{@appointment.errors.first.full_message}"
+    end
   end
 
   # POST /patients or /patients.json
@@ -70,6 +91,10 @@ class PatientsController <  ApplicationController
   def dashboard
     patient = current_user
     @appointments_to_attend = patient.appointments.where('schedule > ?', Time.now.utc)
+  end
+
+  def my_appointments
+    @appointments = current_user.appointments
   end
 
   def create_appointment

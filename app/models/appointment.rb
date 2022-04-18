@@ -25,7 +25,7 @@ class Appointment < ApplicationRecord
   validate :deny_patient_already_in_queue, on: :create
 
   after_create :send_appointment_creation_mail
-  after_create :send_appointment_creation_sms
+  # after_create :send_appointment_creation_sms
 
   accepts_nested_attributes_for :clinic
 
@@ -51,7 +51,7 @@ class Appointment < ApplicationRecord
   }
 
   scope :upcoming_appointments_today, -> {
-    start = DateTime.now
+    start = DateTime.now.utc
     where(schedule: start..start.end_of_day )
   }
 
@@ -119,6 +119,7 @@ class Appointment < ApplicationRecord
   end
 
   def send_appointment_creation_mail
+    return unless self.user.email.present?
     UserMailer.with(user: self.user).appointment_created.deliver_now
   end
 

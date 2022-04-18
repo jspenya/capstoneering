@@ -5,11 +5,8 @@ class ApplicationController < ActionController::Base
     # Here you can write logic based on roles to return different after sign in paths
     if current_user.patient?
       patient_dashboard_path
-    elsif current_user.doctor?
-      doctor_dashboard_path
-    elsif current_user.secretary?
-      secretary_dashboard_path
     else
+      doctor_dashboard_path
     end
   end
 

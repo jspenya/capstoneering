@@ -63,7 +63,6 @@ class CallbackController < ApplicationController
     #   }
     # elsif text_message_received.include? 'name:'
     if text_message_received.include? 'BOOK:'
-      byebug
       # Create the user
       password_hex = SecureRandom.hex(5)
       book, nickname, mobile_number, appointment_date = text_message_received.split("\s", 4)
@@ -76,12 +75,19 @@ class CallbackController < ApplicationController
       else
         mobile_number.chomp(',')
       end
-
+      
       u = User.new(lastname: nickname, mobile_number: mobile_number, password: '123456', password_confirmation: '123456' )
       
       if u.save
         re = Regexp.new(appointment_date, Regexp::IGNORECASE)
         avail_slots = available_slots.grep(re)
+        
+        unless avail_slots.any?
+         response = {
+           "text": "Sorry, but there are no more slots for that day. Please try a different day."
+         }
+        end
+
         appointment_schedule = avail_slots.first
         clinic, wday, time, ampm, date = appointment_schedule.split("\s", 5)
         clinic_id = Clinic.find_by(name: clinic).id
@@ -94,16 +100,16 @@ class CallbackController < ApplicationController
 
         if @appointment.save
           response = {
-            "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime("%B %d, %A")}. See you then!"
+            "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime("%B %d, %A")} at #{@appointment.schedule.strftime("%I:%M %p")}. See you then!"
           }
         else
           response = {
-            "text": "There was an error in booking the appointment. Please try again."
+            "text": "#{@appointment.errors.first.full_message}. Please try again."
           }
         end
       else
         response = {
-          "text": "There was an error in registering user. Please try again."
+          "text": "There was an error in registering user. #{u.errors.first.full_message}. Please try again."
         }
       end
     else
@@ -154,14 +160,10 @@ class CallbackController < ApplicationController
               time_iterate(cs.start_time, cs.end_time, c.appointment_duration.minutes) do |dt|
                 x << [ c.name + " " + cs.day + " " + dt.strftime("%l:%M %p") ]
               end
-              if current_user.doctor? || current_user.secretary?
-                x
+              if special_case = cs.clinic_special_cases.find_by(day: Date.today)
+                x.take(special_case.slots)
               else
-                if special_case = cs.clinic_special_cases.find_by(day: Date.today)
-                  x.take(special_case.slots)
-                else
-                  x.take(15)
-                end
+                x.take(15)
               end
             )
           }

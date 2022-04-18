@@ -1,4 +1,5 @@
 class DoctorsController <  ApplicationController
+  before_action :authenticate_user!
   before_action :set_patient, only: %i[ show edit update destroy ] # only: %i[ dashboard book_appointment ]
   before_action :set_patients #, only: %i[ dashboard book_appointment ]
   before_action :set_secretaries #, only: %i[ dashboard book_appointment ]

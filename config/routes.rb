@@ -2,7 +2,6 @@ Rails.application.routes.draw do
   Rails.application.routes.default_url_options[:host]
   get 'clinic_special_cases/create'
   get 'clinic_special_cases/update'
-  resources :users
   # resources :users
   get '/webhook', to: 'callback#index'
   post '/webhook', to: 'callback#received_data'
@@ -24,6 +23,7 @@ Rails.application.routes.draw do
   # get '/clinics/:clinic_id/clinic_schedules/:id'
 
   devise_for :users
+  resources :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   get 'home/index', to: 'home#index'
   resources :patients
@@ -45,7 +45,9 @@ Rails.application.routes.draw do
   end
 
   get '/dashboard', to: 'patients#dashboard', as: 'patient_dashboard'
+  get '/my_appointments', to: 'patients#my_appointments', as: 'patient_my_appointments'
   get '/book', to: 'patients#book_appointment', as: 'patient_book_appointment'
+  post '/book', to: 'patients#book_patient_appointment', as: 'user_book_patient_appointment'
   post '/book/patient', to: 'patients#book_existing_patient_appointment', as: 'patient_book_patient_appointment'
   get '/book/weekly', to: 'patients#week_appointments', as: 'patient_week_appointments'
   post '/book/create', to: 'patients#create_appointment', as: 'patient_create_appointment'

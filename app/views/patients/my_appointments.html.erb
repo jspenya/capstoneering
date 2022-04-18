@@ -8,18 +8,16 @@
 				<div class="col">
 					<div style="margin:1.5rem;">
 						<h3>Hi <%= current_user.firstname %>,</h3>
-            <% if current_user.appointments.upcoming_appointments_today.present? %>
+            <% if @appointments.present? %>
               <h5>
-                You have <%= current_user.appointments.upcoming_appointments_today.count %> upcoming appointments
-                for today.
+                These are all of your appointments.
               </h5>
               <div>
-                <% current_user.appointments.upcoming_appointments_today.each do |appointment| %>
+                <% @appointments.each do |appointment| %>
                   <ul>
                     <li>
                       <h3>
-                        <%= appointment.schedule.strftime("%I:%M %p") %> ·
-                        <%= link_to 'Reschedule', '#' %>
+                        <%= appointment.schedule.strftime("%B %d, %I:%M %p") %> - <%= appointment.clinic.name.split('_').join(" ") %> Clinic
                       </h3>
                     </li>
                   </ul>
@@ -27,7 +25,7 @@
               </div>
             <% else %>
               <h5>
-                You have no appointments for today.
+                You have no appointments set.
               </h5>
             <% end %>
 					</div>

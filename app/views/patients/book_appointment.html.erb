@@ -9,141 +9,30 @@
 							<div class="col">
 								<div class="card shadow mb-3">
 									<div class="card-body">
-										<div class="accordion" id="accordionExample">
-											<div class="card">
-												<div class="card-header" id="headingOne">
-													<h2 class="mb-0">
-														<button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="text-decoration:none;">
-															Book an Appointment for New Patient
-															<i style="margin-left:1rem;" class="fas fa-chevron-down"></i>
-														</button>
-													</h2>
-												</div>
-												<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-													<div class="card-body">
-														<div class="col-md-12">
-															<div class="row">
-																<div class="col">
-																	<div class="card shadow mb-3">
-																		<div class="card-body">
-																			<div class="col-md-12 search-table-col">
-																				<%= form_with(model: @patient, url: book_patient_appointment_path, method: :post) do |form| %>
-																					<div class="form-row">
-																						<div class="col-12 col-xl-6">
-																							<div class="form-group">
-																								<label for="mobile_num">
-																									<strong>Contact Number</strong>
-																								</label>
-                                                <div style="display:flex;">
-                                                  <span style="margin:auto;margin-right:1rem;font-weight:bold;">+63</span>
-                                                  <%= form.text_field :mobile_number, placeholder: 'e.g 9361234567', required: true %>
-                                                </div>
-																							</div>
-																						</div>
-																						<div class="col-12 col-xl-6">
-																							<div class="form-group">
-																								<label for="first_name">
-																									<strong>Email</strong><br>
-																								</label>
-																								<%= form.text_field :email, placeholder: 'Email goes here' %>
-																							</div>
-																						</div>
-																					</div>
-																					<div class="form-row">
-																						<div class="col-12 col-xl-6">
-																							<div class="form-group">
-																								<label for="email">
-																									<strong>Patient's First name</strong>
-																								</label>
-																								<%= form.text_field :firstname, placeholder: "Type patient's first name" %>
-																							</div>
-																						</div>
-																						<div class="col-12 col-xl-6">
-																							<div class="form-group">
-																								<label for="first_name">
-																									<strong>Patient's Last name</strong><br>
-																								</label>
-																								<%= form.text_field :lastname, placeholder: "Type patient's last name" %>
-																							</div>
-																						</div>
-																					</div>
-																					<div class="form-row">
-																						<div class="col-12 col-xl-12">
-																							<label for="schedule">
-																								<strong>
-																									Schedule
-																									<i>
-																										(Clinic Name, Time & Date)
-																									</i>
-																								</strong>
-																							</label>
-																							<div>
-																								<%= form.autocomplete_field :appointment_schedule, autocomplete_schedule_doctor_path, :id_element => "#appointment_schedule", placeholder: "Typing 'cu mon 9 am ap 4' searches for 'CUMC Monday 9:00 AM April 4 2022'" %>
-																							</div>
-																						</div>
-																					</div>
-																					<%= form.hidden_field :password, value: "testing 123" %>
-																					<%= form.hidden_field :password_confirmation, value: "testing 123" %>
-																					<div class="form-group" style="margin-top:1.5rem;">
-																						<%= form.submit 'Submit', class:'btn btn-primary btn-sm' %>
-																					</div>
-																				<% end %>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="card">
-												<div class="card-header" id="headingTwo">
-													<h2 class="mb-0">
-														<button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="text-decoration:none;">
-															Book for Existing Patient
-															<i style="margin-left:1rem;" class="fas fa-chevron-down"></i>
-														</button>
-													</h2>
-												</div>
-												<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-													<div class="card-body">
-														<div class="col-md-12 search-table-col">
-															<%= form_with(model: @patient, url: book_existing_patient_appointment_path, method: :post) do |form| %>
-																<div class="form-row">
-																	<div class="col-12 col-xl-12">
-																		<div class="form-group">
-																			<label for="email">
-																				<strong>Patient</strong>
-																			</label>
-																			<%= form.autocomplete_field :email, autocomplete_patient_doctor_path, :id_element => "#patient_id", 'data-auto-focus' => true, placeholder: "Type patient's lastname" %>
-																		</div>
-																	</div>
-																</div>
-																<div class="form-row">
-																	<div class="col-12 col-xl-12">
-																		<label for="schedule">
-																			<strong>
-																				Schedule
-																				<i>
-																					(Clinic Name, Time & Date)
-																				</i>
-																			</strong>
-																		</label>
-																		<div>
-																			<%= form.autocomplete_field :appointment_schedule, autocomplete_schedule_doctor_path, :id_element => "#appointment_schedule", placeholder: "Typing 'cu mon 9 am ap 4' searches for 'CUMC Monday 9:00 AM April 4 2022'" %>
-																		</div>
-																	</div>
-																</div>
-																<div class="form-group" style="margin-top:1.5rem;">
-																	<%= form.submit 'Submit', class:'btn btn-primary btn-sm' %>
-																</div>
-															<% end %>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
+										<div class="card-body">
+                      <div class="col-md-12 search-table-col">
+                        <%= form_with(model: @patient, url: user_book_patient_appointment_path, method: :post) do |form| %>
+                          <div class="form-row">
+                            <div class="col-12 col-xl-12">
+                              <label for="schedule">
+                                <strong>
+                                  Schedule
+                                  <i>
+                                    (Clinic Name, Time & Date)
+                                  </i>
+                                </strong>
+                              </label>
+                              <div>
+                                <%= form.autocomplete_field :appointment_schedule, autocomplete_schedule_doctor_path, :id_element => "#appointment_schedule", placeholder: "Typing 'cu mon 9 am ap 4' searches for 'CUMC Monday 9:00 AM April 4 2022'" %>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group" style="margin-top:1.5rem;">
+                            <%= form.submit 'Submit', class:'btn btn-primary btn-sm' %>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
 									</div>
 								</div>
 							</div>
