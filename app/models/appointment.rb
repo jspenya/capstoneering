@@ -25,7 +25,7 @@ class Appointment < ApplicationRecord
   validate :deny_patient_already_in_queue, on: :create
 
   after_create :send_appointment_creation_mail
-  # after_create :send_appointment_creation_sms
+  after_create :send_appointment_creation_sms
 
   accepts_nested_attributes_for :clinic
 
