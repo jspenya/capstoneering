@@ -61,7 +61,7 @@ class CallbackController < ApplicationController
       password_hex = SecureRandom.hex(5)
       user, nickname, email = text_message_received.split("\s", 3)
       nickname = nickname.chomp(',')
-      u = User.new(firstname: nickname, email: email, password: 'testing 123', password_confirmation: 'testing 123' )
+      u = User.new(lastname: nickname, email: email, password: 'testing 123', password_confirmation: 'testing 123' )
       u.save
 
       response = {
