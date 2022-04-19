@@ -1,36 +1,24 @@
-<div style="display:flex;">
-<%= render 'layouts/sidebar' %>
-  <div class="d-flex flex-column" id="content-wrapper"  style="background-color:#f8f9fc;width:100%;overflow-x:hidden;">
-    <div id="content">
-    <%= render 'layouts/navbar' %>
-    <div class="container-fluid">
-        <div class="card shadow">
-            <div class="card-header py-3">
-              <p class="text-primary m-0 font-weight-bold">Edit Patient: <%= @patient.fullname %></p>
-            </div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-md-3"></div>
-                <div class="col-md-6">
-                  <%= simple_form_for(@patient, url: patient_path(@patient)) do |form| %>
-                    <%= form.label :firstname %>
-                    <%= form.text_field :firstname, style:'text-transform: capitalize;' %>
-                    <%= form.label :lastname %>
-                    <%= form.text_field :lastname, style:'text-transform: capitalize;' %>
-                    <%= form.label :mobile_number %>
-                    <%= form.text_field :mobile_number %>
-                    <%= form.label :email %>
-                    <%= form.text_field :email %>
-                    <%= form.button :submit, 'Update Patient Details', style: 'margin-top:2rem;width:100%;' %>
-                  <% end %>
-                </div>
-                <div class="col-md-3"></div>
-              </div>
-            </div>
-        </div>
+<div class="card shadow">
+    <div class="card-header py-3">
+      <p class="text-primary m-0 font-weight-bold">Edit Patient: <%= @patient.fullname %></p>
     </div>
-  </div>
-
-  </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a></div>
-  </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+          <%= simple_form_for(@patient, url: patient_path(@patient)) do |form| %>
+            <%= form.label :firstname %>
+            <%= form.text_field :firstname, style:'text-transform: capitalize;' %>
+            <%= form.label :lastname %>
+            <%= form.text_field :lastname, style:'text-transform: capitalize;' %>
+            <%= form.label :mobile_number %>
+            <%= form.text_field :mobile_number %>
+            <%= form.label :email %>
+            <%= form.text_field :email %>
+            <%= form.button :submit, 'Update Patient Details', style: 'margin-top:2rem;width:100%;' %>
+          <% end %>
+        </div>
+        <div class="col-md-3"></div>
+      </div>
+    </div>
 </div>

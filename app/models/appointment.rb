@@ -25,7 +25,9 @@ class Appointment < ApplicationRecord
   validate :deny_patient_already_in_queue, on: :create
 
   # after_create :send_appointment_creation_mail
-  after_create :send_appointment_creation_sms
+  # after_create :send_appointment_creation_sms
+  after_update :send_appointment_reschedule_mail
+  # after_update :send_appointment_reschedule_sms
 
   accepts_nested_attributes_for :clinic
 
@@ -122,9 +124,14 @@ class Appointment < ApplicationRecord
     return unless self.user.email.present?
     UserMailer.with(user: self.user).appointment_created.deliver_now
   end
-
+  
   def send_appointment_creation_sms
     TwilioClient.new.send_text(self.user, appointment_creation_sms_text)
+  end
+  
+  def send_appointment_reschedule_mail
+    return unless self.user.email.present?
+    UserMailer.with(user: self.user, schedule: self.schedule).reschedule_notice.deliver_now
   end
 
   def appointment_creation_sms_text

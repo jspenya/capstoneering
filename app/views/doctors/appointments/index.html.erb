@@ -1,54 +1,48 @@
-<div style="display:flex;">
-	<%= render 'layouts/sidebar' %>
-	<div class="d-flex flex-column" style="background-color:#f8f9fc;width:100%;overflow-x:hidden;">
-		<%= render 'navbar' %>
-		<div class="container">
-			<div class="row mb-3">
-				<div class="col-md-12">
-						<div class="row">
-							<div class="col">
-								<div class="card shadow mb-3">
-									<div class="card-body">
-										<div class="row">
-											<% unless @appointments.present? %>
-												<div class="card-body">
-													<div class="row">
-														<h5>
-															&#x1F680; You have no appointments for today, doc.
-														</h5>
-													</div>
-												</div>
-											<% else %>
-												<div class="card-header py-3">
-													<p class="text-primary m-0 font-weight-bold">Appointments for today</p>
-												</div>
-												<div class="card-body">
-													<div class="row">
-														<div class="col-md-12">
-															<ul>
-																<% @appointments.each do |a| %>
-																	<li>
-																		<%= a.schedule.strftime("%I:%M %p") %> - <b><%= a.patient.fullname %></b>
-																	</li>
-																<% end %>
-															</ul>
-														</div>
-													</div>
-												</div>
-											<% end %>
-											<% unless @clinic.clinic_schedules.present? %>
-												<h1>
-													No clinic for today!
-												</h1>	
-											<% end %>
-										</div>	
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="container">
+  <div class="row mb-3">
+    <div class="col-md-12">
+        <div class="row">
+          <div class="col">
+            <div class="card shadow mb-3">
+              <div class="card-body">
+                <div class="row">
+                  <% unless @appointments.present? %>
+                    <div class="card-body">
+                      <div class="row">
+                        <h5>
+                          &#x1F680; You have no appointments for today, doc.
+                        </h5>
+                      </div>
+                    </div>
+                  <% else %>
+                    <div class="card-header py-3">
+                      <p class="text-primary m-0 font-weight-bold">Appointments for today</p>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <ul>
+                            <% @appointments.each do |a| %>
+                              <li>
+                                <%= a.schedule.strftime("%I:%M %p") %> - <b><%= a.patient.fullname %></b>
+                              </li>
+                            <% end %>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                  <% unless @clinic.clinic_schedules.present? %>
+                    <h1>
+                      No clinic for today!
+                    </h1>	
+                  <% end %>
+                </div>	
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

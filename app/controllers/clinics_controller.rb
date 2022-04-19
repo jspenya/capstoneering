@@ -127,5 +127,9 @@ class ClinicsController <  ApplicationController
   def clinic_params
     params.require(:clinic).permit(:user_id, :name, :room_number, :status, :appointment_duration)
   end
-
+  
+  def set_ariane
+    super
+    ariane.add 'Clinic Schedules', clinic_clinic_schedules_path
+  end
 end

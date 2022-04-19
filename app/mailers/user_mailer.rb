@@ -2,17 +2,13 @@ class UserMailer < ApplicationMailer
 	default from: 'notifications@example.com'
 
   def reschedule_notice
-		@users = params[:users]
+		@user = params[:user]
+    @schedule = params[:schedule]
 
-		@users.each do |user|
-			@user = user
-			# @appointment = user.appointment #Attach appointment
-
-			mail(
-				to: user.email,
-				subject: "Hi #{user.firstname}. Your appointment is cancelled."
-			)
-		end
+		mail(
+			to: @user.email,
+			subject: "Your appointment has been rescheduled."
+		)
   end
 
 	def appointment_created
