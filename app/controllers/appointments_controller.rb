@@ -1,5 +1,5 @@
 class AppointmentsController < ApplicationController
-  before_action :authenticate_user!
+  # before_action :authenticate_user!
 	before_action :set_appointment, only: %i[ show edit update destroy ]
 	before_action :set_patients, only: %i[ new ]
 
@@ -19,12 +19,12 @@ class AppointmentsController < ApplicationController
   end
 
 	def create
-    byebug
     password_hex = SecureRandom.hex(5)
 
     @patient = Patient.new(
       firstname: params[:firstname],
       lastname: params[:lastname],
+      mobile_number: params[:mobile_number],
       email: params[:email],
       password: password_hex,
       password_confirmation: password_hex,
