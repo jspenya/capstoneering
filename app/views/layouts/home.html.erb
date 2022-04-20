@@ -20,18 +20,8 @@
     <% if alert %>
       <p class="alert alert-danger" style="padding-left:8em;"><%= alert %></p>
     <% end %>
-    <% unless controller_name == 'home_controller' %>
-      <div style="display:flex;">
-        <%= render 'layouts/sidebar' %>
-        <div class="d-flex flex-column" id="content-wrapper"  style="background-color:#f8f9fc;width:100%;overflow-x:hidden;">
-          <div id="content">
-            <%= render 'layouts/navbar' %>
-            <div class="container-fluid">
-              <%= yield %>
-            </div>
-          </div>
-        </div>
-      </div>
-    <% end %>
+    <div class="container-fluid">
+      <%= yield %>
+    </div>
   </body>
 </html>

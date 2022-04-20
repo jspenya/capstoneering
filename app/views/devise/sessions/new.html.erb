@@ -19,17 +19,9 @@
               <%= f.text_field :login, autofocus: true, require: true, placeholder: '9-digit mobile number or email', class: "form-control form-control-user" %>
             </div>
             <div class="form-group">
-              <%= f.password_field :password, autocomplete: "current-password", class: "form-control form-control-user", require: true, placeholder: 'Password' %>
+              <%= f.password_field :password, autocomplete: "current-password", class: "form-control form-control-user", require: true, placeholder: 'Password', style:'margin-top:1rem;' %>
             </div>
-            <% if devise_mapping.rememberable? %>
-              <div class="form-group">
-                <div class="custom-control custom-checkbox small">
-                  <%= f.check_box :remember_me, class: "form-check-input custom-control-input" %>
-                </div>
-                <%= f.label :remember_me, class: "form-check-label custom-control-label" %>
-              </div>
-            <% end %>
-          <%= f.submit "Log in", class: "btn btn-primary btn-block text-white btn-user" %>
+            <%= f.submit "Log in", class: "btn btn-primary btn-block text-white btn-user", style: 'margin-top:2rem;border-radius:2em;' %>
           <% end %>
         </div>
       </div>
