@@ -104,7 +104,7 @@ class AppointmentsController < ApplicationController
         ]
       }.flatten
 
-    d = Date.today.beginning_of_month..Date.today.end_of_month.next_month
+    d = Date.today..Date.today.end_of_month.next_month
     y = d.map{ |d|
       dow = d.strftime("%A")
       a_d = c.grep /#{dow}/i

@@ -42,6 +42,47 @@ class CallbackController < ApplicationController
     end
   end
 
+  def get_user_profile
+    verify_token = "asdf"
+
+    mode = request.query_parameters['hub.mode']
+    token = request.query_parameters['hub.verify_token']
+    challenge = request.query_parameters['hub.challenge']
+
+    if mode && token
+      if mode == 'subscribe' && token == verify_token
+        render json: challenge
+      end
+    else
+      head 403
+    end
+  end
+
+  def post_user_profile
+    request_body = request.body.read
+    body = JSON.parse(request_body)
+
+    if body.dig("object") == "page"
+      body.dig('entry').each do |entry|
+        webhook_event = entry.dig('messaging').first
+        Rails.logger.info("Webhook event: #{webhook_event}")
+
+        # get the sender psid
+        sender_psid = webhook_event.dig('sender', 'id')
+        Rails.logger.info("Sender PSID: #{sender_psid}")
+
+        if webhook_event.dig('message').any?
+          handle_message(sender_psid, webhook_event.dig('message'))
+        elsif webhook_event.dig('postback').any?
+          handle_postback(sender_psid, webhook_event.dig('postback'))
+        end
+      end
+      head 200
+    else
+      head 403
+    end
+  end
+
   def handle_message sender_psid, received_message
     response = {}
     text_message_received = received_message.dig("text")
@@ -109,7 +150,7 @@ class CallbackController < ApplicationController
         end
       else
         response = {
-          "text": "There was an error in registering user. #{u.errors.first.full_message}. Please try again."
+          "text": "#{u.errors.first.full_message}. Please try again."
         }
       end
     else
@@ -170,7 +211,7 @@ class CallbackController < ApplicationController
         ]
       }.flatten
 
-    d = Date.today.beginning_of_month..Date.today.end_of_month.next_month
+    d = Date.today..Date.today.end_of_month.next_month
     y = d.map{ |d|
       dow = d.strftime("%A")
       a_d = c.grep /#{dow}/i
