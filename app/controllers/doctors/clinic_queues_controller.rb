@@ -235,6 +235,7 @@ class Doctors::ClinicQueuesController < DoctorsController
     @patient = Patient.new(
 			firstname: params[:patient][:firstname],
 			lastname: params[:patient][:lastname],
+			mobile_number: params[:patient][:mobile_number],
 			email: params[:patient][:email],
 			password: params[:patient][:password],
 			password_confirmation: params[:patient][:password_confirmation]
