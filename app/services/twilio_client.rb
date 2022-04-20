@@ -14,14 +14,14 @@ class TwilioClient
   end
 
   def account_sid
-    # Rails.application.credentials.twilio[:account_sid]
+    Rails.application.credentials.twilio[:account_sid] if Rails.env.development?
     # Use this for production
-    Rails.application.credentials.config[:production][:twilio][:account_sid]
+    Rails.application.credentials.config[:production][:twilio][:account_sid] if Rails.env.production?
   end
   
   def account_auth_token
-    # Rails.application.credentials.twilio[:auth_token]
+    Rails.application.credentials.twilio[:auth_token] if Rails.env.development?
     # Use this for production
-    Rails.application.credentials.config[:production][:twilio][:auth_token]
+    Rails.application.credentials.config[:production][:twilio][:auth_token] if Rails.env.production?
   end
 end

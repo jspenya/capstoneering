@@ -8,7 +8,7 @@
               <div class="card-body">
                 <div class="card-header py-3">
                   <% if @clinic.present?  %>
-                    <p class="text-primary m-0 font-weight-bold"><%= @clinic.name %> | Today's Queue</p>
+                    <p class="text-primary m-0 font-weight-bold"><%= @clinic.name.split("_").join(" ") %> | Today's Queue</p>
                   <% else %>
                     <% if current_user.doctor? %>
                       <p class="text-primary m-0 font-weight-bold">You have no clinic schedule for today. Click <%= link_to 'here', doctor_clinics_path %> to add.</p>
@@ -37,17 +37,19 @@
                           </div>
                           <div class="col-sm-6 col-xl-3 offset-xl-6">
                             <input class="form-control-sm search form-control" type="text" placeholder="Search by patient name here">
+                            <% unless ClinicQueue.queue_today.present? %>
+                              <span>
+                                <%= link_to 'Start queue', start_queue_doctor_clinic_queues_path, method: :post, class:'btn btn-primary btn-block', style: 'margin-top:1rem;' %>
+                              </span>
+                            <% end %>
                             <span>
-                              <%= link_to 'Start queue', start_queue_doctor_clinic_queues_path, method: :post, class:'btn btn-primary btn-block', style: 'margin-top:1rem;' %>
+                              <%= link_to 'Next', next_patient_doctor_clinic_queues_path, method: :post, class:'btn btn-outline-primary btn-block', style: 'margin-top:1rem;' %>
                             </span>
                             <% if @clinic_queues.present? %>
-                              <button class="btn btn-warning btn-block" type="button" data-toggle="modal" data-target="#cancel-modal" style="color:#fff;margin-top:1rem;">
+                              <button class="btn btn-outline-danger btn-block" type="button" data-toggle="modal" data-target="#cancel-modal" style="font-weight:300;margin-top:1rem;">
                                 <strong>Cancel today's queue</strong>
                               </button>
                             <% end %>
-                            <span>
-                              <%= link_to 'Next', next_patient_doctor_clinic_queues_path, method: :post, class:'btn btn-success btn-block', style: 'margin-top:1rem;' %>
-                            </span>
                           </div>
                         </div>
                       </div>
@@ -91,7 +93,7 @@
                                 </td>
                                   <% if cq.skip_for_now? %>
                                     <td class="text-nowrap">
-                                      <%= link_to 'Add back to Queue', toggle_skip_for_now_doctor_clinic_queue_path(cq), method: :post, data: { confirm: "Are you sure you want to add #{cq.patient.firstname} back to queue?" }, class:"btn btn-light" %>
+                                      <%= link_to 'Add back to Queue', toggle_skip_for_now_doctor_clinic_queue_path(cq), method: :post, data: { confirm: "Are you sure you want to add #{cq.patient.firstname} back to queue?" }, class:"btn btn-outline-success" %>
                                     </td>
                                   <% else %>
                                     <td class="text-nowrap">

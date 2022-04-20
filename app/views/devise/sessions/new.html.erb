@@ -1,31 +1,28 @@
-<div class="container-fluid" style="height:100vh;background: #2a90cb;">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-6 col-xl-4 offset-xl-2 doc_login-form">
-        <%= image_tag 'login-page.png', class: 'img-fluid' %>
-      </div>
-      <div class="col-lg-6 col-xl-4 offset-xl-0 doc_login-form">
-        <div class="p-5">
-          <div class="text-center">
-            <%= link_to home_index_path do %>
-              <%= image_tag 'logo.png', alt: "logo" %>
-            <% end %>
-            <h6 class="text-primary mb-4">
-              Account Login
-            </h6>
-          </div>
-          <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-            <div class="form-group">
-              <%= f.text_field :login, autofocus: true, require: true, placeholder: '9-digit mobile number or email', class: "form-control form-control-user" %>
-            </div>
-            <div class="form-group">
-              <%= f.password_field :password, autocomplete: "current-password", class: "form-control form-control-user", require: true, placeholder: 'Password', style:'margin-top:1rem;' %>
-            </div>
-            <%= f.submit "Log in", class: "btn btn-primary btn-block text-white btn-user", style: 'margin-top:2rem;border-radius:2em;' %>
+<div style="height:100vh;background: #2a90cb;">
+  <div class="row">
+    <div class="col-lg-6 col-xl-4 offset-xl-2 doc_login-form">
+      <%= image_tag 'login-page.png', class: 'img-fluid' %>
+    </div>
+    <div class="col-lg-6 col-xl-4 offset-xl-0 doc_login-form">
+      <div class="p-5">
+        <div class="text-center">
+          <%= link_to home_index_path do %>
+            <%= image_tag 'logo.png', alt: "logo" %>
           <% end %>
+          <h6 class="text-primary mb-4">
+            Account Login
+          </h6>
         </div>
+        <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+          <div class="form-group">
+            <%= f.text_field :login, autofocus: true, require: true, placeholder: '9-digit mobile number or email', class: "form-control form-control-user" %>
+          </div>
+          <div class="form-group">
+            <%= f.password_field :password, autocomplete: "current-password", class: "form-control form-control-user", require: true, placeholder: 'Password', style:'margin-top:1rem;' %>
+          </div>
+          <%= f.submit "Log in", class: "btn btn-primary btn-block text-white btn-user", style: 'margin-top:2rem;border-radius:2em;' %>
+        <% end %>
       </div>
     </div>
   </div>
 </div>
-
