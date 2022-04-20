@@ -100,7 +100,6 @@ class Doctors::ClinicQueuesController < DoctorsController
 	end
 
   def cancel_todays_queue
-    byebug
     day_to_move = params[:day_to_move].to_date
     clinic_days = @clinic.clinic_schedules.pluck(:day)
     return redirect_to doctor_clinic_queues_path, alert: 'You cannot reschedule to a past date' if day_to_move < Date.today
@@ -186,10 +185,11 @@ class Doctors::ClinicQueuesController < DoctorsController
 
     if clinic_queue.skip_for_now?
       clinic_queue.update(skip_for_now: false)
+      TwilioClient.new.send_text(clinic_queue.patient.mobile_number, "Hi #{clinic_queue.patient.firstname}. You have been added back to the queue. Please stand-sby for your turn.")
       redirect_to doctor_clinic_queues_path, notice: "#{clinic_queue.patient.fullname} is added back to the queue."
     else
       clinic_queue.update(skip_for_now: true)
-      TwilioClient.new.send_text(clinic_queue.patient.mobile_number, "Hi #{clinic_queue.patient.name}. You are currently being skipped. Please proceed to the clinic to go on with your appointment.")
+      TwilioClient.new.send_text(clinic_queue.patient.mobile_number, "Hi #{clinic_queue.patient.firstname}. You are currently being skipped. Please proceed to the clinic to go on with your appointment.")
       redirect_to doctor_clinic_queues_path, notice: "#{clinic_queue.patient.fullname} is skipped for now."
     end
   end
