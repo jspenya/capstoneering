@@ -33,4 +33,8 @@ class Patient < User
   def fullname_and_email
     @fullname_and_email ||= " #{firstname} #{lastname} #{email} "
   end
+
+  def lastname_and_mobile_number
+    @lastname_and_mobile_number ||= "#{lastname} +63#{mobile_number}"
+  end
 end

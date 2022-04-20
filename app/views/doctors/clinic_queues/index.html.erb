@@ -8,7 +8,18 @@
               <div class="card-body">
                 <div class="card-header py-3">
                   <% if @clinic.present?  %>
-                    <p class="text-primary m-0 font-weight-bold"><%= @clinic.name.split("_").join(" ") %> | Today's Queue</p>
+                    <div style="display:flex;">
+                      <div>
+                        <p class="text-primary m-0 font-weight-bold"><%= @clinic.name.split("_").join(" ") %> | Today's Queue</p>
+                      </div>
+                      <% if @clinic_queues.present? %>
+                        <div style="margin-left:2rem;padding-bottom">
+                          <%= link_to export_doctor_clinic_queues_path, class:'btn btn-outline-secondary btn-sm d-none d-sm-inline-block' do %>
+                            <i class="fas fa-download fa-sm text-black-50"></i>&nbsp;Generate Report
+                          <% end %>
+                        </div>
+                      <% end %>
+                    </div>
                   <% else %>
                     <% if current_user.doctor? %>
                       <p class="text-primary m-0 font-weight-bold">You have no clinic schedule for today. Click <%= link_to 'here', doctor_clinics_path %> to add.</p>

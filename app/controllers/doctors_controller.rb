@@ -5,7 +5,7 @@ class DoctorsController <  ApplicationController
   before_action :set_secretaries #, only: %i[ dashboard book_appointment ]
   # before_action :authenticate_patient!
   # before_action :setup_queue_index, only: [:queue_show]
-  autocomplete :patient, :email
+  autocomplete :patient, :lastname_mobile_number
   # before_action :force_json, only: :search
 
   def autocomplete_patient
@@ -13,7 +13,7 @@ class DoctorsController <  ApplicationController
     terms = make_terms_from term
 
     patients = Patient.where(terms).all
-    render :json => patients.map { |d| {:id => d.id, :label => d.fullname_and_email, :value => d.fullname_and_email} }
+    render :json => patients.map { |d| {:id => d.id, :label => d.lastname_and_mobile_number, :value => d.lastname_and_mobile_number} }
   end
 
   def make_terms_from term
@@ -116,10 +116,11 @@ class DoctorsController <  ApplicationController
   end
 
   def book_existing_patient_appointment
-    user_field = params[:patient][:email]
-    f_name, l_name, email = user_field.split(" ")
+    user_field = params[:patient][:lastname_mobile_number]
+    l_name, mobile_num = user_field.split(" ")
+    mobile_number = mobile_num.delete_prefix('+63')
 
-    user = User.find_by(email: email)
+    user = User.find_by(mobile_number: mobile_number)
     app_sched = params[:patient][:appointment_schedule]
 
     clinic, wday, time, ampm, date = app_sched.split("\s",5)
@@ -244,10 +245,6 @@ class DoctorsController <  ApplicationController
     redirect_to action: :queue_show, id: clinic_queue_id
   end
 
-  def create_clinic_schedule
-
-  end
-
   private
 
   def force_json
@@ -304,7 +301,7 @@ class DoctorsController <  ApplicationController
                 if special_case = cs.clinic_special_cases.find_by(day: Date.today)
                   x.take(special_case.slots)
                 else
-                  x.take(15)
+                  x.take(cs.slots)
                 end
               end
             )

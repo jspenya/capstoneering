@@ -34,9 +34,12 @@ Rails.application.routes.draw do
     resources :clinic_special_cases
   end
 
+  # get 'clinic_queues/export', to: 'doctor/clinic_queues#export'
+
   resource :doctor do
     resources :appointments, module: :doctors
     resources :clinic_queues, module: :doctors do
+      get :export, on: :collection, defaults: { format: :csv }
       get :queue_autocomplete_patient, on: :collection
       post :next_patient, on: :collection
       post :cancel_todays_queue, on: :collection

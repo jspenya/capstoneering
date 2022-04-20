@@ -1,0 +1,6 @@
+<% headers = ['Schedule', 'Patient', 'Type', 'Status'] %>
+<%= CSV.generate_line headers %>
+
+<% @queues.each do |q| %>
+  <%= CSV.generate_line([q.schedule.strftime("%I:%M %p"), q.patient.fullname.capitalize, q.queue_type, q.status]) %>
+<% end %>

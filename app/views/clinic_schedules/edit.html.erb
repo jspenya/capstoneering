@@ -1,3 +1,26 @@
-<h1>
-  H1
-</h1>
+<div class="container">
+  <div class="card shadow">
+    <div class="card-header py-3">
+      <p class="text-primary m-0 font-weight-bold">Edit <%= @clinic_schedule.day %> Clinic Schedule</p>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+          <%= simple_form_for(@clinic_schedule, url: clinic_clinic_schedule_path(@clinic)) do |form| %>
+            <%= form.label :day %>
+            <%= form.select :day, options_for_select(@days_of_the_week.map{ |k| k }), {include_blank: 'Select a day'}, required: true  %>
+            <%= form.label :start_time, style:'width:100%;' %>
+            <%= form.time_field :start_time, class: "form-control", placeholder: "Start Time" %>
+            <%= form.label :end_time %>
+            <%= form.time_field :end_time, class: "form-control", placeholder: "End Time" %>
+            <%= form.label :slots %>
+            <%= form.number_field :slots, class: "form-control", placeholder: "Slots", width:'100%;', required: true %>
+            <%= form.button :submit, 'Update Clinic Schedule', style: 'margin-top:2rem;width:100%;margin-bottom:2rem;' %>
+          <% end %>
+        </div>
+        <div class="col-md-2"></div>
+      </div>
+    </div>
+  </div>
+</div>

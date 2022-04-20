@@ -1,4 +1,5 @@
 class Doctors::ClinicQueuesController < DoctorsController
+  require 'csv'
 	before_action :authenticate_user!
   # before_action :set_patient
   before_action :set_clinic
@@ -57,7 +58,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 				user_to_mail = next_for_queue.patient
 
 				UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
-        TwilioClient.new.send_text(next_for_queue.patient, "Hi #{next_for_queue.patient.name}. It is now your turn. Please proceed to the doctor's room.")
+        TwilioClient.new.send_text(next_for_queue.patient, "Hello #{next_for_queue.patient.firstname}, this is from Dr. Peña’s clinic. The doctor is now ready to see you. Please proceed to the clinic and show the secretary this message.\n\nThank you for patiently waiting. Have a nice day!\n\n**This is an auto-generated message so please do not reply.**")
 				@in_progress = next_for_queue
 			else
 				if next_for_schedule
@@ -258,6 +259,18 @@ class Doctors::ClinicQueuesController < DoctorsController
 		redirect_to doctor_clinic_queues_url, notice: "Successfully removed from queue!"
 	end
 
+  def export
+    @queues = ClinicQueue.queue_today
+
+    respond_to do |format|
+      format.csv do
+        response.headers['Content-Type'] = 'text/csv'
+        response.headers['Content-Disposition'] = "attachment; filename=#{Date.today.to_s}-queue.csv"
+        render template: "/doctors/clinic_queues/export.csv.erb"
+      end
+    end
+  end
+
 	private
 	def set_clinic
 		clinic_id = ClinicSchedule.where(day: Date.today.strftime("%A"))&.first&.clinic_id
@@ -266,7 +279,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 	end
 
 	def set_clinic_queue
-		@clinic_queues = ClinicQueue.queue_today.where(status: 1).order('queue_type DESC')
+		@clinic_queues = ClinicQueue.queue_today.where(status: 1).order('queue_type DESC, schedule')
 	end
 
 	def set_in_progress

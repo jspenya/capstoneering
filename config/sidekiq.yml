@@ -10,3 +10,9 @@
   doctor_clinic_notif:
     cron: '0 * * * * *'   # Runs once per minute
     class: DoctorClinicNotificationWorker
+  appointments_today_notif:
+    cron: '0 0 * * *'  
+    class: AppointmentsTodayNotificationWorker
+  build_clinic_queue:
+    cron: '0 * * * * *'   # Runs once per minute
+    class: BuildClinicQueueWorker

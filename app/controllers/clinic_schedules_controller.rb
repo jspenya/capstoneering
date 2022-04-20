@@ -1,7 +1,7 @@
 class ClinicSchedulesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_clinic#, except: [:destroy]
-  before_action :set_clinic_schedule, only: [:destroy]
+  before_action :set_clinic_schedule, only: [:destroy, :edit, :update]
 
   def index
     @clinic_schedule = ClinicSchedule.new
@@ -10,6 +10,7 @@ class ClinicSchedulesController < ApplicationController
   end
 
   def edit
+    @days_of_the_week = Date::DAYNAMES
   end
 
   def update
@@ -18,7 +19,7 @@ class ClinicSchedulesController < ApplicationController
         format.html { redirect_to clinic_clinic_schedules_url(), notice: "Clinic Schedule was successfully updated." }
         format.json { render :show, status: :ok, location: @clinic_schedule }
       else
-        format.html { redirect_to clinic_clinic_schedules_url, notice: "There was an error in updating the Clinic Schedule." }
+        format.html { redirect_to clinic_clinic_schedules_url, alert: "#{@clinic_schedule.errors.first.full_message}" }
         format.json { render json: @clinic_schedule.errors, status: :unprocessable_entity }
       end
     end
@@ -55,6 +56,6 @@ class ClinicSchedulesController < ApplicationController
   end
 
   def clinic_schedule_params
-    params.require(:clinic_schedule).permit(:day, :start_time, :end_time, :clinic_id)
+    params.require(:clinic_schedule).permit(:day, :start_time, :end_time, :clinic_id, :slots)
   end
 end

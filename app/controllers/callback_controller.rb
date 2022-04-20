@@ -204,7 +204,7 @@ class CallbackController < ApplicationController
               if special_case = cs.clinic_special_cases.find_by(day: Date.today)
                 x.take(special_case.slots)
               else
-                x.take(15)
+                x.take(cs.slots)
               end
             )
           }

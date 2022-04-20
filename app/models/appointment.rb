@@ -46,7 +46,7 @@ class Appointment < ApplicationRecord
   # }
 
   scope :doctor_appointments_today, -> {
-    where(schedule: Time.now.utc.beginning_of_day..Time.now.utc.end_of_day)
+    where(schedule: Time.now.asctime.to_date.beginning_of_day..Time.now.asctime.to_date.end_of_day)
   }
 
   scope :current_month, -> {
