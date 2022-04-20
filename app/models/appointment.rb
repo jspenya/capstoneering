@@ -141,10 +141,10 @@ class Appointment < ApplicationRecord
   end
 
   def appointment_creation_sms_text
-    "Hi #{self.user.firstname}, thank you for booking your appointment. See you on #{self.schedule.strftime("%B %d, %A")}!"
+    "Hi #{self.user.firstname || self.user.fullname}, thank you for booking your appointment. See you on #{self.schedule.strftime("%B %d, %A")}.\n\nThis is an automated message. Please do not reply to this number."
   end
 
   def appointment_reschedule_sms_text
-    "Hi #{self.user.firstname}! Your appointment was rescheduled to #{self.schedule.strftime("%B %d, %A")}. We're very sorry for the inconvenience this has caused you. See you and be safe!"
+    "Hi #{self.user.firstname}! Your appointment was rescheduled to #{self.schedule.strftime("%B %d, %A")}. We're very sorry for the inconvenience this has caused you. See you and be safe!\n\nThis is an automated message. Please do not reply to this number."
   end
 end
