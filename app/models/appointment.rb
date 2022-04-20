@@ -26,9 +26,9 @@ class Appointment < ApplicationRecord
   validate :deny_patient_already_in_queue, on: :create
 
   # after_create :send_appointment_creation_mail
-  # after_create :send_appointment_creation_sms
-  after_update :send_appointment_reschedule_mail
-  # after_update :send_appointment_reschedule_sms
+  after_create :send_appointment_creation_sms
+  # after_update :send_appointment_reschedule_mail
+  after_update :send_appointment_reschedule_sms
 
   accepts_nested_attributes_for :clinic
 
@@ -135,7 +135,16 @@ class Appointment < ApplicationRecord
     UserMailer.with(user: self.user, schedule: self.schedule).reschedule_notice.deliver_now
   end
 
+  def send_appointment_reschedule_sms
+    return unless self.user.mobile_number.present?
+    TwilioClient.new.send_text(self.user, appointment_reschedule_sms_text)
+  end
+
   def appointment_creation_sms_text
     "Hi #{self.user.firstname}, thank you for booking your appointment. See you on #{self.schedule.strftime("%B %d, %A")}!"
+  end
+
+  def appointment_reschedule_sms_text
+    "Hi #{self.user.firstname}! Your appointment was rescheduled to #{self.schedule.strftime("%B %d, %A")}. We're very sorry for the inconvenience this has caused you. See you and be safe!"
   end
 end
