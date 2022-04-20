@@ -1,4 +1,5 @@
 class ClinicSpecialCasesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_clinic_schedule
   before_action :set_clinic_special_case, only: [:show, :destroy]
 

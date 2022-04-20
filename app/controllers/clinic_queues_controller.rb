@@ -1,4 +1,6 @@
 class ClinicQueuesController < ApplicationController
+  before_action :authenticate_user!
+
   def show
     @clinic_queue = ClinicQueue.find_by( schedule: Time.now.utc.beginning_of_day..Time.now.utc.end_of_day )
     @patient = Patient.new

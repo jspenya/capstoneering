@@ -1,5 +1,6 @@
 class ClinicsController <  ApplicationController
   # before_action :authenticate_patient!
+  before_action :authenticate_user!
   before_action :set_clinic, only: [:edit, :update, :destroy]
 
   def new
