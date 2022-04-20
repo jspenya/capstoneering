@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   # resources :users
   get '/webhook', to: 'callback#index'
   post '/webhook', to: 'callback#received_data'
+
+  get '/profile/webhook', to: 'callback#get_user_profile'
+  post '/profile/webhook', to: 'callback#post_user_profile'
   
   require 'sidekiq/web'
   Rails6Webdass::Application.routes.draw do
