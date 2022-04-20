@@ -58,4 +58,14 @@ class UserMailer < ApplicationMailer
       subject: "Hi #{@user.firstname}. Your appointment is cancelled."
     )
   end
+
+  def doc_clinic_time
+    @buffer_minutes = params[:buffer_minutes]
+    @doc = Doctor.first
+
+    mail(
+      to: Doctor.first.email,
+      subject: "It's clinic time, doc!"
+    )
+  end
 end

@@ -9,6 +9,7 @@
 #  clinic_id  :bigint           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  slots      :integer          default(15)
 #
 class ClinicSchedule < ApplicationRecord
   belongs_to :clinic

@@ -34,7 +34,8 @@ class Doctors::ClinicQueuesController < DoctorsController
 		if @in_progress
 			user_to_mail = @in_progress.patient
 
-			# UserMailer.with(user: user_to_mail).finished_queue.deliver_now
+			UserMailer.with(user: user_to_mail).finished_queue.deliver_now
+      TwilioClient.new.send_text(@in_progress.patient.mobile_number, "Thank you for your visit, #{@in_progress.patient.firstname}. Be well.")
 			@in_progress.update(status: 3)
 		end
 
@@ -46,7 +47,8 @@ class Doctors::ClinicQueuesController < DoctorsController
 		# else serve walk-in patients
 		if next_for_schedule # && Time.now.utc >= next_for_schedule.schedule
 			UserMailer.with(user: user_to_mail).finished_queue.deliver_now
-			next_for_schedule.update(status: 2)
+      TwilioClient.new.send_text(@in_progress.patient.mobile_number, "Thank you for your visit, #{@in_progress.patient.firstname}. Be well.")
+      next_for_schedule.update(status: 2)
 			@in_progress = next_for_schedule
 		else
 			if next_for_queue = @clinic_queues.where(queue_type: 1).first
@@ -55,12 +57,14 @@ class Doctors::ClinicQueuesController < DoctorsController
 				user_to_mail = next_for_queue.patient
 
 				UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
+        TwilioClient.new.send_text(next_for_queue.patient.mobile_number, "Hi #{next_for_queue.patient.name}. It is now your turn. Please proceed to the doctor's room.")
 				@in_progress = next_for_queue
 			else
 				if next_for_schedule
 					if @in_progress = next_for_schedule
 						next_for_schedule.update(status: 3)
 						UserMailer.with(user: user_to_mail).finished_queue.deliver_now
+            TwilioClient.new.send_text(@in_progress.patient.mobile_number, "Thank you for your visit, #{@in_progress.patient.firstname}. Be well.")
 					# else
 					# 	next_for_schedule.update(status: 2)
 					# 	UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
@@ -185,6 +189,7 @@ class Doctors::ClinicQueuesController < DoctorsController
       redirect_to doctor_clinic_queues_path, notice: "#{clinic_queue.patient.fullname} is added back to the queue."
     else
       clinic_queue.update(skip_for_now: true)
+      TwilioClient.new.send_text(clinic_queue.patient.mobile_number, "Hi #{clinic_queue.patient.name}. You are currently being skipped. Please proceed to the clinic to go on with your appointment.")
       redirect_to doctor_clinic_queues_path, notice: "#{clinic_queue.patient.fullname} is skipped for now."
     end
   end
