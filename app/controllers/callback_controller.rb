@@ -153,9 +153,33 @@ class CallbackController < ApplicationController
           "text": "#{u.errors.first.full_message}. Please try again."
         }
       end
-    else
+    elsif text_message_received.include? 'CL-'
+      clinic_w_id = text_message_received.split("\s", 2).first
+      clinic_id = clinic_w_id.split('-').last
+      clinic = Clinic.find(clinic_id)
+
+      clinic_schedules = clinic.clinic_schedules
+      # schedules = clinic_schedules.join(', ')
+
+      scheds = []
+      clinic_schedules.each do |cs|
+        scheds << "- Every " + cs.day + " from " + cs.start_time.strftime("%I:%M %p") + " to " + cs.end_time.strftime("%I:%M %p") + "\n"
+      end
+      
       response = {
-        "text": "Hi! To book an appointment or check for an opening, send a message with your nickname, your contact number, and the date you want to book the appointment. See example below:\n\nexample:\n\n\*BOOK: Steph, 09361234567, January 20 2022\*"
+        "text": "Clinic Schedules for #{clinic.name.split('_').join(' ')}:\n\n#{scheds.join('')}\nDisclaimer: Please note that these schedules are subject to change due availability of the doctor.\n\nTo book your appointment, send us a message with your lastname, contact number, and the date of your appointment.\n\nSee example:\n`BOOK: LastNameHere, 09123456789, January 1 2022`"
+      }
+    else
+      # response = {
+      #   "text": "Hi! To book an appointment or check for an opening, send a message with your nickname, your contact number, and the date you want to book the appointment. See example below:\n\nexample:\n\n\*BOOK: Steph, 09361234567, January 20 2022\*"
+      # }
+      clinics = []
+      Clinic.all.each do |c|
+        # clinics =[]
+        clinics << "CL-" + c.id.to_s + " " + c.name.split('_').join(' ') + "\n"
+      end
+      response = {
+        "text": "Hi there! Welcome to the WEBDASS Appointments Booking Portal. To proceed with your booking, please choose a clinic:\n\n#{clinics.join('')}\n\nTo check for the clinic schedules,\nreply with the clinic ID.\n\nExample:\n`CL-1`"
       }
     end
     # Sends the response message
