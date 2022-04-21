@@ -14,7 +14,7 @@
                 </div>
                 <div class="text-dark font-weight-bold h5 mb-0 db-amt" style="margin-left:1rem;">
                   <span>
-                    <%= @appointments_to_attend.count %>
+                    <%= Appointment.doctor_appointments_today.count %>
                   </span>
                 </div>
               </div>
@@ -62,7 +62,7 @@
                   <div class="col-auto">
                     <div class="text-dark font-weight-bold h5 mb-0 mr-3 db-amt" style="margin-left:1rem;">
                       <span style="margin-left:1rem;">
-                        <%= @appointments_to_attend.count %>
+                        <%= Appointment.doctor_appointments_today.where('schedule > ?', Time.now.utc).count %>
                       </span>
                     </div>
                   </div>
@@ -88,6 +88,7 @@
                 <div class="text-dark font-weight-bold h5 mb-0 db-amt" style="margin-left:1rem;">
                   <span>
                     0
+                    <%#= Appointment.doctor_appointments_today.where(cancelled: true).count %>
                   </span>
                 </div>
               </div>
