@@ -1,26 +1,26 @@
-<header>
+!6<header>
   <div class="container">
-    <a href="/" class="logo"><i class="fas fa-heartbeat"></i><span>  W</span>EB<span>D</span>ASS</a>
+    <a href="/" style='text-decoration:none!important;font-size:1.6rem;' class="logo"><i class="fas fa-heartbeat"></i><span style="color:#0188DF;">  W</span>EB<span style="color:#0188DF;">D</span>ASS</a>
 
     <nav class="nav">
       <ul>
         <li>
-        <%= link_to root_path do %>
+        <%= link_to root_path, style:'text-decoration:none!important;font-size:1.1rem;' do %>
           Home
         <% end %>
         </li>
-        <li><a href="#announcements">Announcements</a></li>
-        <li><a href="#about">About</a></li>
+        <li><a style='text-decoration:none!important;font-size:1.1rem;' href="#announcements">Announcements</a></li>
+        <li><a style='text-decoration:none!important;font-size:1.1rem;'href="#about">About</a></li>
         <% if user_signed_in? %>
           <li>
-            <%= link_to 'Sign Out', destroy_user_session_path, method: :delete, data: { turbo_method: :delete } %>
+            <%= link_to 'Sign Out', destroy_user_session_path, method: :delete, data: { turbo_method: :delete }, style:'text-decoration:none!important;font-size:1.1rem;' %>
           </li>
         <% else %>
           <li>
-            <%= link_to 'Sign In', new_user_session_path %>
+            <%= link_to 'Sign In', new_user_session_path, style:'text-decoration:none!important;font-size:1.1rem;' %>
           </li>
           <li>
-            <%= link_to 'Sign Up', new_user_registration_path %>
+            <%= link_to 'Sign Up', new_user_registration_path, style:'text-decoration:none!important;font-size:1.1rem;' %>
           </li>
         <% end %>
       </ul>
@@ -36,13 +36,15 @@
 					<img src="home-img.svg" width="100%" alt="">
 					<%= image_tag 'home-img.svg' %>
 			</div>
-			<div class="col-md-6 pl-md-5 content" data-aos="fade-left">
-				<h1><span>Dr. Victor Jose A. Peña, MD</span></h1>
-				<h3>Cardiologist</h3>
-				<h4>LSR Heart Institute, Capitol University Medical Center, Gusa, Cagayan de Oro, Philippines, 9000</h4>
-				<%= link_to new_appointment_path do  %>
-					<button class="button">Book an Appointment</button>
-				<% end %>
+			<div class="col-md-6 pl-md-5 content text-left" data-aos="fade-left">
+        <div style="margin-left:2rem;">
+          <h1><span style="color:#0188DF;">WEBDASS</span></h1>
+          <h4>Need a medical consultation with your doctor?</h4>
+          <h6>Book appointments with your favorite doctor in just a few clicks!</h6>
+          <%= link_to new_appointment_path do  %>
+            <button class="button" style="width:100%;background-color:#0188DF;"><b>BOOK NOW</b></button>
+          <% end %>
+        </div>
 			</div>
 		</div>
 	</div>
