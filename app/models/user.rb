@@ -74,6 +74,6 @@ class User < ApplicationRecord
   end
 
   def user_creation_sms_text
-    "Hi #{self.firstname || self.lastname}, you have been signed up to WEBDASS. You can now login to your account here: https://webdass-staging.herokuapp.com/users/sign_in\n\nYou'll also need this Facebook Key for booking appointments through our Facebook Messenger Portal. Do not share this with anyone.\n\nFACEBOOK KEY: #{self.facebook_key} \n\nSave this somewhere safe."
+    "Hi #{self.firstname? ? self.firstname : self.lastname}, you have been signed up to WEBDASS. You can now login to your account here: https://webdass-staging.herokuapp.com/users/sign_in\n\nYou'll also need this Facebook Key for booking appointments through our Facebook Messenger Portal. Do not share this with anyone.\n\nFACEBOOK KEY: #{self.facebook_key} \n\nSave this somewhere safe."
   end
 end

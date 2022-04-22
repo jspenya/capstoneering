@@ -71,14 +71,10 @@ class PatientsController <  ApplicationController
   # PATCH/PUT /patients/1 or /patients/1.json
   def update
     user = User.find(@patient.id)
-    respond_to do |format|
-      if user.update(patient_params)
-        format.html { redirect_to patients_url, notice: "Patient was successfully updated." }
-        format.json { render :show, status: :ok, location: user}
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: user.errors, status: :unprocessable_entity }
-      end
+    if user.update(patient_params)
+      redirect_to patients_url, notice: "Patient was successfully updated." 
+    else
+      redirect_to patients_url, alert: "#{user.errors.first.full_message}" 
     end
   end
 
@@ -160,6 +156,10 @@ class PatientsController <  ApplicationController
 
   # Only allow a list of trusted parameters through.
   def patient_params
+    if params[:patient][:password].blank? && params[:patient][:password_confirmation].blank?
+      params[:patient].delete(:password)
+      params[:patient].delete(:password_confirmation)
+    end
     params.require(:patient).permit(:email, :firstname, :lastname, :birthdate, :gender, :mobile_number, :role, :password, :password_confirmation)
   end
 

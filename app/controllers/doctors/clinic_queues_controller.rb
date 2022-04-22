@@ -58,7 +58,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 				user_to_mail = next_for_queue.patient
 
 				UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
-        TwilioClient.new.send_text(next_for_queue.patient, "Hello #{next_for_queue.patient.firstname}, this is from Dr. Peña’s clinic. The doctor is now ready to see you. Please proceed to the clinic and show the secretary this message.\n\nThank you for patiently waiting. Have a nice day!\n\n**This is an auto-generated message so please do not reply.**")
+        TwilioClient.new.send_text(next_for_queue.patient, "Hello #{next_for_queue.patient.firstname}, this is from Dr. Peña's clinic. The doctor is now ready to see you. Please proceed to the clinic and show the secretary this message.\n\nThank you for patiently waiting. Have a nice day!\n\n**This is an auto-generated message so please do not reply.**")
 				@in_progress = next_for_queue
 			else
 				if next_for_schedule

@@ -24,6 +24,7 @@ class Appointment < ApplicationRecord
   validate :check_special_case, on: :create
   validate :only_on_clinic_day_schedule, on: :create
   validate :deny_patient_already_in_queue, on: :create
+  validate :patient_no_same_day_rescheduling, on: :update
 
   # after_create :send_appointment_creation_mail
   after_create :send_appointment_creation_sms
@@ -94,9 +95,9 @@ class Appointment < ApplicationRecord
   def patient_no_same_day_rescheduling
     if user.patient?
       return unless schedule < Time.now.utc.end_of_day && schedule > Time.now.utc.beginning_of_day
-      return unless scheduled_changed?
+      return unless schedule_changed?
 
-      errors.add(:name, 'Patient cannot reschedule within the day.')
+      errors.add(:user, 'cannot reschedule within the day.')
     end
   end
 
@@ -136,15 +137,16 @@ class Appointment < ApplicationRecord
   end
 
   def send_appointment_reschedule_sms
+    return unless schedule_changed?
     return unless self.user.mobile_number.present?
     TwilioClient.new.send_text(self.user, appointment_reschedule_sms_text)
   end
 
   def appointment_creation_sms_text
-    "Hi #{self.user.firstname || self.user.fullname}, thank you for booking your appointment. See you on #{self.schedule.strftime("%B %d, %A")}.\n\nThis is an automated message. Please do not reply to this number."
+    "Hi #{self.user.firstname? ? self.user.firstname : self.user.lastname}, thank you for booking your appointment. See you on #{self.schedule.strftime("%B %d, %A")}.\n\nThis is an automated message. Please do not reply to this number."
   end
 
   def appointment_reschedule_sms_text
-    "Hi #{self.user.firstname}! Your appointment was rescheduled to #{self.schedule.strftime("%B %d, %A")}. We're very sorry for the inconvenience this has caused you. See you and be safe!\n\nThis is an automated message. Please do not reply to this number."
+    "Hi #{self.user.firstname}! Your appointment was rescheduled to #{self.schedule.strftime("%B %d, %A")}. We're very sorry for the inconvenience this has caused you.\n\nYou will receive updates through the mobile phone number you have provided regarding your queue status on the day of your appointment. In any case that you need to reschedule or cancel your appointment, please access the link below.\n\nhttps://webdass-staging.herokuapp.com/users/sign_in.\n\nThank you and be safe!\n\nThis is an automated message. Please do not reply to this number."
   end
 end

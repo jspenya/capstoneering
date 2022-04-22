@@ -15,6 +15,10 @@
             <%= form.text_field :mobile_number %>
             <%= form.label :email %>
             <%= form.text_field :email %>
+            <%= form.label :password %><br/>
+            <%= form.password_field :password, placeholder: 'Leave blank if not planning to change', style:'width:100%;padding:0 1em;' %><br/>
+            <%= form.label :password_confirmation %><br/>
+            <%= form.password_field :password_confirmation, placeholder: 'Leave blank if not planning to change', style:'width:100%;padding:0 1em;' %>
             <%= form.button :submit, 'Update Patient Details', style: 'margin-top:2rem;width:100%;' %>
           <% end %>
         </div>
