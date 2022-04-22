@@ -137,7 +137,7 @@ class CallbackController < ApplicationController
       
               if @appointment.save
                 response = {
-                  "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime("%B %d, %A")} at #{@appointment.schedule.strftime("%I:%M %p")}. You can also now login to your WEBDASS account here:https://webdass-staging.herokuapp.com using your Mobile Number and the default password '123456' (Please change this upon logging in). Your Facebook Key is #{u.facebook_key}. This is used for booking appointments here in this portal.\n\nDO NOT SHARE this information with anyone else.\n\nThank you and be safe!"
+                  "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime("%B %d, %A")} at #{@appointment.schedule.strftime("%I:%M %p")}. You can also now login to your WEBDASS account here: https://webdass-staging.herokuapp.com using your Mobile Number and the default password '123456' (Please change this upon logging in). Your Facebook Key is #{u.facebook_key}. This is used for booking appointments here in this portal.\n\nDO NOT SHARE this information with anyone else.\n\nThank you and be safe!"
                 }
               else
                 response = {
