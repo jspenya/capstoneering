@@ -103,54 +103,124 @@ class CallbackController < ApplicationController
     #     "text": "Yo!"
     #   }
     # elsif text_message_received.include? 'name:'
-    if text_message_received.include? 'BOOK:'
+    if text_message_received.include? 'NEW_PATIENT,'
       # Create the user
       password_hex = SecureRandom.hex(5)
-      book, nickname, mobile_number, appointment_date = text_message_received.split("\s", 4)
+      book, nickname, mobile_number, appointment_date = text_message_received.split(', ', 4)
       
-      nickname = nickname.chomp(',')
-      if mobile_number.starts_with? '0'
-        mobile_number = mobile_number.delete_prefix('0').chomp(',')
-      elsif mobile_number.starts_with? '+63'
-        mobile_number = mobile_number.delete_prefix('+63').chomp(',')
-      else
-        mobile_number.chomp(',')
-      end
-      
-      u = User.new(lastname: nickname, mobile_number: mobile_number, password: '123456', password_confirmation: '123456' )
-      
-      if u.save
-        re = Regexp.new(appointment_date, Regexp::IGNORECASE)
-        avail_slots = available_slots.grep(re)
-        
-        unless avail_slots.any?
-         response = {
-           "text": "Sorry, but there are no more slots for that day. Please try a different day."
-         }
+      if book.present? && nickname.present? && mobile_number.present? && appointment_date.present?
+        nickname = nickname.chomp(',')
+        if mobile_number.starts_with? '0'
+          mobile_number = mobile_number.delete_prefix('0').chomp(',')
+        elsif mobile_number.starts_with? '+63'
+          mobile_number = mobile_number.delete_prefix('+63').chomp(',')
+        else
+          mobile_number.chomp(',')
         end
 
-        appointment_schedule = avail_slots.first
-        clinic, wday, time, ampm, date = appointment_schedule.split("\s", 5)
-        clinic_id = Clinic.find_by(name: clinic).id
-        dt = DateTime.parse(date + " " + time + " " + ampm)
-
-        @appointment = u.appointments.new(
-          schedule: dt,
-          clinic_id: clinic_id
-        )
-
-        if @appointment.save
-          response = {
-            "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime("%B %d, %A")} at #{@appointment.schedule.strftime("%I:%M %p")}. See you then!"
-          }
+        re = Regexp.new(appointment_date, Regexp::IGNORECASE)
+        avail_slots = available_slots.grep(re)
+        if avail_slots.any?
+          appointment_schedule = avail_slots.first
+          clinic, wday, time, ampm, date = appointment_schedule.split("\s", 5)
+          clinic_id = Clinic.find_by(name: clinic).id
+          dt = DateTime.parse(date + " " + time + " " + ampm)
+          
+          u = User.new(lastname: nickname, mobile_number: mobile_number, password: '123456', password_confirmation: '123456' )
+          
+          if dt > DateTime.now
+            if u.save
+              @appointment = u.appointments.new(
+                schedule: dt,
+                clinic_id: clinic_id
+              )
+      
+              if @appointment.save
+                response = {
+                  "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime("%B %d, %A")} at #{@appointment.schedule.strftime("%I:%M %p")}. You can also now login to your WEBDASS account here:https://webdass-staging.herokuapp.com using your Mobile Number and the default password '123456' (Please change this upon logging in). Your Facebook Key is #{u.facebook_key}. This is used for booking appointments here in this portal.\n\nDO NOT SHARE this information with anyone else.\n\nThank you and be safe!"
+                }
+              else
+                response = {
+                  "text": "#{@appointment.errors.first.full_message}. Please try again."
+                }
+              end
+            else
+              response = {
+                "text": "#{u.errors.first.full_message}. Please try again."
+              }
+            end
+          else
+            response = {
+              "text": "You cannot book an appointment in the past. Please check and try again!"
+            }
+          end
         else
           response = {
-            "text": "#{@appointment.errors.first.full_message}. Please try again."
+            "text": "Sorry, you cannot book an appointment on that day. Please try again."
           }
         end
       else
         response = {
-          "text": "#{u.errors.first.full_message}. Please try again."
+          "text": "Sorry! Your response is missing some of the required fields. Please check and try again."
+        }
+      end
+    elsif text_message_received.include? 'EXISTING_PATIENT'
+      book, nickname, mobile_number, fb_key, appointment_date = text_message_received.split(', ', 5)
+
+      if book.present? && nickname.present? && mobile_number.present? && fb_key.present? && appointment_date.present?
+
+        nickname = nickname.chomp(',')
+
+        if mobile_number.starts_with? '0'
+          mobile_number = mobile_number.delete_prefix('0').chomp(',')
+        elsif mobile_number.starts_with? '+63'
+          mobile_number = mobile_number.delete_prefix('+63').chomp(',')
+        else
+          mobile_number.chomp(',')
+        end
+
+        re = Regexp.new(appointment_date, Regexp::IGNORECASE)
+        avail_slots = available_slots.grep(re)
+        if avail_slots.any?
+          appointment_schedule = avail_slots.first
+          clinic, wday, time, ampm, date = appointment_schedule.split("\s", 5)
+          clinic_id = Clinic.find_by(name: clinic).id
+          dt = DateTime.parse(date + " " + time + " " + ampm)
+          
+          u = User.find_by(mobile_number: mobile_number)
+  
+          if dt > DateTime.now
+            if u.present?
+              if u.facebook_key == fb_key
+                @appointment = u.appointments.new(
+                  schedule: dt,
+                  clinic_id: clinic_id
+                )
+        
+                if @appointment.save
+                  response = {
+                    "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime("%B %d, %A")} at #{@appointment.schedule.strftime("%I:%M %p")}. You can also now login to your WEBDASS account here:https://webdass-staging.herokuapp.com using your Mobile Number and the default password '123456' (Please change this upon logging in). Your Facebook Key is #{u.facebook_key}. This is used for booking appointments here in this portal.\n\nDO NOT SHARE this information with anyone else.\n\nThank you and be safe!"
+                  }
+                else
+                  response = {
+                    "text": "#{@appointment.errors.first.full_message} Please try again."
+                  }
+                end
+              else
+                response = {
+                  "text": "Your facebook key from your account doesn't match. Please try again."
+                }
+              end
+            end
+          end
+        else
+          response = {
+            "text": "Sorry, you cannot book an appointment on that day. Please try again."
+          }
+        end
+      else
+        response = {
+          "text": "Sorry! Your response is missing some of the required fields. Please check and try again."
         }
       end
     elsif text_message_received.include? 'CL-'
@@ -159,15 +229,13 @@ class CallbackController < ApplicationController
       clinic = Clinic.find(clinic_id)
 
       clinic_schedules = clinic.clinic_schedules
-      # schedules = clinic_schedules.join(', ')
-
       scheds = []
       clinic_schedules.each do |cs|
         scheds << "- Every " + cs.day + " from " + cs.start_time.strftime("%I:%M %p") + " to " + cs.end_time.strftime("%I:%M %p") + "\n"
       end
-      
+
       response = {
-        "text": "Clinic Schedules for #{clinic.name.split('_').join(' ')}:\n\n#{scheds.join('')}\nDisclaimer: Please note that these schedules are subject to change due availability of the doctor.\n\nTo book your appointment, send us a message with your lastname, contact number, and the date of your appointment.\n\nSee example:\n`BOOK: LastNameHere, 09123456789, January 1 2022`"
+        "text": "Clinic Schedules for #{clinic.name.split('_').join(' ')}:\n\n#{scheds.join('')}\nDisclaimer: Please note that these schedules are subject to change due availability of the doctor.\n\nTo book your appointment, send us a message with your lastname, contact number, and the date of your appointment.\n\n-------\n\nIf this is your first time to book an appointment here, type:\n`NEW_PATIENT, LastName, 11DigitMobileNumber, MonthOfAppointment DayOfAppointment YearOfAppointment`\n\nIf you have an existing account in WEBDASS, follow the example:\n`EXISTING_PATIENT, Dela Cruz, 09362565221, your_facebook_key_here, September 27, 2022`\n\nNOTE: Your Facebook Key was sent to you when your account was created."
       }
     else
       # response = {
@@ -183,6 +251,11 @@ class CallbackController < ApplicationController
       }
     end
     # Sends the response message
+    call_send_api(sender_psid, response)
+    rescue ActiveRecord::RecordNotFound
+      response = {
+        "text": "Sorry! We don't seem to have that record. Please check if you have typed that correctly and try again."
+      }
     call_send_api(sender_psid, response)
   end
 
