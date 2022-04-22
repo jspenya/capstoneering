@@ -29,7 +29,8 @@ class User < ApplicationRecord
   has_many :clinics, dependent: :destroy
   has_many :clinic_queues, dependent: :destroy
   validates :mobile_number, uniqueness: true
-
+  before_create :generate_facebook_key
+  after_create :send_user_creation_sms
 
   accepts_nested_attributes_for :appointments, :allow_destroy => true
   validates :mobile_number, phone: true
@@ -54,6 +55,11 @@ class User < ApplicationRecord
     user_appointments.count
   end
 
+  def generate_facebook_key
+    fb_key = SecureRandom.hex(3)
+    self.facebook_key = fb_key
+  end
+
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
     if (login = conditions.delete(:login))
@@ -61,5 +67,13 @@ class User < ApplicationRecord
     elsif conditions.has_key?(:mobile_number) || conditions.has_key?(:email)
       where(conditions.to_h).first
     end
+  end
+  
+  def send_user_creation_sms
+    TwilioClient.new.send_text(self, user_creation_sms_text)
+  end
+
+  def user_creation_sms_text
+    "Hi #{self.firstname || self.lastname}, you have been signed up to WEBDASS. You can now login to your account here: https://webdass-staging.herokuapp.com/users/sign_in\n\nYou'll also need this Facebook Key for booking appointments through our Facebook Messenger Portal. Do not share this with anyone.\n\nFACEBOOK KEY: #{self.facebook_key} \n\nSave this somewhere safe."
   end
 end

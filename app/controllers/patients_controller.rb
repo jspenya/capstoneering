@@ -5,7 +5,7 @@ class PatientsController <  ApplicationController
   # before_action :authenticate_patient!
 
   def index
-    @patients = Patient.all
+    @patients = User.where(role: 1)
   end
 
   def new
@@ -40,21 +40,28 @@ class PatientsController <  ApplicationController
   def create
 
     # this if block is a kludge; i do not know why rails does not understand fully enums
-    if (my_role = params[:patient][:role])&.to_i != 0
-      params[:patient][:role] = Patient.roles.find{|k,v| v==params[:patient][:role].to_i}.first
+    if (my_role = params[:role])&.to_i != 0
+      params[:role] = Patient.roles.find{|k,v| v==params[:role].to_i}.first
     end
 
-    @patient = Patient.new(patient_params)
+    @user = User.new(
+      email: params[:email],
+      firstname: params[:firstname],
+      lastname: params[:lastname],
+      mobile_number: params[:mobile_number],
+      password: params[:password],
+      password_confirmation: params[:password_confirmation]
+    )
 
     respond_to do |format|
-      if @patient.save
+      if @user.save
         if current_user.doctor?
-          format.html { redirect_to doctor_patients_path, notice: "Patient created successfully!" }
+          format.html { redirect_to patients_url, notice: "Patient created successfully!" }
           # format.json { render :show, status: :created, location: @patient }
         end
       else
         if current_user.doctor?
-          format.html { redirect_to doctor_book_appointment_path, alert: "Appointment was not created. #{@appointment.errors.first.full_message}" }
+          format.html { redirect_to patients_url, alert: "Appointment was not created. #{@appointment.errors.first.full_message}" }
           # format.json { render json: @patient.errors, status: :unprocessable_entity }
         end
       end
