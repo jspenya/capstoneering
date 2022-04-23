@@ -2,10 +2,72 @@ class PatientsController <  ApplicationController
   before_action :authenticate_user!
   before_action :set_patient, only: %i[ show edit update destroy ] # only: %i[ dashboard book_appointment ]
   before_action :set_patients #, only: %i[ dashboard book_appointment ]
+  before_action :set_in_progress, only: [:dashboard]
   # before_action :authenticate_patient!
 
   def index
     @patients = User.where(role: 1)
+  end
+
+  def filter_appointments
+    appointments_sched = params[:appointment_sched]
+
+    if appointments_sched == 'today'
+      @appointments = Appointment.doctor_appointments_today.where(cancelled: false)
+    elsif appointments_sched == 'all'
+      @appointments = Appointment.where(cancelled: false)
+    elsif appointments_sched == 'past'
+      @appointments = Appointment.where('schedule < ?', DateTime.now)
+    elsif appointments_sched == 'week'
+      @appointments = Appointment.current_week.where(cancelled: false)
+    elsif appointments_sched == 'month'
+      @appointments = Appointment.current_month.where(cancelled: false)
+    else
+    end
+  end
+
+  def cancel_appointment
+    @appointment = Appointment.find(params[:id])
+
+    @appointment.cancelled = true
+
+    if @appointment.save
+      redirect_to doctor_appointments_url, notice: 'Appointment was successfully cancelled.'
+    else
+      redirect_to doctor_appointments_url, alert: "#{@appointment.errors.first.full_message}"
+    end
+  end
+
+  def reschedule_appointment
+    @appointment = Appointment.find(params[:id])
+    
+    app_sched = params[:appointment][:appointment_schedule]
+    clinic, wday, time, ampm, date = app_sched.split("\s",5)
+    clinic_id = Clinic.find_by(name: clinic).id
+    dt = DateTime.parse(date + " " + time + " " + ampm)
+
+    @appointment.schedule = dt
+    @appointment.clinic_id = clinic_id
+
+    if @appointment.save
+      redirect_to doctor_appointments_url, notice: "Appointment updated successfully!"
+    else
+      redirect_to doctor_appointments_url, alert: " #{@appointment.errors.first.full_message}"
+    end
+  end
+
+  def make_terms_from term
+    terms = term.split.map{|t| "lastname ilike '%%%s%%'" % t}.join(" or ")
+  end
+
+  def autocomplete_schedule
+    term = params[:term]
+    terms = term.split
+
+    str = terms.join('.*?\s')
+    re = Regexp.new(str, Regexp::IGNORECASE)
+    as = available_slots.grep re
+    render :json => as.map{ |s| { :label => s, :value => s } }
   end
 
   def new
@@ -94,10 +156,11 @@ class PatientsController <  ApplicationController
   def dashboard
     patient = current_user
     @appointments_to_attend = patient.appointments.where('schedule > ?', Time.now.utc)
+    @clinic_queues = ClinicQueue.queue_today.where(status: 1).order('queue_type DESC, schedule')
   end
 
   def my_appointments
-    @appointments = current_user.appointments
+    @appointments = current_user.appointments.where(cancelled: false)
   end
 
   def create_appointment
@@ -163,4 +226,8 @@ class PatientsController <  ApplicationController
     params.require(:patient).permit(:email, :firstname, :lastname, :birthdate, :gender, :mobile_number, :role, :password, :password_confirmation)
   end
 
+  def set_in_progress
+		# return nil if @clinic_queues.empty?
+		@in_progress = ClinicQueue.queue_today.where(status: 2).last
+	end
 end

@@ -29,7 +29,12 @@ Rails.application.routes.draw do
   resources :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   get 'home/index', to: 'home#index'
-  resources :patients
+  resources :patients do
+    post :cancel_appointment, on: :member
+    post :reschedule_appointment, on: :member
+    post :autocomplete_schedule, on: :collection
+    get :filter_appointments, on: :collection
+  end
   resources :clinic_schedules do
     resources :clinic_special_cases
   end

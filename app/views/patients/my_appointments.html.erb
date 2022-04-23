@@ -1,84 +1,49 @@
-<div class="row">
-  <div class="col">
-    <div style="margin:1.5rem;">
-      <h3>Hi <%= current_user.firstname %>,</h3>
-      <% if @appointments.present? %>
-        <h5>
-          These are all of your appointments.
-        </h5>
-        <div>
-          <% @appointments.each do |appointment| %>
-            <ul>
-              <li>
-                <h3>
-                  <%= appointment.schedule.strftime("%B %d, %I:%M %p") %> - <%= appointment.clinic.name.split('_').join(" ") %> Clinic
-                </h3>
-              </li>
-            </ul>
-          <% end %>
-        </div>
-      <% else %>
-        <h5>
-          You have no appointments set. Book an appointment <%= link_to 'here', patient_book_appointment_path %>.
-        </h5>
-      <% end %>
-    </div>
-  </div>
-  <%# <div class="col-6 col-md-6 col-xl-3 mb-4">
-    <div class="card shadow border-left-primary py-2 data-card">
-      <div class="card-body">
-        <div class="row align-items-center no-gutters">
-
-          <div class="col mr-2">
-            <div class="text-uppercase text-primary font-weight-bold text-xs mb-1"><span>Total Appointments Booked</span></div>
-            <div class="text-dark font-weight-bold h5 mb-0 db-amt"><span>5</span></div>
-          </div>
-          <div class="col-auto"><i class="fas fa-user-injured fa-2x text-gray-300"></i></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-6 col-md-6 col-xl-3 mb-4">
-    <div class="card shadow border-left-success py-2 data-card">
-      <div class="card-body">
-        <div class="row align-items-center no-gutters">
-          <div class="col mr-2">
-            <div class="text-uppercase text-success font-weight-bold text-xs mb-1"><span>Appointments</span></div>
-            <div class="text-dark font-weight-bold h5 mb-0 db-amt"><span>2<br></span></div>
-          </div>
-          <div class="col-auto"><i class="fas fa-calendar-plus fa-2x text-gray-300"></i></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-6 col-md-6 col-xl-3 mb-4">
-    <div class="card shadow border-left-info py-2 data-card">
-      <div class="card-body">
-        <div class="row align-items-center no-gutters">
-          <div class="col mr-2">
-            <div class="text-uppercase text-info font-weight-bold text-xs mb-1 db-amt-hd"><span>Appointments Cancelled</span></div>
-            <div class="row no-gutters align-items-center">
-              <div class="col-auto">
-                <div class="text-dark font-weight-bold h5 mb-0 mr-3 db-amt"><span>1</span></div>
+<div class="container">
+  <div class="row mb-3">
+    <div class="col-md-12">
+        <div class="row">
+          <div class="col">
+            <div class="card shadow mb-3">
+              <div class="card-header py-3">
+                <div class="row">
+                  <div class="col-sm-4 col-xl-7">
+                    <p class="text-primary m-0 font-weight-bold" style="margin-top:0.5rem!important;">Confirmed Appointments</p>
+                  </div>
+                </div>                   
+              </div>
+              <div class="card-body">
+                <div class="container">
+                  <div style="display:flex;">
+                    <%= link_to filter_appointments_patients_path(appointment_sched: "all"), remote: true, class: "btn btn-primary filterButton", title: "Appointments Today" do %>
+                      All
+                    <% end %>
+                    <%= link_to filter_appointments_patients_path(appointment_sched: "past"), remote: true, class: "btn btn-primary filterButton", title: "Appointments Today" do %>
+                      Past
+                    <% end %>
+                    <%= link_to filter_appointments_patients_path(appointment_sched: "today"), remote: true, class: "btn btn-primary filterButton", title: "Appointments Today" do %>
+                      Today
+                    <% end %>
+                    <%= link_to filter_appointments_patients_path(appointment_sched: "week"), remote: true, class: "btn btn-primary filterButton", title: "Appointments Today" do %>
+                      This Week
+                    <% end %>
+                    <%= link_to filter_appointments_patients_path(appointment_sched: "month"), remote: true, class: "btn btn-primary filterButton", title: "Appointments Today" do %>
+                      This Month
+                    <% end %>
+                  </div>
+                  <span class="counter pull-right"></span>
+                  <div class="row">
+                    <div class="table-responsive table results today_bookings text-nowrap">
+                      <table class="appointmentsTable table table-responsive-md">
+                        <%= render partial: "appointments", locals: {appointments: @appointments} %>
+                      </table>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-auto db-icon-col"><i class="fas fa-calendar-times fa-2x text-gray-300"></i></div>
         </div>
       </div>
     </div>
   </div>
-  <div class="col-6 col-md-6 col-xl-3 mb-4">
-    <div class="card shadow border-left-warning py-2 data-card">
-      <div class="card-body">
-        <div class="row align-items-center no-gutters">
-          <div class="col mr-2">
-            <div class="text-uppercase text-warning font-weight-bold text-xs mb-1"><span>Your queue status today</span></div>
-            <div class="text-dark font-weight-bold h5 mb-0 db-amt"><span>NONE</span></div>
-          </div>
-          <div class="col-auto"><i class="fas fa-alarm-clock fa-2x text-gray-300"></i></div>
-        </div>
-      </div>
-    </div>
-  </div> %>
 </div>
