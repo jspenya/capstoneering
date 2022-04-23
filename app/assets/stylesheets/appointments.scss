@@ -479,3 +479,23 @@ header .fa-times{
   }
 
 }
+
+.table {
+  color: #858796;
+}
+
+.filterButton {
+  background-color: #224962;
+  padding: 10px 15px;
+  margin: 0 5px;
+  border-radius: 5px;
+  border: none;
+  text-decoration: none;
+  color: #fff;
+  a {
+    text-decoration: none!important;
+  }
+  a:hover{
+    text-decoration: none!important;
+  }
+}

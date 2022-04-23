@@ -3,6 +3,7 @@ class DoctorsController <  ApplicationController
   before_action :set_patient, only: %i[ show edit update destroy ] # only: %i[ dashboard book_appointment ]
   before_action :set_patients #, only: %i[ dashboard book_appointment ]
   before_action :set_secretaries #, only: %i[ dashboard book_appointment ]
+  before_action :set_in_progress, only: [:dashboard]
   # before_action :authenticate_patient!
   # before_action :setup_queue_index, only: [:queue_show]
   autocomplete :patient, :lastname_mobile_number
@@ -44,6 +45,7 @@ class DoctorsController <  ApplicationController
 
   def dashboard
     @appointments = Appointment.all
+    @clinic_queues = ClinicQueue.queue_today.where(status: 1).order('queue_type DESC, schedule')
 
     @appointments_to_attend = @appointments.where('schedule > ?', Time.now.utc)
     @appointments_served = @appointments.where('schedule < ? AND schedule > ?', Time.now.utc, Time.now.utc.beginning_of_day)
@@ -117,7 +119,7 @@ class DoctorsController <  ApplicationController
 
   def book_existing_patient_appointment
     user_field = params[:patient][:lastname_mobile_number]
-    l_name, mobile_num = user_field.split(" ")
+    l_name, f_name, mobile_num = user_field.split(", ")
     mobile_number = mobile_num.delete_prefix('+63')
 
     user = User.find_by(mobile_number: mobile_number)
@@ -330,4 +332,9 @@ class DoctorsController <  ApplicationController
 
     available_slots = array_of_all_slots - days_taken
   end
+
+  def set_in_progress
+		# return nil if @clinic_queues.empty?
+		@in_progress = ClinicQueue.queue_today.where(status: 2).last
+	end
 end

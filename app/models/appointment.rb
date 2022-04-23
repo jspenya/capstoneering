@@ -27,15 +27,15 @@ class Appointment < ApplicationRecord
   validate :patient_no_same_day_rescheduling, on: :update
 
   # after_create :send_appointment_creation_mail
-  after_create :send_appointment_creation_sms
+  # after_create :send_appointment_creation_sms
   # after_update :send_appointment_reschedule_mail
-  after_update :send_appointment_reschedule_sms
+  # after_update :send_appointment_reschedule_sms
 
   accepts_nested_attributes_for :clinic
 
   scope :current_week, ->{
-    start = Time.zone.now
-    where(schedule: start.beginning_of_week..start.end_of_week)
+    start = Time.now.asctime.to_date
+    where(schedule: DateTime.now.beginning_of_week..DateTime.now.end_of_week)
   }
 
   # scope :clinic_days, -> {
@@ -51,7 +51,7 @@ class Appointment < ApplicationRecord
   }
 
   scope :current_month, -> {
-    where(schedule: Time.now.utc.beginning_of_month..Time.now.utc.end_of_month)
+    where(schedule: DateTime.now.beginning_of_month..DateTime.now.end_of_month)
   }
 
   scope :upcoming_appointments_today, -> {

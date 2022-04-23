@@ -4,40 +4,38 @@
         <div class="row">
           <div class="col">
             <div class="card shadow mb-3">
-              <div class="card-body">
+              <div class="card-header py-3">
                 <div class="row">
-                  <% unless @appointments.present? %>
-                    <div class="card-body">
-                      <div class="row">
-                        <h5>
-                          &#x1F680; You have no appointments for today, doc.
-                        </h5>
-                      </div>
+                  <div class="col-sm-4 col-xl-7">
+                    <p class="text-primary m-0 font-weight-bold" style="margin-top:0.5rem!important;">Confirmed Appointments</p>
+                  </div>
+                </div>                   
+              </div>
+              <div class="card-body">
+                <div class="container">
+                  <div style="display:flex;">
+                    <%= link_to filter_appointments_doctor_appointments_path(appointment_sched: "all"), remote: true, class: "btn btn-primary filterButton", title: "Appointments Today" do %>
+                      All
+                    <% end %>
+                    <%= link_to filter_appointments_doctor_appointments_path(appointment_sched: "today"), remote: true, class: "btn btn-primary filterButton", title: "Appointments Today" do %>
+                      Today
+                    <% end %>
+                    <%= link_to filter_appointments_doctor_appointments_path(appointment_sched: "week"), remote: true, class: "btn btn-primary filterButton", title: "Appointments Today" do %>
+                      This Week
+                    <% end %>
+                    <%= link_to filter_appointments_doctor_appointments_path(appointment_sched: "month"), remote: true, class: "btn btn-primary filterButton", title: "Appointments Today" do %>
+                      This Month
+                    <% end %>
+                  </div>
+                  <span class="counter pull-right"></span>
+                  <div class="row">
+                    <div class="table-responsive table results today_bookings text-nowrap">
+                      <table class="appointmentsTable table table-responsive-md">
+                        <%= render partial: "appointments", locals: {borrowed_books: @appointments} %>
+                      </table>
                     </div>
-                  <% else %>
-                    <div class="card-header py-3">
-                      <p class="text-primary m-0 font-weight-bold">Appointments for today</p>
-                    </div>
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col-md-12">
-                          <ul>
-                            <% @appointments.each do |a| %>
-                              <li>
-                                <%= a.schedule.strftime("%I:%M %p") %> - <b><%= a.patient.fullname %></b>
-                              </li>
-                            <% end %>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  <% end %>
-                  <% unless @clinic.clinic_schedules.present? %>
-                    <h1>
-                      No clinic for today!
-                    </h1>	
-                  <% end %>
-                </div>	
+                  </div>
+                </div>
               </div>
             </div>
           </div>

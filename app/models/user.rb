@@ -30,7 +30,7 @@ class User < ApplicationRecord
   has_many :clinic_queues, dependent: :destroy
   validates :mobile_number, uniqueness: true
   before_create :generate_facebook_key
-  after_create :send_user_creation_sms
+  # after_create :send_user_creation_sms
 
   accepts_nested_attributes_for :appointments, :allow_destroy => true
   validates :mobile_number, phone: true

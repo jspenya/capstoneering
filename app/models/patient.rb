@@ -35,6 +35,6 @@ class Patient < User
   end
 
   def lastname_and_mobile_number
-    @lastname_and_mobile_number ||= "#{lastname} +63#{mobile_number}"
+    @lastname_and_mobile_number ||= "#{lastname}, #{firstname}, #{mobile_number}"
   end
 end

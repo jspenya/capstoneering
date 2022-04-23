@@ -1,0 +1,29 @@
+<thead>
+  <tr>
+    <th>Clinic</th>
+    <th>Schedule</th>
+    <th>Time</th>
+    <th>Patient's Name</th>
+    <th>Contact Number</th>
+    <th></th>
+  </tr>
+</thead>
+<tbody>
+  <% @appointments.find_each do |a| %>
+    <tr>
+      <td><%= a.clinic.name.split('_').join(' ') %></td>
+      <td><%= a.schedule.strftime("%B %d, %A") %></td>
+      <td><%= a.schedule.strftime("%I:%M %p") %></td>
+      <td><%= a.user.fullname %></td>
+      <td><%= a.user.mobile_number %></td>
+      <td>
+        <%= link_to edit_doctor_appointment_path(a), class:"btn btn-warning action-btn" do %>
+          <i class="far fa-edit"></i>
+        <% end %>
+        <%= link_to cancel_appointment_doctor_appointment_path(a), method: :post, data: { confirm: "Are you sure you want to cancel #{a.user.fullname}'s appointment?" }, class:"btn btn-danger action-btn" do %>
+          <i class="fa fa-trash"></i>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</tbody>
