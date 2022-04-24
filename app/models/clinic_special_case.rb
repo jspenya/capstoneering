@@ -20,14 +20,14 @@ class ClinicSpecialCase < ApplicationRecord
 
   def reject_past_dates
     if day < Date.today
-      errors.add(:base, "Cannot add a special case in the past.")
+      errors.add(:base, "Cannot add a special schedule in the past.")
     end
   end
 
   def only_on_clinic_day_schedule
     clinic_day = self.clinic_schedule.day
     unless clinic_day == day.strftime("%A")
-      errors.add(:base, "Can only add special case on clinic day!")
+      errors.add(:base, "Can only add special schedule on clinic day!")
     end
   end
 end
