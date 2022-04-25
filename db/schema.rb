@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(version: 2022_04_22_190821) do
   end
 
   create_table "clinic_queues", force: :cascade do |t|
-    t.bigint "user_id"
+    t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.datetime "schedule"
