@@ -169,7 +169,7 @@ class DoctorsController <  ApplicationController
         redirect_to doctor_book_appointment_url, alert: " #{@appointment.errors.first.full_message}"
       end
     else
-      redirect_to doctor_book_appointment_url, alert: "There was an error in creating your appointment!"
+      redirect_to doctor_book_appointment_url, alert: "#{@patient.errors.first.full_message}"
     end
   end
 
