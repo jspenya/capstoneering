@@ -33,7 +33,11 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1 or /users/1.json
   def update
     if @user.update(user_params)
-      redirect_to new_user_session_url, notice: 'User details successfully updated. Please login with your new credentials'
+      if current_user.doctor? || current_user.secretary?
+        redirect_to doctor_dashboard_url, notice: 'Account successfully updated!'
+      else
+        redirect_to patient_dashboard_url, notice: 'Account successfully updated!'
+      end
     else
       redirect_to edit_user_path(@user), alert: "#{@user.errors.first.full_message}"
     end

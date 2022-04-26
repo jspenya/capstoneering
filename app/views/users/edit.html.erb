@@ -65,7 +65,7 @@
               <div class="field" style="display:flex;">
                 <%= form.label :password, class:"col-sm-2 col-form-label" %>
                 <div class="col-sm-10">
-                  <%= form.password_field :password, class:'form-control', placeholder: 'Leave blank if not planning to change', style:'width:100%;padding:0 1em;' %>
+                  <%= form.password_field :password, class:'form-control', placeholder: 'Leave blank to not change · changing password requires re-login', style:'width:100%;padding:0 1em;' %>
                 </div>
               </div>
             </div>
@@ -73,7 +73,7 @@
               <div class="field" style="display:flex;">
                 <%= form.label 'Confirm Password', class:"col-sm-2 col-form-label" %>
                 <div class="col-sm-10">
-                  <%= form.password_field :password_confirmation, class:'form-control', placeholder: 'Leave blank if not planning to change', style:'width:100%;padding:0 1em;' %>
+                  <%= form.password_field :password_confirmation, class:'form-control', placeholder: 'Leave blank to not change · changing password requires re-login', style:'width:100%;padding:0 1em;' %>
                 </div>
               </div>
             </div>
