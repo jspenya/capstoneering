@@ -4,7 +4,7 @@ class ClinicSpecialCasesController < ApplicationController
   before_action :set_clinic_special_case, only: [:show, :destroy]
 
   def index
-    @clinic_special_cases = ClinicSpecialCase.all
+    @clinic_special_cases = @clinic_schedule.clinic_special_cases
   end
 
   def new
