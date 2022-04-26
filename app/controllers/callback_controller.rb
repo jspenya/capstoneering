@@ -86,28 +86,12 @@ class CallbackController < ApplicationController
   def handle_message sender_psid, received_message
     response = {}
     text_message_received = received_message.dig("text")
-    # Check if message contains text
 
-    # if text_message_received.include? 'appointment: '
-    #   # d = Date.parse(date)
-    #   # dt = DateTime.new(d.year, d.month, d.day, DateTime.now.hour, DateTime.now.min)
-      
-    #   # Appointment.new
-    #   date = text_message_received.split("\s", 2).last
-    #   re = Regexp.new(date, Regexp::IGNORECASE)
-    #   avail_slots = available_slots.grep(re)
-
-    #   appointment_schedule = avail_slots.first
-      
-    #   response = {
-    #     "text": "Yo!"
-    #   }
-    # elsif text_message_received.include? 'name:'
     if text_message_received.include? 'NEW_PATIENT,'
       # Create the user
       password_hex = SecureRandom.hex(5)
       book, nickname, mobile_number, appointment_date = text_message_received.split(', ', 4)
-      
+
       if book.present? && nickname.present? && mobile_number.present? && appointment_date.present?
         nickname = nickname.chomp(',')
         if mobile_number.starts_with? '0'
@@ -125,16 +109,16 @@ class CallbackController < ApplicationController
           clinic, wday, time, ampm, date = appointment_schedule.split("\s", 5)
           clinic_id = Clinic.find_by(name: clinic).id
           dt = DateTime.parse(date + " " + time + " " + ampm)
-          
+
           u = User.new(lastname: nickname, mobile_number: mobile_number, password: '123456', password_confirmation: '123456' )
-          
+
           if dt > DateTime.now
             if u.save
               @appointment = u.appointments.new(
                 schedule: dt,
                 clinic_id: clinic_id
               )
-      
+
               if @appointment.save
                 response = {
                   "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime("%B %d, %A")} at #{@appointment.schedule.strftime("%I:%M %p")}. You can also now login to your WEBDASS account here: https://webdass-staging.herokuapp.com using your Mobile Number and the default password '123456' (Please change this upon logging in). Your Facebook Key is #{u.facebook_key}. This is used for booking appointments here in this portal.\n\nDO NOT SHARE this information with anyone else.\n\nThank you and be safe!"
@@ -186,9 +170,9 @@ class CallbackController < ApplicationController
           clinic, wday, time, ampm, date = appointment_schedule.split("\s", 5)
           clinic_id = Clinic.find_by(name: clinic).id
           dt = DateTime.parse(date + " " + time + " " + ampm)
-          
+
           u = User.find_by(mobile_number: mobile_number)
-  
+
           if dt > DateTime.now
             if u.present?
               if u.facebook_key == fb_key
@@ -196,7 +180,7 @@ class CallbackController < ApplicationController
                   schedule: dt,
                   clinic_id: clinic_id
                 )
-        
+
                 if @appointment.save
                   response = {
                     "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime("%B %d, %A")} at #{@appointment.schedule.strftime("%I:%M %p")}. You can also now login to your WEBDASS account here:https://webdass-staging.herokuapp.com using your Mobile Number and the default password '123456' (Please change this upon logging in). Your Facebook Key is #{u.facebook_key}. This is used for booking appointments here in this portal.\n\nDO NOT SHARE this information with anyone else.\n\nThank you and be safe!"
@@ -211,6 +195,10 @@ class CallbackController < ApplicationController
                   "text": "Your facebook key from your account doesn't match. Please try again."
                 }
               end
+            else
+              response = {
+                "text": "User record doesn't exist. Please try again."
+              }
             end
           end
         else

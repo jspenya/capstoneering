@@ -46,7 +46,7 @@ gem 'phonelib'
 
 gem 'vonage'
 
-gem 'semaphore-sms'
+# gem 'semaphore-sms'
 
 gem 'kaminari'
 
