@@ -6,9 +6,9 @@
     <div class="col-lg-6 col-xl-6 offset-xl-0 doc_login-form">
       <div class="pt-4 pl-2 pr-2 pb-2">
         <div class="text-center">
-          <a class="logo" href="index.html">
-            <%= image_tag 'logo.png' %>
-          </a>
+          <%= link_to root_path, class: 'logo' do %>
+            <%= image_tag 'logo.png', alt: 'homepage', title: 'Back to Homepage' %>
+          <% end %>
           <hr>
           <h4 class="text-primary mb-4">Book an Appointment</h4>
         </div>
