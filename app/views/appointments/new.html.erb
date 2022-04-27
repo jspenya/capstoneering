@@ -80,6 +80,7 @@
               <% c.clinic_schedules.find_each do |cs| %>
                 <h6>- Every <%= cs.day %>s at <%= cs.start_time.strftime("%I:%M %p") %></h6>
               <% end %>
+              <hr>
             <% end %>
           </div>
         </div>
