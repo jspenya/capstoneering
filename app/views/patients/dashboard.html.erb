@@ -1,77 +1,70 @@
-<div class="container">
-  <div class="row">
-    <div class="card-body">
-      <div class="container">
-        <div class="row mb-3">
-          <div class="col-md-12">
-              <div class="row">
-                <div class="col">
-                  <div class="card shadow mb-3">
-                    <div class="card-header py-3">
-                      <p class="text-primary m-0 font-weight-bold">
-                        Queue for today
-                      </p>
-                    </div>
-                    <div class="card-body">
-                      <div class="table-responsive table results clinic_list text-nowrap">
-                        <% if @in_progress.present? %>
-                          <span class="badge badge-info" style="margin-bottom:1rem;">
-                            <h4>
-                              In Progress:
-                              <%= @in_progress&.patient&.fullname %>
-                            </h4>
-                          </span>
-                        <% end %>
-                        <table class="table">
-                          <thead>
-                            <tr>
-                              <th class="text-nowrap" id="trs-hd"><b>Position</b></th>
-                              <th class="text-nowrap" id="trs-hd"><b>Patient Name</b></th>
-                              <th class="text-nowrap" id="trs-hd"><b>Type</b></th>
-                              <th class="text-nowrap" id="trs-hd"><b>Status</b></th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <% @clinic_queues.each.with_index(1) do |cq, i| %>
-                              <tr class="text-nowrap">
-                                <td class="text-nowrap">
-                                  <%= i %>
-                                </td>
-                                <td class="text-nowrap">
-                                  <%= cq.patient.fullname %> 
-                                    <% if cq.patient.fullname == current_user.fullname %>
-                                      (You)
-                                    <% end %>
-                                  <% if cq.skip_for_now? %>
-                                    <span class="badge badge-pill badge-warning">
-                                      Skipped
-                                    </span>
-                                  <% end %>
-                                </td>
-                                <td class="text-nowrap">
-                                  <% if cq.queue_type == "walkin" %>
-                                    Walk-in
-                                  <% else %>
-                                    Appointment
-                                  <% end %>
-                                </td>
-                                <td class="text-nowrap">
-                                  <% if cq.status == "in_queue" %>
-                                    In Queue
-                                  <% elsif cq.status == "in_progress" %>
-                                    In Progress
-                                  <% else %>
-                                    Finished
-                                  <% end %>
-                                </td>
-                              </tr>
-                            <% end %>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
+<div class="card-body">
+  <div class="container"> 
+    <div class="row">
+      <div class="col-6 col-md-6 col-xl-4 mb-4">
+        <div class="card shadow border-left-primary py-2 data-card">
+          <div class="card-body">
+            <div class="row align-items-center no-gutters">
+              <div class="col mr-2">
+                <div class="text-uppercase text-primary font-weight-bold text-xs mb-1" style="margin-left:1rem;">
+                  <span>
+                    Total Appointments
+                  </span>
                 </div>
+                <div class="text-dark font-weight-bold h5 mb-0 db-amt" style="margin-left:1rem;">
+                  <span>
+                    <%= current_user.appointments.count %>
+                  </span>
+                </div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-user-injured fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-6 col-xl-4 mb-4">
+        <div class="card shadow border-left-success py-2 data-card">
+          <div class="card-body">
+            <div class="row align-items-center no-gutters">
+              <div class="col mr-2">
+                <div class="text-uppercase text-success font-weight-bold text-xs mb-1" style="margin-left:1rem;">
+                  <span>
+                    Upcoming Appointments
+                  </span>
+                </div>
+                <div class="text-dark font-weight-bold h5 mb-0 db-amt" style="margin-left:1rem;">
+                  <span>
+                    <%= current_user.appointments.upcoming.count %>
+                  </span>
+                </div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-calendar-plus fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-6 col-xl-4 mb-4">
+        <div class="card shadow border-left-danger py-2 data-card">
+          <div class="card-body">
+            <div class="row align-items-center no-gutters">
+              <div class="col mr-2">
+                <div class="text-uppercase text-danger font-weight-bold text-xs mb-1" style="margin-left:1rem;">
+                  <span>
+                    Cancelled Appointments
+                  </span>
+                </div>
+                <div class="text-dark font-weight-bold h5 mb-0 db-amt" style="margin-left:1rem;">
+                  <span>
+                    <%= current_user.appointments.where(cancelled: true).count %>
+                  </span>
+                </div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-alarm-clock fa-2x text-gray-300"></i>
               </div>
             </div>
           </div>
@@ -80,3 +73,72 @@
     </div>
   </div>
 </div>
+<% if current_user.appointments.doctor_appointments_today.present? %>
+  <div class="card-body">
+    <div class="container">
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <div class="card shadow mb-3">
+            <div class="card-header py-3">
+              <p class="text-primary m-0 font-weight-bold">
+                Queue for today
+              </p>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive table results clinic_list text-nowrap">
+                <% if @in_progress.present? %>
+                  <span class="badge badge-info" style="margin-bottom:1rem;">
+                    <h4>
+                      In Progress:
+                      <%= @in_progress&.patient&.fullname %>
+                      <% if @in_progress&.patient&.fullname == current_user.fullname %>
+                        <b>(You)</b>
+                      <% end %>
+                    </h4>
+                  </span>
+                <% end %>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th class="text-nowrap" id="trs-hd"><b>Position</b></th>
+                      <th class="text-nowrap" id="trs-hd"><b>Type</b></th>
+                      <th class="text-nowrap" id="trs-hd"><b>Status</b></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% @clinic_queues.each.with_index(1) do |cq, i| %>
+                      <tr class="text-nowrap">
+                        <td class="text-nowrap">
+                          <%= i %>
+                          <% if cq.patient.fullname == current_user.fullname %>
+                            <b>(You)</b>
+                          <% end %>
+                        </td>
+                        <td class="text-nowrap">
+                          <% if cq.queue_type == "walkin" %>
+                            Walk-in
+                          <% else %>
+                            Appointment
+                          <% end %>
+                        </td>
+                        <td class="text-nowrap">
+                          <% if cq.status == "in_queue" %>
+                            In Queue
+                          <% elsif cq.status == "in_progress" %>
+                            In Progress
+                          <% else %>
+                            Finished
+                          <% end %>
+                        </td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

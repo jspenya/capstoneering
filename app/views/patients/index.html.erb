@@ -1,102 +1,102 @@
 <div class="card shadow">
-    <div class="card-header py-3">
-      <p class="text-primary m-0 font-weight-bold">Patients list</p>
-    </div>
-    <div class="card-body">
-        <div class="col-md-12 search-table-col">
-            <div class="form-group pull-right col-xl-12">
-                <div class="row">
-                    <div class="col-sm-4 col-xl-3">
-                      <button class="btn btn-primary btn-block" type="button" data-toggle="modal" data-target="#add-patient-modal">
-                        <strong>Add new patient</strong>
-                      </button>
-                    </div>
-                    <div class="col-sm-4 col-xl-3 offset-xl-6"><input class="form-control-sm search form-control" type="text" placeholder="Search by typing here.."></div>
-                </div>
-            </div>
-            <div class="table-responsive table results patient_list text-nowrap">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th class="text-nowrap" id="trs-hd">First Name</th>
-                            <th class="text-nowrap" id="trs-hd">Last Name</th>
-                            <th class="text-nowrap" id="trs-hd">Contact Number</th>
-                            <th class="text-nowrap" id="trs-hd">Email</th>
-                            <th id="trs-hd"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                      <% @patients.each do |patient| %>
-                        <tr class="text-nowrap">
-                          <td class="text-nowrap"><%= patient.firstname %></td>
-                          <td class="text-nowrap"><%= patient.lastname %></td>
-                          <td><%= patient.mobile_number %></td>
-                          <td><%= patient.email %></td>
-                          <td class="text-center" style="display:flex;">
-                            <%= button_to edit_patient_path(patient), class:"btn btn-warning action-btn", method: :get do %>
-                              <i class="far fa-edit"></i>
-                            <% end %>
-                            <%= button_to patient_path(patient), method: :delete, class: "btn btn-danger action-btn" do %>
-                              <i class="fa fa-trash"></i>
-                            <% end %>
-                          </td>
-                        </tr>
-                      <% end %>
-                    </tbody>
-                </table>
-            </div>
+  <div class="card-header py-3">
+    <p class="text-primary m-0 font-weight-bold">Patients list</p>
+  </div>
+  <div class="card-body">
+    <div class="col-md-12 search-table-col">
+      <div class="form-group pull-right col-xl-12">
+        <div class="row">
+          <div class="col-sm-4 col-xl-3">
+            <button class="btn btn-primary btn-block" type="button" data-toggle="modal" data-target="#add-patient-modal">
+              <strong>Add new patient</strong>
+            </button>
+          </div>
+          <div class="col-sm-4 col-xl-3 offset-xl-6"><input class="form-control-sm search form-control" type="text" placeholder="Search by typing here.."></div>
         </div>
+      </div>
+      <div class="table-responsive table results patient_list text-nowrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="text-nowrap" id="trs-hd">First Name</th>
+              <th class="text-nowrap" id="trs-hd">Last Name</th>
+              <th class="text-nowrap" id="trs-hd">Contact Number</th>
+              <th class="text-nowrap" id="trs-hd">Email</th>
+              <th id="trs-hd"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @patients.each do |patient| %>
+              <tr class="text-nowrap">
+                <td class="text-nowrap"><%= patient.firstname %></td>
+                <td class="text-nowrap"><%= patient.lastname %></td>
+                <td><%= patient.mobile_number %></td>
+                <td><%= patient.email %></td>
+                <td class="text-center" style="display:flex;">
+                  <%= button_to edit_patient_path(patient), class:"btn btn-warning action-btn", method: :get do %>
+                    <i class="far fa-edit"></i>
+                  <% end %>
+                  <%= button_to patient_path(patient), method: :delete, class: "btn btn-danger action-btn" do %>
+                    <i class="fa fa-trash"></i>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 </div>
   <!-- Start: Add Patient Modal -->
 <%= form_with(model: @patient) do |form| %>
   <div class="modal fade" role="dialog" tabindex="-1" id="add-patient-modal">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h4 class="modal-title"><strong>Add new patient</strong></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
-              <div class="modal-body">
-                  <div class="form-row">
-                      <div class="col-xl-6">
-                          <div class="form-group">
-                            <label><strong>First Name</strong>
-                            </label>
-                            <%= form.text_field :firstname %>
-                          </div>
-                      </div>
-                      <div class="col-xl-6">
-                          <div class="form-group"><label><strong>Last Name</strong></label><%= form.text_field :lastname %></div>
-                      </div>
-                  </div>
-                  <div class="form-row">
-                      <div class="col-xl-6">
-                          <div class="form-group"><label><strong>Contact Number</strong></label><%= form.text_field :mobile_number %></div>
-                      </div>
-                      <div class="col-xl-6">
-                        <div class="form-group">
-                          <label>
-                            <strong>Email Address</strong>
-                          </label>
-                          <%= form.text_field :email %>
-                        </div>
-                      </div>
-                  </div>
-                  <%= form.hidden_field :role, value: 1 %>
-                  <div class="form-row">
-                      <div class="col-xl-6">
-                          <div class="form-group"><label><strong>Password</strong></label><%= form.password_field :password %></div>
-                      </div>
-                      <div class="col-xl-6">
-                          <div class="form-group"><label><strong>Password Confirmation</strong></label>
-                            <%= form.password_field :password_confirmation %>
-                          </div>
-                      </div>
-                  </div>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title"><strong>Add new patient</strong></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+          <div class="modal-body">
+            <div class="form-row">
+              <div class="col-xl-6">
+                <div class="form-group">
+                  <label><strong>First Name</strong>
+                  </label>
+                  <%= form.text_field :firstname %>
+                </div>
               </div>
-              <div class="modal-footer text-right"><button class="btn btn-warning" type="button" data-dismiss="modal"><strong>Close</strong></button>
-                <%= form.submit %>
+              <div class="col-xl-6">
+                <div class="form-group"><label><strong>Last Name</strong></label><%= form.text_field :lastname %></div>
               </div>
+            </div>
+            <div class="form-row">
+              <div class="col-xl-6">
+                <div class="form-group"><label><strong>Contact Number</strong></label><%= form.text_field :mobile_number %></div>
+              </div>
+              <div class="col-xl-6">
+                <div class="form-group">
+                  <label>
+                    <strong>Email Address</strong>
+                  </label>
+                  <%= form.text_field :email %>
+                </div>
+              </div>
+            </div>
+            <%= form.hidden_field :role, value: 1 %>
+            <div class="form-row">
+              <div class="col-xl-6">
+                <div class="form-group"><label><strong>Password</strong></label><%= form.password_field :password %></div>
+              </div>
+              <div class="col-xl-6">
+                <div class="form-group"><label><strong>Password Confirmation</strong></label>
+                  <%= form.password_field :password_confirmation %>
+                </div>
+              </div>
+            </div>
           </div>
+          <div class="modal-footer text-right"><button class="btn btn-warning" type="button" data-dismiss="modal"><strong>Close</strong></button>
+          <%= form.submit %>
+        </div>
       </div>
+    </div>
   </div>
 <% end %>
