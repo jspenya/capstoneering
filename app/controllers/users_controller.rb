@@ -33,7 +33,7 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1 or /users/1.json
   def update
     if @user.update(user_params)
-      if current_user.doctor? || current_user.secretary?
+      if @user.doctor? || @user.secretary?
         redirect_to doctor_dashboard_url, notice: 'Account successfully updated!'
       else
         redirect_to patient_dashboard_url, notice: 'Account successfully updated!'
