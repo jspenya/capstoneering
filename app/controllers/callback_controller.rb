@@ -1,17 +1,17 @@
-# frozen_string_literal: true
-
 class CallbackController < ApplicationController
   protect_from_forgery with: :null_session
 
   def index
-    verify_token = 'asdf'
+    verify_token = "asdf"
 
     mode = request.query_parameters['hub.mode']
     token = request.query_parameters['hub.verify_token']
     challenge = request.query_parameters['hub.challenge']
 
     if mode && token
-      render json: challenge if mode == 'subscribe' && token == verify_token
+      if mode == 'subscribe' && token == verify_token
+        render json: challenge
+      end
     else
       head 403
     end
@@ -21,19 +21,19 @@ class CallbackController < ApplicationController
     request_body = request.body.read
     body = JSON.parse(request_body)
 
-    if body['object'] == 'page'
-      body['entry'].each do |entry|
-        webhook_event = entry['messaging'].first
+    if body.dig("object") == "page"
+      body.dig('entry').each do |entry|
+        webhook_event = entry.dig('messaging').first
         Rails.logger.info("Webhook event: #{webhook_event}")
 
         # get the sender psid
         sender_psid = webhook_event.dig('sender', 'id')
         Rails.logger.info("Sender PSID: #{sender_psid}")
 
-        if webhook_event['message'].any?
-          handle_message(sender_psid, webhook_event['message'])
-        elsif webhook_event['postback'].any?
-          handle_postback(sender_psid, webhook_event['postback'])
+        if webhook_event.dig('message').any?
+          handle_message(sender_psid, webhook_event.dig('message'))
+        elsif webhook_event.dig('postback').any?
+          handle_postback(sender_psid, webhook_event.dig('postback'))
         end
       end
       head 200
@@ -43,14 +43,16 @@ class CallbackController < ApplicationController
   end
 
   def get_user_profile
-    verify_token = 'asdf'
+    verify_token = "asdf"
 
     mode = request.query_parameters['hub.mode']
     token = request.query_parameters['hub.verify_token']
     challenge = request.query_parameters['hub.challenge']
 
     if mode && token
-      render json: challenge if mode == 'subscribe' && token == verify_token
+      if mode == 'subscribe' && token == verify_token
+        render json: challenge
+      end
     else
       head 403
     end
@@ -60,19 +62,19 @@ class CallbackController < ApplicationController
     request_body = request.body.read
     body = JSON.parse(request_body)
 
-    if body['object'] == 'page'
-      body['entry'].each do |entry|
-        webhook_event = entry['messaging'].first
+    if body.dig("object") == "page"
+      body.dig('entry').each do |entry|
+        webhook_event = entry.dig('messaging').first
         Rails.logger.info("Webhook event: #{webhook_event}")
 
         # get the sender psid
         sender_psid = webhook_event.dig('sender', 'id')
         Rails.logger.info("Sender PSID: #{sender_psid}")
 
-        if webhook_event['message'].any?
-          handle_message(sender_psid, webhook_event['message'])
-        elsif webhook_event['postback'].any?
-          handle_postback(sender_psid, webhook_event['postback'])
+        if webhook_event.dig('message').any?
+          handle_message(sender_psid, webhook_event.dig('message'))
+        elsif webhook_event.dig('postback').any?
+          handle_postback(sender_psid, webhook_event.dig('postback'))
         end
       end
       head 200
@@ -81,9 +83,9 @@ class CallbackController < ApplicationController
     end
   end
 
-  def handle_message(sender_psid, received_message)
+  def handle_message sender_psid, received_message
     response = {}
-    text_message_received = received_message['text']
+    text_message_received = received_message.dig("text")
 
     if text_message_received.include? 'NEW_PATIENT,'
       # Create the user
@@ -106,21 +108,20 @@ class CallbackController < ApplicationController
           appointment_schedule = avail_slots.first
           clinic, wday, time, ampm, date = appointment_schedule.split("\s", 5)
           clinic_id = Clinic.find_by(name: clinic).id
-          dt = DateTime.parse("#{date} #{time} #{ampm}")
+          dt = DateTime.parse(date + " " + time + " " + ampm)
 
-          u = User.new(lastname: nickname, mobile_number: mobile_number, password: '123456',
-                       password_confirmation: '123456')
+          u = User.new(lastname: nickname, mobile_number: mobile_number, password: '123456', password_confirmation: '123456' )
 
           if dt > DateTime.now
             if u.save
               @appointment = u.appointments.new(
                 schedule: dt,
-                clinic_id:
+                clinic_id: clinic_id
               )
 
               if @appointment.save
                 response = {
-                  "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime('%B %d, %A')} at #{@appointment.schedule.strftime('%I:%M %p')}. You can also now login to your WEBDASS account here: https://webdass-staging.herokuapp.com using your Mobile Number and the default password '123456' (Please change this upon logging in). Your Facebook Key is #{u.facebook_key}. This is used for booking appointments here in this portal.\n\nDO NOT SHARE this information with anyone else.\n\nThank you and be safe!"
+                  "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime("%B %d, %A")} at #{@appointment.schedule.strftime("%I:%M %p")}. You can also now login to your WEBDASS account here: https://webdass-staging.herokuapp.com using your Mobile Number and the default password '123456' (Please change this upon logging in). Your Facebook Key is #{u.facebook_key}. This is used for booking appointments here in this portal.\n\nDO NOT SHARE this information with anyone else.\n\nThank you and be safe!"
                 }
               else
                 response = {
@@ -134,17 +135,17 @@ class CallbackController < ApplicationController
             end
           else
             response = {
-              "text": 'You cannot book an appointment in the past. Please check and try again!'
+              "text": "You cannot book an appointment in the past. Please check and try again!"
             }
           end
         else
           response = {
-            "text": 'Sorry, you cannot book an appointment on that day. Please try again.'
+            "text": "Sorry, you cannot book an appointment on that day. Please try again."
           }
         end
       else
         response = {
-          "text": 'Sorry! Your response is missing some of the required fields. Please check and try again.'
+          "text": "Sorry! Your response is missing some of the required fields. Please check and try again."
         }
       end
     elsif text_message_received.include? 'EXISTING_PATIENT'
@@ -168,7 +169,7 @@ class CallbackController < ApplicationController
           appointment_schedule = avail_slots.first
           clinic, wday, time, ampm, date = appointment_schedule.split("\s", 5)
           clinic_id = Clinic.find_by(name: clinic).id
-          dt = DateTime.parse("#{date} #{time} #{ampm}")
+          dt = DateTime.parse(date + " " + time + " " + ampm)
 
           u = User.find_by(mobile_number: mobile_number)
 
@@ -177,12 +178,12 @@ class CallbackController < ApplicationController
               if u.facebook_key == fb_key
                 @appointment = u.appointments.new(
                   schedule: dt,
-                  clinic_id:
+                  clinic_id: clinic_id
                 )
 
                 if @appointment.save
                   response = {
-                    "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime('%B %d, %A')} at #{@appointment.schedule.strftime('%I:%M %p')}. You can also now login to your WEBDASS account here:https://webdass-staging.herokuapp.com using your Mobile Number and the default password '123456' (Please change this upon logging in). Your Facebook Key is #{u.facebook_key}. This is used for booking appointments here in this portal.\n\nDO NOT SHARE this information with anyone else.\n\nThank you and be safe!"
+                    "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime("%B %d, %A")} at #{@appointment.schedule.strftime("%I:%M %p")}. You can also now login to your WEBDASS account here:https://webdass-staging.herokuapp.com using your Mobile Number and the default password '123456' (Please change this upon logging in). Your Facebook Key is #{u.facebook_key}. This is used for booking appointments here in this portal.\n\nDO NOT SHARE this information with anyone else.\n\nThank you and be safe!"
                   }
                 else
                   response = {
@@ -202,12 +203,12 @@ class CallbackController < ApplicationController
           end
         else
           response = {
-            "text": 'Sorry, you cannot book an appointment on that day. Please try again.'
+            "text": "Sorry, you cannot book an appointment on that day. Please try again."
           }
         end
       else
         response = {
-          "text": 'Sorry! Your response is missing some of the required fields. Please check and try again.'
+          "text": "Sorry! Your response is missing some of the required fields. Please check and try again."
         }
       end
     elsif text_message_received.include? 'CL-'
@@ -218,7 +219,7 @@ class CallbackController < ApplicationController
       clinic_schedules = clinic.clinic_schedules
       scheds = []
       clinic_schedules.each do |cs|
-        scheds << "- Every #{cs.day} from #{cs.start_time.strftime('%I:%M %p')} to #{cs.end_time.strftime('%I:%M %p')}\n"
+        scheds << "- Every " + cs.day + " from " + cs.start_time.strftime("%I:%M %p") + " to " + cs.end_time.strftime("%I:%M %p") + "\n"
       end
 
       response = {
@@ -228,7 +229,7 @@ class CallbackController < ApplicationController
       clinics = []
       Clinic.all.each do |c|
         # clinics =[]
-        clinics << "CL-#{c.id} #{c.name.split('_').join(' ')}\n"
+        clinics << "CL-" + c.id.to_s + " " + c.name.split('_').join(' ') + "\n"
       end
       response = {
         "text": "Hi there! Welcome to the WEBDASS Appointments Booking Portal. To proceed with your booking, please choose a clinic:\n\n#{clinics.join('')}\n\nTo check for the clinic schedules,\nreply with the clinic ID.\n\nExample:\nCL-1"
@@ -236,16 +237,17 @@ class CallbackController < ApplicationController
     end
     # Sends the response message
     call_send_api(sender_psid, response)
-  rescue ActiveRecord::RecordNotFound
-    response = {
-      "text": "Sorry! We don't seem to have that record. Please check if you have typed that correctly and try again."
-    }
+    rescue ActiveRecord::RecordNotFound
+      response = {
+        "text": "Sorry! We don't seem to have that record. Please check if you have typed that correctly and try again."
+      }
     call_send_api(sender_psid, response)
   end
 
-  def handle_postback(sender_psid, received_postback); end
+  def handle_postback sender_psid, received_postback
+  end
 
-  def call_send_api(sender_psid, response)
+  def call_send_api sender_psid, response
     request_body = {
       "recipient": {
         "id": sender_psid
@@ -263,52 +265,52 @@ class CallbackController < ApplicationController
   private
 
   def page_access_token
-    'EAADZA3dkwy1sBACyVeKF70n1leMCMEBXnZBh1qyaBQ3LmcmoYfKxapDdRqpEwIGGFAC9urIn73dnWxfliDoEpwHpZBkkBtrUyBuqoR2VqfZBm33NvqR3B6lgZARruVmjpX1LFOvfYJ0czqiLFSIsOslsil8z1jwJC0oJ0EmXsbV0j25RhZATzipFm6MBmZADnMZD'
+    "EAADZA3dkwy1sBACyVeKF70n1leMCMEBXnZBh1qyaBQ3LmcmoYfKxapDdRqpEwIGGFAC9urIn73dnWxfliDoEpwHpZBkkBtrUyBuqoR2VqfZBm33NvqR3B6lgZARruVmjpX1LFOvfYJ0czqiLFSIsOslsil8z1jwJC0oJ0EmXsbV0j25RhZATzipFm6MBmZADnMZD"
   end
 
-  def time_iterate(start_time, end_time, step)
-    loop do
+  def time_iterate(start_time, end_time, step, &block)
+    begin
       yield(start_time)
-      break unless (start_time += step) <= end_time
-    end
+    end while (start_time += step) <= end_time
   end
 
   def available_slots
     c =
-      Clinic.all.map  do |c|
-        [c.clinic_schedules.map do |cs|
-           (
-             x = []
-             time_iterate(cs.start_time, cs.end_time, c.appointment_duration.minutes) do |dt|
-               x << ["#{c.name} #{cs.day} #{dt.strftime('%l:%M %p')}"]
-             end
-             if special_case = cs.clinic_special_cases.find_by(day: Date.today)
-               x.take(special_case.slots)
-             else
-               x.take(cs.slots)
-             end
-           )
-         end]
-      end.flatten
+      Clinic.all.map{|c|
+        [c.clinic_schedules.map{ |cs|
+            (
+              x = []
+              time_iterate(cs.start_time, cs.end_time, c.appointment_duration.minutes) do |dt|
+                x << [ c.name + " " + cs.day + " " + dt.strftime("%l:%M %p") ]
+              end
+              if special_case = cs.clinic_special_cases.find_by(day: Date.today)
+                x.take(special_case.slots)
+              else
+                x.take(cs.slots)
+              end
+            )
+          }
+        ]
+      }.flatten
 
     d = Date.today..Date.today.end_of_month.next_month
-    y = d.map  do |d|
-      dow = d.strftime('%A')
-      a_d = c.grep(/#{dow}/i)
+    y = d.map{ |d|
+      dow = d.strftime("%A")
+      a_d = c.grep /#{dow}/i
 
-      a_d.map { |a| "#{a} #{d.strftime('%B %e %Y')}" }
-    end
+      a_d.map{|a| a + " " + d.strftime("%B %e %Y") }
+      }
 
     array_of_all_slots = y.flatten
 
-    days_taken = Appointment.current_month.map do |a|
-      cname = Clinic.find(a.clinic_id).name
-      t = a.schedule.strftime('%l:%M %p')
-      aday = a.schedule.strftime('%A')
-      adate = a.schedule.to_date.strftime('%B %e %Y')
+    days_taken = Appointment.current_month.map{ |a|
+      cname = Clinic.find( a.clinic_id ).name
+      t = a.schedule.strftime("%l:%M %p")
+      aday = a.schedule.strftime("%A")
+      adate = a.schedule.to_date.strftime("%B %e %Y")
 
-      [cname, aday, t, adate].join(' ')
-    end
+      [cname, aday, t, adate].join(" ")
+    }
 
     available_slots = array_of_all_slots - days_taken
   end
