@@ -47,25 +47,25 @@ class Appointment < ApplicationRecord
   # }
 
   scope :doctor_appointments_today, -> {
-    where(schedule: Time.now.asctime.to_date.beginning_of_day..Time.now.asctime.to_date.end_of_day)
+    where(schedule: Time.now.asctime.to_date.beginning_of_day..Time.now.asctime.to_date.end_of_day).where(cancelled: false)
   }
 
   scope :current_month, -> {
-    where(schedule: DateTime.now.beginning_of_month..DateTime.now.end_of_month)
+    where(schedule: DateTime.now.beginning_of_month..DateTime.now.end_of_month).where(cancelled: false)
   }
 
   scope :upcoming_appointments_today, -> {
     start = DateTime.now.utc
-    where(schedule: start..start.end_of_day )
+    where(schedule: start..start.end_of_day ).where(cancelled: false)
   }
 
   scope :upcoming, -> {
     start = DateTime.now
-    where(schedule: start..start.end_of_month.next_month)
+    where(schedule: start..start.end_of_month.next_month).where(cancelled: false)
   }
 
   scope :appointments_on_this_day, -> (date) {
-    where(schedule: date.beginning_of_day..date.end_of_day).count
+    where(schedule: date.beginning_of_day..date.end_of_day).where(cancelled: false).count
   }
 
   def only_one_appointment_in_a_day
