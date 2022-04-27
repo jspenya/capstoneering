@@ -27,9 +27,9 @@ class Appointment < ApplicationRecord
   validate :patient_no_same_day_rescheduling, on: :update
 
   # after_create :send_appointment_creation_mail
-  # after_create :send_appointment_creation_sms
   # after_update :send_appointment_reschedule_mail
-  # after_update :send_appointment_reschedule_sms
+  after_create :send_appointment_creation_sms
+  after_update :send_appointment_reschedule_sms
 
   accepts_nested_attributes_for :clinic
 
