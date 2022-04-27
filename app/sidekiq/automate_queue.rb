@@ -19,7 +19,7 @@ class AutomateQueue
 		if in_progress
 			user_to_mail = in_progress.patient
 
-			UserMailer.with(user: user_to_mail).finished_queue.deliver_now
+			# UserMailer.with(user: user_to_mail).finished_queue.deliver_now
 			in_progress.update(status: 3)
 
 			if clinic_queues.empty?
@@ -35,19 +35,19 @@ class AutomateQueue
 		# else serve walk-in patients
 		if next_for_schedule && Time.now.utc >= next_for_schedule.schedule.asctime.in_time_zone("Hong Kong")
 			user_to_mail = next_for_schedule.patient
-			UserMailer.with(user: user_to_mail).finished_queue.deliver_now
+			# UserMailer.with(user: user_to_mail).finished_queue.deliver_now
 			next_for_schedule.update(status: 2)
 			in_progress = next_for_schedule
 		else
 			if next_for_queue = clinic_queues.where(queue_type: 1).first
 				next_for_queue.update(status: 2)
 				user_to_mail = next_for_queue.patient
-				UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
+				# UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
 				in_progress = next_for_queue
 			else
 				if next_for_schedule && Time.now.utc >= next_for_schedule.schedule.asctime.in_time_zone("Hong Kong")
 					user_to_mail = next_for_schedule.patient
-					UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
+					# UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
 					next_for_schedule.update(status: 2)
 					in_progress = next_for_schedule
 				end

@@ -35,7 +35,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 		if @in_progress
 			user_to_mail = @in_progress.patient
 
-			UserMailer.with(user: user_to_mail).finished_queue.deliver_now
+			# UserMailer.with(user: user_to_mail).finished_queue.deliver_now
       TwilioClient.new.send_text(@in_progress.patient, "Thank you for your visit, #{@in_progress.patient.firstname}. Be well.")
 			@in_progress.update(status: 3)
 		end
@@ -49,7 +49,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 		if next_for_schedule # && Time.now.utc >= next_for_schedule.schedule
       user_to_mail = next_for_schedule.patient
 
-			UserMailer.with(user: user_to_mail).finished_queue.deliver_now
+			# UserMailer.with(user: user_to_mail).finished_queue.deliver_now
       TwilioClient.new.send_text(@in_progress.patient, "Thank you for your visit, #{@in_progress.patient.firstname}. Be well.")
       next_for_schedule.update(status: 2)
 			@in_progress = next_for_schedule
@@ -59,18 +59,18 @@ class Doctors::ClinicQueuesController < DoctorsController
 
 				user_to_mail = next_for_queue.patient
 
-				UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
+				# UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
         TwilioClient.new.send_text(next_for_queue.patient, "Hello #{next_for_queue.patient.firstname}, this is from Dr. Peña's clinic. The doctor is now ready to see you. Please proceed to the clinic and show the secretary this message.\n\nThank you for patiently waiting. Have a nice day!\n\n**This is an auto-generated message so please do not reply.**")
 				@in_progress = next_for_queue
 			else
 				if next_for_schedule
 					if @in_progress = next_for_schedule
 						next_for_schedule.update(status: 3)
-						UserMailer.with(user: user_to_mail).finished_queue.deliver_now
+						# UserMailer.with(user: user_to_mail).finished_queue.deliver_now
             TwilioClient.new.send_text(@in_progress.patient, "Thank you for your visit, #{@in_progress.patient.firstname}. Be well.")
 					# else
 					# 	next_for_schedule.update(status: 2)
-					# 	UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
+					#	UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
 					# 	@in_progress = next_for_schedule
 					end
 				end
