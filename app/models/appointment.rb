@@ -108,6 +108,7 @@ class Appointment < ApplicationRecord
   end
 
   def deny_patient_already_in_queue
+    return if schedule > Time.now.utc.end_of_day
     if ClinicQueue.queue_today.pluck(:user_id).include? self.user_id
       errors.add(:Error, ' : Patient is already in queue.')
     end
