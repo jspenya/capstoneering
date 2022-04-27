@@ -108,7 +108,7 @@ class CallbackController < ApplicationController
           clinic_id = Clinic.find_by(name: clinic).id
           dt = DateTime.parse("#{date} #{time} #{ampm}")
 
-          u = User.new(lastname: nickname, mobile_number:, password: '123456',
+          u = User.new(lastname: nickname, mobile_number: mobile_number, password: '123456',
                        password_confirmation: '123456')
 
           if dt > DateTime.now
@@ -170,7 +170,7 @@ class CallbackController < ApplicationController
           clinic_id = Clinic.find_by(name: clinic).id
           dt = DateTime.parse("#{date} #{time} #{ampm}")
 
-          u = User.find_by(mobile_number:)
+          u = User.find_by(mobile_number: mobile_number)
 
           if dt > DateTime.now
             if u.present?
