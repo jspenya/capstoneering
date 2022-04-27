@@ -16,6 +16,9 @@
                               <i>
                                 (Clinic Name, Time & Date)
                               </i>
+                              <a class="btn btn-dark" style="margin-left:1rem;color:#fff;" data-toggle="modal" data-target="#clinic-schedules-modal">
+                                <i>Click for Clinics Schedules</i>
+                              </a>
                             </strong>
                           </label>
                           <div>
@@ -31,6 +34,29 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" role="dialog" tabindex="-1" id="clinic-schedules-modal">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"><strong>Clinics Schedules</strong></h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+        <div class="container">
+          <div style="margin:1.5rem 0;">
+            <% Clinic.all.find_each do |c| %>
+              <h5><%= c.name.split('_').join(' ') %></h5>
+              <% c.clinic_schedules.find_each do |cs| %>
+                <h6>- Every <%= cs.day %>s at <%= cs.start_time.strftime("%I:%M %p") %></h6>
+              <% end %>
+            <% end %>
           </div>
         </div>
       </div>

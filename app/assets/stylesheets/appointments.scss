@@ -499,3 +499,10 @@ header .fa-times{
     text-decoration: none!important;
   }
 }
+
+.clinic-schedules__button {
+  font-style: italic;
+  button {
+    border: blue 1px solid;
+  }
+}
