@@ -51,7 +51,7 @@ class Appointment < ApplicationRecord
   }
 
   scope :current_month, -> {
-    where(schedule: DateTime.now.beginning_of_month..DateTime.now.end_of_month).where(cancelled: false)
+    where(schedule: DateTime.now.beginning_of_month..DateTime.now.end_of_month.next_month).where(cancelled: false)
   }
 
   scope :upcoming_appointments_today, -> {
