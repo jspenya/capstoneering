@@ -33,9 +33,9 @@
                   <td><%= secretary.mobile_number %></td>
                   <td><%= secretary.email %></td>
                   <td class="text-center" style="display:flex;">
-                    <button class="btn btn-warning action-btn" type="button" data-toggle="modal" data-target="#edit-patient-modal">
+                    <%= button_to doctor_edit_staff_path(secretary), method: :get, class: 'btn btn-warning action-btn' do %>
                       <i class="far fa-edit"></i>
-                    </button>
+                    <% end %>
                     <%= button_to user_path(secretary), method: :delete, class:"btn btn-danger action-btn" do %>
                       <i class="fa fa-trash"></i>
                     <% end %>
@@ -62,56 +62,56 @@
     </div>
   <% end %>
   <div class="modal fade" role="dialog" tabindex="-1" id="add-patient-modal">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-              <div class="modal-header">
-                <h4 class="modal-title"><strong>Add new patient</strong></h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">×</span>
-                </button>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title"><strong>Add new patient</strong></h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="col-xl-6">
+              <div class="form-group">
+                <label><strong>First Name</strong>
+                </label>
+                <%= form.text_field :firstname %>
               </div>
-              <div class="modal-body">
-                <div class="form-row">
-                  <div class="col-xl-6">
-                    <div class="form-group">
-                      <label><strong>First Name</strong>
-                      </label>
-                      <%= form.text_field :firstname %>
-                    </div>
-                  </div>
-                  <div class="col-xl-6">
-                    <div class="form-group"><label><strong>Last Name</strong></label><%= form.text_field :lastname %></div>
-                  </div>
-                </div>
-                <div class="form-row">
-                  <div class="col-xl-6">
-                    <div class="form-group"><label><strong>Contact Number</strong></label><%= form.text_field :mobile_number %></div>
-                  </div>
-                  <div class="col-xl-6">
-                    <div class="form-group">
-                      <label>
-                        <strong>Email Address</strong>
-                      </label>
-                      <%= form.text_field :email %>
-                    </div>
-                  </div>
-                </div>
-                <%= form.hidden_field :role, value: "secretary" %>
-                <div class="form-row">
-                  <div class="col-xl-6">
-                    <div class="form-group"><label><strong>Password</strong></label><%= form.password_field :password %></div>
-                  </div>
-                  <div class="col-xl-6">
-                    <div class="form-group"><label><strong>Password Confirmation</strong></label>
-                      <%= form.password_field :password_confirmation %>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer text-right"><button class="btn btn-warning" type="button" data-dismiss="modal"><strong>Close</strong></button>
-                <%= form.submit %>
-              </div>
+            </div>
+            <div class="col-xl-6">
+              <div class="form-group"><label><strong>Last Name</strong></label><%= form.text_field :lastname %></div>
+            </div>
           </div>
+          <div class="form-row">
+            <div class="col-xl-6">
+              <div class="form-group"><label><strong>Contact Number</strong></label><%= form.text_field :mobile_number %></div>
+            </div>
+            <div class="col-xl-6">
+              <div class="form-group">
+                <label>
+                  <strong>Email Address</strong>
+                </label>
+                <%= form.text_field :email %>
+              </div>
+            </div>
+          </div>
+          <%= form.hidden_field :role, value: "secretary" %>
+          <div class="form-row">
+            <div class="col-xl-6">
+              <div class="form-group"><label><strong>Password</strong></label><%= form.password_field :password %></div>
+            </div>
+            <div class="col-xl-6">
+              <div class="form-group"><label><strong>Password Confirmation</strong></label>
+                <%= form.password_field :password_confirmation %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer text-right"><button class="btn btn-warning" type="button" data-dismiss="modal"><strong>Close</strong></button>
+          <%= form.submit %>
+        </div>
       </div>
+    </div>
   </div>
 <% end %>

@@ -1,0 +1,30 @@
+<div class="container">
+  <div class="card shadow">
+    <div class="card-header py-3">
+      <p class="text-primary m-0 font-weight-bold">Edit Staff: <%= @secretary.fullname %></p>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+          <%= simple_form_for(@secretary, url: doctor_update_staff_path(@secretary)) do |form| %>
+            <%= form.label :firstname %>
+            <%= form.text_field :firstname, style:'text-transform: capitalize;' %>
+            <%= form.label :lastname %>
+            <%= form.text_field :lastname, style:'text-transform: capitalize;' %>
+            <%= form.label :mobile_number %>
+            <%= form.text_field :mobile_number %>
+            <%= form.label :email %>
+            <%= form.text_field :email %>
+            <%= form.label :password %><br/>
+            <%= form.password_field :password, placeholder: 'Leave blank if not planning to change', style:'width:100%;padding:0 1em;' %><br/>
+            <%= form.label :password_confirmation %><br/>
+            <%= form.password_field :password_confirmation, placeholder: 'Leave blank if not planning to change', style:'width:100%;padding:0 1em;' %>
+            <%= form.button :submit, 'Update Patient Details', style: 'margin-top:2rem;width:100%;' %>
+          <% end %>
+        </div>
+        <div class="col-md-2"></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -209,6 +209,20 @@ class DoctorsController <  ApplicationController
     end
   end
 
+  def edit_staff
+    @secretary = Secretary.find(params[:id])
+  end
+
+  def update_staff
+    @secretary = Secretary.find(params[:id])
+
+    if @secretary.update(secretary_params)
+      redirect_to doctor_staffs_path, notice: 'Staff successfully updated!'
+    else
+      redirect_to doctor_staffs_path, alert: "#{@secretary.errors.first.full_message}"
+    end
+  end
+
   def clinics_index
     @clinics = Clinic.all
     @clinic = Clinic.new
@@ -337,4 +351,12 @@ class DoctorsController <  ApplicationController
 		# return nil if @clinic_queues.empty?
 		@in_progress = ClinicQueue.queue_today.where(status: 2).last
 	end
+  
+  def secretary_params
+    if params[:password].blank? && params[:password_confirmation].blank?
+      params[:secretary].delete(:password)
+      params[:secretary].delete(:password_confirmation)
+    end
+    params.require(:secretary).permit(:email, :firstname, :lastname, :birthdate, :gender, :mobile_number, :role, :password, :password_confirmation)
+  end
 end
