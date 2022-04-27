@@ -30,6 +30,7 @@ class PatientsController <  ApplicationController
     @appointment = Appointment.find(params[:id])
 
     @appointment.cancelled = true
+    @appointment.schedule = @appointment.schedule - 99.minutes
 
     if @appointment.save
       redirect_to doctor_appointments_url, notice: 'Appointment was successfully cancelled.'
