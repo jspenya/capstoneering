@@ -8,7 +8,7 @@ Rails.application.routes.draw do
 
   get '/profile/webhook', to: 'callback#get_user_profile'
   post '/profile/webhook', to: 'callback#post_user_profile'
-  
+
   require 'sidekiq/web'
   Rails6Webdass::Application.routes.draw do
     authenticate :user, lambda { |u| u.doctor? || u.secretary? } do
@@ -53,6 +53,7 @@ Rails.application.routes.draw do
       get :queue_autocomplete_patient, on: :collection
       post :next_patient, on: :collection
       post :cancel_todays_queue, on: :collection
+      post :delay_queue, on: :collection
       post :start_queue, on: :collection
       post :toggle_skip_for_now, on: :member
     end
