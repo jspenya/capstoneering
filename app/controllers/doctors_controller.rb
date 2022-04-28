@@ -210,7 +210,7 @@ class DoctorsController <  ApplicationController
   end
 
   def edit_staff
-    @secretary = Secretary.find(params[:id])
+    @user = User.find(params[:id])
   end
 
   def update_staff
