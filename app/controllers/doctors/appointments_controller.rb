@@ -32,8 +32,10 @@ class Doctors::AppointmentsController < DoctorsController
     @appointment = Appointment.find(params[:id])
 
     @appointment.cancelled = true
-    @appointment.schedule = @appointment.schedule - 99.minutes
-    
+    @appointment.schedule = @appointment.schedule - 1.day - 99.minutes
+
+    TwilioClient.send(@appointment.user, "Hi, sorry but your appointment for #{@appointment.schedule.strftime("%B %d, %Y")} at #{@appointment.schedule.strftime("%I:%M %p")} is cancelled. We are sorry for the inconvenience.\n\n**This is an auto-generated message so please do not reply.**")
+
     if @appointment.save
       redirect_to doctor_appointments_url, notice: 'Appointment was successfully cancelled.'
     else
@@ -43,7 +45,7 @@ class Doctors::AppointmentsController < DoctorsController
 
   def update
     @appointment = Appointment.find(params[:id])
-    
+
     if @appointment.update(appointment_params)
       redirect_to doctor_appointments_url, notice: 'Appointment was successfully cancelled.'
     else
@@ -53,7 +55,7 @@ class Doctors::AppointmentsController < DoctorsController
 
   def reschedule_appointment
     @appointment = Appointment.find(params[:id])
-    
+
     app_sched = params[:appointment][:appointment_schedule]
     clinic, wday, time, ampm, date = app_sched.split("\s",5)
     clinic_id = Clinic.find_by(name: clinic).id
@@ -63,7 +65,7 @@ class Doctors::AppointmentsController < DoctorsController
     @appointment.clinic_id = clinic_id
 
     if @appointment.save
-      if current_user.patient? 
+      if current_user.patient?
         redirect_to patient_my_appointments_url, notice: "Appointment updated successfully!"
       else
         redirect_to doctor_appointments_url, notice: "Appointment updated successfully!"
@@ -86,7 +88,7 @@ class Doctors::AppointmentsController < DoctorsController
     as = available_slots.grep re
     render :json => as.map{ |s| { :label => s, :value => s } }
   end
-	
+
 	private
 
   def time_iterate(start_time, end_time, step, &block)
@@ -139,7 +141,7 @@ class Doctors::AppointmentsController < DoctorsController
 
     available_slots = array_of_all_slots - days_taken
   end
-	
+
 	def set_appointments
 		@appointments_upcoming_today = @clinic&.appointments&.upcoming_appointments_today&.order(:schedule)
 		@appointments = @clinic&.appointments&.doctor_appointments_today&.order(:schedule)
@@ -151,7 +153,7 @@ class Doctors::AppointmentsController < DoctorsController
 
 	def set_clinic
 		clinic_id = ClinicSchedule.where(day: Date.today.strftime("%A"))&.first&.clinic_id
-		
+
 		@clinic = Clinic.find(clinic_id) if clinic_id.present?
 	end
 
