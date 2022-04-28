@@ -61,6 +61,11 @@
                                 <strong>Cancel today's queue</strong>
                               </button>
                             <% end %>
+														<% if @clinic_queues.present? %>
+                              <button class="btn btn-outline-danger btn-block" type="button" data-toggle="modal" data-target="#delay-modal" style="font-weight:300;margin-top:1rem;">
+                                <strong>Delay Queue</strong>
+                              </button>
+                            <% end %>
                           </div>
                         </div>
                       </div>
@@ -68,6 +73,7 @@
                         <table class="table">
                           <thead>
                             <tr>
+                              <th class="text-nowrap" id="trs-hd">Schedule</th>
                               <th class="text-nowrap" id="trs-hd">Patient Name</th>
                               <th class="text-nowrap" id="trs-hd">Type</th>
                               <th class="text-nowrap" id="trs-hd">Status</th>
@@ -78,6 +84,13 @@
                           <tbody>
                             <% @clinic_queues.each do |cq| %>
                               <tr class="text-nowrap">
+																<td class="text-nowrap">
+																	<% if cq.queue_type == 'walkin' %>
+																		<%= cq.schedule&.localtime&.strftime("%I:%M %p") %>
+																	<% else %>
+																		<%= cq.schedule.strftime("%I:%M %p") %>
+																	<% end %>
+                                </td>
                                 <td class="text-nowrap">
                                   <%= cq.patient.fullname %>
                                   <% if cq.skip_for_now? %>
@@ -281,3 +294,36 @@
 		</div>
 	</div>
 <% end %>
+<%= form_with(url: delay_queue_doctor_clinic_queues_path, method: :post) do |form| %>
+	<div class="modal fade" role="dialog" tabindex="-1" id="delay-modal">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">
+						<strong>Delay Queue</strong>
+					</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="modal-body">
+						<div class="form-row">
+							<div class="col-xl-12">
+								<div class="form-group">
+										<%= form.text_field :delay_time, style:'font-size:1.8rem;width:100%;', placeholder: 'Enter delay time in minutes' %>
+										<%#= form.hidden_field :clinic_id, value: "#{@clinic.id}" %>
+								</div>
+							</div>
+						</div>
+				</div>
+				<div class="modal-footer text-right">
+					<button class="btn btn-warning" type="button" data-dismiss="modal" style="padding: 0.6em;">
+						<strong>Close</strong>
+					</button>
+					<%= form.submit 'Delay' %>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>
+

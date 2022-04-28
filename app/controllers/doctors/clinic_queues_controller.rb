@@ -102,6 +102,25 @@ class Doctors::ClinicQueuesController < DoctorsController
 		redirect_to doctor_clinic_queues_url, notice: "Started queue."
 	end
 
+  def delay_queue
+    delay_time = params[:delay_time]
+    clinic_queue_today = ClinicQueue.queue_today
+
+    affected_clinic_queues = ClinicQueue.queue_today.where(status: 1)
+
+    affected_clinic_queues.each do |cq|
+      cq.schedule = cq.schedule + delay_time.to_i.minutes
+      cq.save
+      TwilioClient.new.send_text(cq.patient, delay_sms_template(cq.schedule))
+    end
+
+    redirect_to doctor_clinic_queues_path, notice: 'Queue successfully delayed.'
+  end
+
+  def delay_sms_template schedule
+    "Due to unforseen circumstances, we regret to inform you that your appointment was rescheduled to #{schedule.strftime("%I:%M %p")} on #{schedule.strftime("%B %d, %Y")}. We apologize for the inconvenience.\n\nIf this schedule does not work for you, you may rebook your appointment.\n\nIn case of emergency and you needed immediate attention, you may visit your nearest emergency center.\n\n**This is an auto-generated message so please do not reply.**"
+  end
+
   def cancel_todays_queue
     day_to_move = params[:day_to_move].to_date
     clinic_days = @clinic.clinic_schedules.pluck(:day)
@@ -114,18 +133,18 @@ class Doctors::ClinicQueuesController < DoctorsController
     clinic_queue_today = ClinicQueue.queue_today.where(status: 1)
 
     clinic_schedule_day_to_move_to = day_to_move
-    
+
     # clinic_queue_today.find_each do |cq|
     #   date_for_resched = Date.new(clinic_schedule_date_to_move_to.to_date.year, clinic_schedule_date_to_move_to.to_date.month, clinic_schedule_date_to_move_to.to_date.day)
     #   date_time_for_resched = DateTime.new(date_for_resched.year, date_for_resched.month, date_for_resched.day, cq.schedule.hour, cq.schedule.min)
 
     #   UserMailer.with(user: cq.patient, date: date_time_for_resched).queue_cancelled.deliver_now
     # end
-    
+
     # Delete queue for the next day
     queue_for_next_day = ClinicQueue.where(schedule: clinic_schedule_day_to_move_to)
     queue_for_next_day.destroy_all
-    
+
     # Delete queue for today
     clinic_queue_today.destroy_all
 
@@ -135,7 +154,7 @@ class Doctors::ClinicQueuesController < DoctorsController
     #                       .order('schedule')
 
     appointments_of_day_scheduled = Appointment.where(schedule: clinic_schedule_day_to_move_to.beginning_of_day..clinic_schedule_day_to_move_to.end_of_day).order('schedule')
-    
+
     # Update the appointment schedule sa next day
     # In order to squeeze today's appointments into this day
     # Add the clinic appointment duration minutes to each appointment
@@ -157,13 +176,13 @@ class Doctors::ClinicQueuesController < DoctorsController
 
                                                   a.update(schedule: date_time_for_resched + t + 5.seconds)
                                                 }
-    
+
     # qs_next_day = for_queue_next_day.to_a.each_with_index.map{ |n, i| t = i * n.clinic.appointment_duration.minutes; { user_id: n.user_id, clinic_id: n.clinic_id, schedule: n.schedule + t, queue_type: 2, status: 1 } }
 		# # This cancels all of the patients in today's Queue
     # qs_for_today = Appointment.doctor_appointments_today.to_a.drop(1).each_with_index.map{|a, i| t = i * a.clinic.appointment_duration.minutes; {user_id: a.user_id, clinic_id: a.clinic_id, schedule: a.schedule + t, queue_type: 2, status: 1} }
 
     # alternating_queue = qs_next_day.zip(qs_for_today).flatten.compact
-    # # Queue (Alternating) for next day is built 
+    # # Queue (Alternating) for next day is built
     # queue_next_day = ClinicQueue.create! alternating_queue
 
 		# queue_nextday_ids = clinic_queue_today.last.clinic.clinic_schedules.where.not(day: Date.today.strftime("%A")).first.clinic.clinic_queues.pluck(:id)
@@ -224,7 +243,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 
     user = User.find_by(email: email)
 
-		@clinic_queue = user.clinic_queues.new(schedule: Time.now.utc, clinic_id: @clinic.id, queue_type: 1, status: 1)
+		@clinic_queue = user.clinic_queues.new(clinic_id: @clinic.id, queue_type: 1, status: 1)
 
     if @clinic_queue.save
 			# UserMailer.with(user: user).added_to_queue.deliver_now
@@ -247,7 +266,7 @@ class Doctors::ClinicQueuesController < DoctorsController
     if @patient.save
 			user = User.find(@patient.id)
 
-      @clinic_queue = ClinicQueue.create!(schedule: Time.now.utc, user_id: user.id, clinic_id: @clinic.id, queue_type: 1, status: 1)
+      @clinic_queue = ClinicQueue.create!(user_id: user.id, clinic_id: @clinic.id, queue_type: 1, status: 1)
       redirect_to doctor_clinic_queues_url, notice: "Patient added to queue successfully!"
     else
       redirect_to doctor_clinic_queues_url, alert: "There was a problem in adding patient to queue. #{@clinic_queue.errors.first.full_message}"
@@ -272,6 +291,7 @@ class Doctors::ClinicQueuesController < DoctorsController
       end
     end
   end
+
 
 	private
 	def set_clinic
