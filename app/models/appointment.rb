@@ -144,7 +144,7 @@ class Appointment < ApplicationRecord
   end
 
   def appointment_creation_sms_text
-    "Hi #{self.user.firstname? ? self.user.firstname : self.user.lastname}, thank you for booking your appointment. See you on #{self.schedule.strftime("%B %d, %A")}.\n\nThis is an automated message. Please do not reply to this number."
+    "Hi #{self.user.firstname? ? self.user.firstname : self.user.lastname}! Your appointment request for #{self.schedule.strftime("%B %d, %A")} at #{self.schedule.strftime("%I:%M %p")} is confirmed.\n\nYou will receive updates through the mobile phone number you have provided regarding your queue status on the day of your appointment. In any case that you need to reschedule or cancel your appointment, please access the link below.\n\nhttps://webdass-staging.herokuapp.com\n\n**This is an auto-generated message so please do not reply.**"
   end
 
   def appointment_reschedule_sms_text
