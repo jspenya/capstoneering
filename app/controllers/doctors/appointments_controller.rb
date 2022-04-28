@@ -63,7 +63,11 @@ class Doctors::AppointmentsController < DoctorsController
     @appointment.clinic_id = clinic_id
 
     if @appointment.save
-      redirect_to doctor_appointments_url, notice: "Appointment updated successfully!"
+      if current_user.patient? 
+        redirect_to patient_my_appointments_url, notice: "Appointment updated successfully!"
+      else
+        redirect_to doctor_appointments_url, notice: "Appointment updated successfully!"
+      end
     else
       redirect_to doctor_appointments_url, alert: " #{@appointment.errors.first.full_message}"
     end
