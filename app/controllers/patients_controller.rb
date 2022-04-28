@@ -30,7 +30,9 @@ class PatientsController <  ApplicationController
     @appointment = Appointment.find(params[:id])
 
     @appointment.cancelled = true
-    @appointment.schedule = @appointment.schedule - 99.minutes
+    @appointment.schedule = @appointment.schedule - 1.day - 99.minutes
+
+    TwilioClient.send(@appointment.user, "Your appointment for #{@appointment.schedule.strftime("%B %d, %Y")} at #{@appointment.schedule.strftime("%I:%M %p")} is successfully cancelled.\n\n\**This is an auto-generated message so please do not reply.**")
 
     if @appointment.save
       redirect_to doctor_appointments_url, notice: 'Appointment was successfully cancelled.'
@@ -41,7 +43,7 @@ class PatientsController <  ApplicationController
 
   def reschedule_appointment
     @appointment = Appointment.find(params[:id])
-    
+
     app_sched = params[:appointment][:appointment_schedule]
     clinic, wday, time, ampm, date = app_sched.split("\s",5)
     clinic_id = Clinic.find_by(name: clinic).id
@@ -135,9 +137,9 @@ class PatientsController <  ApplicationController
   def update
     user = User.find(@patient.id)
     if user.update(patient_params)
-      redirect_to patients_url, notice: "Patient was successfully updated." 
+      redirect_to patients_url, notice: "Patient was successfully updated."
     else
-      redirect_to patients_url, alert: "#{user.errors.first.full_message}" 
+      redirect_to patients_url, alert: "#{user.errors.first.full_message}"
     end
   end
 
