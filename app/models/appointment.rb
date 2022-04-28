@@ -127,18 +127,18 @@ class Appointment < ApplicationRecord
     return unless self.user.email.present?
     UserMailer.with(user: self.user).appointment_created.deliver_now
   end
-  
+
   def send_appointment_creation_sms
     TwilioClient.new.send_text(self.user, appointment_creation_sms_text)
   end
-  
+
   def send_appointment_reschedule_mail
     return unless self.user.email.present?
     UserMailer.with(user: self.user, schedule: self.schedule).reschedule_notice.deliver_now
   end
 
   def send_appointment_reschedule_sms
-    return unless schedule_changed?
+    return unless saved_change_to_schedule?
     return unless self.user.mobile_number.present?
     TwilioClient.new.send_text(self.user, appointment_reschedule_sms_text)
   end
