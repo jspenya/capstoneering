@@ -11,7 +11,7 @@
           </a>                        <hr>
           <h4 class="text-primary mb-4">Create New Patient Account</h4>
         </div>
-          <%= form_for(resource, as: resource_name, url: registration_path(resource_name, class: "user")) do |f| %>
+          <%= form_for(resource, as: resource_name, url: user_registration_path) do |f| %>
             <%= render "devise/shared/error_messages", resource: resource %>
             <div class="form-group row">
               <div class="col-sm-6 mb-1">
