@@ -126,11 +126,11 @@
                                   <i>
                                     (Clinic Name, Time & Date)
                                   </i>
+                                  <a class="btn btn-dark" style="margin-left:1rem;color:#fff;" data-toggle="modal" data-target="#clinic-schedules-modal">
+                                    <i>Click for Clinics Schedules</i>
+                                  </a>
                                 </strong>
-                                <a class="btn btn-dark" style="margin-left:1rem;color:#fff;" data-toggle="modal" data-target="#clinic-schedules-modal">
-                                  <i>Click for Clinics Schedules</i>
-                                </a>
-                              <div>
+                              </label>
                                 <%= form.autocomplete_field :appointment_schedule, autocomplete_schedule_doctor_path, :id_element => "#appointment_schedule", placeholder: "Typing 'cu mon 9 am ap 4' searches for 'CUMC Monday 9:00 AM April 4 2022'", required: true %>
                               </div>
                             </div>

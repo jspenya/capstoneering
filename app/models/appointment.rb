@@ -75,7 +75,7 @@ class Appointment < ApplicationRecord
   end
 
   def reject_past_dates
-    if schedule < Time.now.utc
+    if schedule.asctime.in_time_zone('Hong Kong') < DateTime.now
       errors.add(:base, "Cannot book an appointment in the past.")
     end
   end
@@ -127,24 +127,24 @@ class Appointment < ApplicationRecord
     return unless self.user.email.present?
     UserMailer.with(user: self.user).appointment_created.deliver_now
   end
-  
+
   def send_appointment_creation_sms
     TwilioClient.new.send_text(self.user, appointment_creation_sms_text)
   end
-  
+
   def send_appointment_reschedule_mail
     return unless self.user.email.present?
     UserMailer.with(user: self.user, schedule: self.schedule).reschedule_notice.deliver_now
   end
 
   def send_appointment_reschedule_sms
-    return unless schedule_changed?
+    return unless saved_change_to_schedule?
     return unless self.user.mobile_number.present?
     TwilioClient.new.send_text(self.user, appointment_reschedule_sms_text)
   end
 
   def appointment_creation_sms_text
-    "Hi #{self.user.firstname? ? self.user.firstname : self.user.lastname}, thank you for booking your appointment. See you on #{self.schedule.strftime("%B %d, %A")}.\n\nThis is an automated message. Please do not reply to this number."
+    "Hi #{self.user.firstname? ? self.user.firstname : self.user.lastname}! Your appointment request for #{self.schedule.strftime("%B %d, %A")} at #{self.schedule.strftime("%I:%M %p")} is confirmed.\n\nYou will receive updates through the mobile phone number you have provided regarding your queue status on the day of your appointment. In any case that you need to reschedule or cancel your appointment, please access the link below.\n\nhttps://webdass-staging.herokuapp.com\n\n**This is an auto-generated message so please do not reply.**"
   end
 
   def appointment_reschedule_sms_text
