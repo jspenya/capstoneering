@@ -75,7 +75,7 @@ class Appointment < ApplicationRecord
   end
 
   def reject_past_dates
-    if schedule < Time.now.utc
+    if schedule.asctime.in_time_zone('Hong Kong') < DateTime.now
       errors.add(:base, "Cannot book an appointment in the past.")
     end
   end
