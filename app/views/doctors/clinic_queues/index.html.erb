@@ -86,7 +86,7 @@
                               <tr class="text-nowrap">
 																<td class="text-nowrap">
 																	<% if cq.queue_type == 'walkin' %>
-																		<%= cq.schedule&.localtime&.strftime("%I:%M %p") %>
+																		-
 																	<% else %>
 																		<%= cq.schedule.strftime("%I:%M %p") %>
 																	<% end %>

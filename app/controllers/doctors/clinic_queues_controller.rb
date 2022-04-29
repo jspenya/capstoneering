@@ -50,7 +50,7 @@ class Doctors::ClinicQueuesController < DoctorsController
       user_to_mail = next_for_schedule.patient
 
 			# UserMailer.with(user: user_to_mail).finished_queue.deliver_now
-      TwilioClient.new.send_text(@in_progress.patient, "Thank you for your visit, #{@in_progress.patient.firstname}. Be well.")
+      TwilioClient.new.send_text(next_for_schedule.patient, "Thank you for your visit, #{next_for_schedule.patient.firstname}. Be well.")
       next_for_schedule.update(status: 2)
 			@in_progress = next_for_schedule
 		else
@@ -63,6 +63,7 @@ class Doctors::ClinicQueuesController < DoctorsController
         TwilioClient.new.send_text(next_for_queue.patient, "Hello #{next_for_queue.patient.firstname}, this is from Dr. Peña's clinic. The doctor is now ready to see you. Please proceed to the clinic and show the secretary this message.\n\nThank you for patiently waiting. Have a nice day!\n\n**This is an auto-generated message so please do not reply.**")
 				@in_progress = next_for_queue
 			else
+        # All queues are done
 				if next_for_schedule
 					if @in_progress = next_for_schedule
 						next_for_schedule.update(status: 3)
@@ -76,6 +77,10 @@ class Doctors::ClinicQueuesController < DoctorsController
 				end
 			end
 		end
+
+    unless @in_progress
+      ClinicQueue.destroy_all
+    end
 
 		redirect_to doctor_clinic_queues_url
 
@@ -243,10 +248,11 @@ class Doctors::ClinicQueuesController < DoctorsController
 
     user = User.find_by(email: email)
 
-		@clinic_queue = user.clinic_queues.new(clinic_id: @clinic.id, queue_type: 1, status: 1)
+		@clinic_queue = user.clinic_queues.new(schedule: Time.now, clinic_id: @clinic.id, queue_type: 1, status: 1)
 
     if @clinic_queue.save
 			# UserMailer.with(user: user).added_to_queue.deliver_now
+      TwilioClient.new.send_text(@clinic_queue.patient, "Hi #{@clinic_queue.patient.firstname}. This is to confirm your walk-in booking with the clinic. You have been added to today's queue. Please stand-sby for your turn. Be safe!")
       redirect_to doctor_clinic_queues_url, notice: "Patient added to queue successfully!"
     else
       redirect_to doctor_clinic_queues_url, alert: "There was a problem in adding patient to queue. #{@clinic_queue.errors.first.full_message}"
@@ -266,7 +272,8 @@ class Doctors::ClinicQueuesController < DoctorsController
     if @patient.save
 			user = User.find(@patient.id)
 
-      @clinic_queue = ClinicQueue.create!(user_id: user.id, clinic_id: @clinic.id, queue_type: 1, status: 1)
+      @clinic_queue = ClinicQueue.create!(schedule: Time.now, user_id: user.id, clinic_id: @clinic.id, queue_type: 1, status: 1)
+      TwilioClient.new.send_text(@clinic_queue.patient, "Hi #{@clinic_queue.patient.firstname}. This is to confirm your walk-in booking with the clinic. You have been added to today's queue. Please stand-sby for your turn. Be safe!")
       redirect_to doctor_clinic_queues_url, notice: "Patient added to queue successfully!"
     else
       redirect_to doctor_clinic_queues_url, alert: "There was a problem in adding patient to queue. #{@clinic_queue.errors.first.full_message}"
