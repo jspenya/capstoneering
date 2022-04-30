@@ -103,7 +103,7 @@ class CallbackController < ApplicationController
         end
 
         re = Regexp.new(appointment_date, Regexp::IGNORECASE)
-        avail_slots = available_slots.grep(re)
+        avail_slots = available_slots.map{|s| s.gsub(/ +/, " ")}.grep(re)
         if avail_slots.any?
           appointment_schedule = avail_slots.first
           clinic, wday, time, ampm, date = appointment_schedule.split("\s", 5)
@@ -164,7 +164,7 @@ class CallbackController < ApplicationController
         end
 
         re = Regexp.new(appointment_date, Regexp::IGNORECASE)
-        avail_slots = available_slots.grep(re)
+        avail_slots = available_slots.map{|s| s.gsub(/ +/, " ")}.grep(re)
         if avail_slots.any?
           appointment_schedule = avail_slots.first
           clinic, wday, time, ampm, date = appointment_schedule.split("\s", 5)
