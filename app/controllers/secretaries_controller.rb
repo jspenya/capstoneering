@@ -50,7 +50,7 @@ class SecretariesController <  ApplicationController
     @patient.destroy
 
     respond_to do |format|
-      format.html { redirect_to patients_url, notice: "Patient was successfully destroyed." }
+      format.html { redirect_to patients_url, notice: "Patient was successfully deleted." }
       format.json { head :no_content }
     end
   end

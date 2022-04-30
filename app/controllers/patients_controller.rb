@@ -30,16 +30,11 @@ class PatientsController <  ApplicationController
     @appointment = Appointment.find(params[:id])
 
     @appointment.cancelled = true
-    @appointment.schedule = @appointment.schedule - 1.day - 99.minutes
+    @appointment.destroy
 
     TwilioClient.new.send_text(@appointment.user, "Your appointment for #{@appointment.schedule.strftime("%B %d, %Y")} at #{@appointment.schedule.strftime("%I:%M %p")} is successfully cancelled.\n\n\**This is an auto-generated message so please do not reply.**")
 
-    if @appointment.save
-      @appointment.destroy
-      redirect_to doctor_appointments_url, notice: 'Appointment was successfully cancelled.'
-    else
-      redirect_to doctor_appointments_url, alert: "#{@appointment.errors.first.full_message}"
-    end
+    redirect_to patient_my_appointments_url, notice: 'Appointment was successfully cancelled.'
   end
 
   def reschedule_appointment
@@ -150,7 +145,7 @@ class PatientsController <  ApplicationController
     user.destroy
 
     respond_to do |format|
-      format.html { redirect_to patients_url, notice: "Patient was successfully destroyed." }
+      format.html { redirect_to patients_url, notice: "Patient was successfully deleted." }
       format.json { head :no_content }
     end
   end

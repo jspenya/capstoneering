@@ -62,7 +62,7 @@ class ClinicsController <  ApplicationController
     @clinic.destroy
 
     respond_to do |format|
-      format.html { redirect_to clinics_url, notice: "Clinic was successfully destroyed." }
+      format.html { redirect_to clinics_url, notice: "Clinic was successfully deleted." }
       format.json { head :no_content }
     end
   end

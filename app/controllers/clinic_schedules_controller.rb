@@ -29,7 +29,7 @@ class ClinicSchedulesController < ApplicationController
     @clinic_schedule.destroy
 
     respond_to do |format|
-      format.html { redirect_to clinic_clinic_schedules_url, notice: "Clinic Schedule was successfully destroyed." }
+      format.html { redirect_to clinic_clinic_schedules_url, notice: "Clinic Schedule was successfully deleted." }
       format.json { head :no_content }
     end
   end

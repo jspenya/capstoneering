@@ -21,7 +21,7 @@
           <%= link_to edit_doctor_appointment_path(a), class:"btn btn-warning action-btn" do %>
             <i class="far fa-edit"></i>
           <% end %>
-          <%= link_to cancel_appointment_doctor_appointment_path(a), method: :post, data: { confirm: "Are you sure you want to cancel #{a.user.fullname}'s appointment?" }, class:"btn btn-danger action-btn" do %>
+          <%= link_to cancel_appointment_patient_path(a), method: :post, data: { confirm: "Are you sure you want to cancel your appointment?" }, class:"btn btn-danger action-btn" do %>
             <i class="fa fa-trash"></i>
           <% end %>
         </td>
