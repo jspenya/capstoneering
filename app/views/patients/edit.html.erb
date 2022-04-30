@@ -8,9 +8,9 @@
         <div class="col-md-6">
           <%= simple_form_for(@patient, url: patient_path(@patient)) do |form| %>
             <%= form.label :firstname %>
-            <%= form.text_field :firstname, style:'text-transform: capitalize;' %>
+            <%= form.text_field :firstname %>
             <%= form.label :lastname %>
-            <%= form.text_field :lastname, style:'text-transform: capitalize;' %>
+            <%= form.text_field :lastname %>
             <%= form.label :mobile_number %>
             <%= form.text_field :mobile_number %>
             <%= form.label :email %>

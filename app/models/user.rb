@@ -44,7 +44,7 @@ class User < ApplicationRecord
   end
 
   def fullname
-    @fullname ||= firstname.capitalize + " " + lastname.capitalize
+    @fullname ||= firstname.titleize + " " + lastname.titleize
   end
 
   def appointments_in_a_day datetime
@@ -74,7 +74,7 @@ class User < ApplicationRecord
       where(conditions.to_h).first
     end
   end
-  
+
   def send_user_creation_sms
     TwilioClient.new.send_text(self, user_creation_sms_text)
   end
