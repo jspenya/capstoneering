@@ -18,8 +18,8 @@
         <table class="table">
           <thead>
             <tr>
-              <th class="text-nowrap" id="trs-hd">First Name</th>
               <th class="text-nowrap" id="trs-hd">Last Name</th>
+              <th class="text-nowrap" id="trs-hd">First Name</th>
               <th class="text-nowrap" id="trs-hd">Contact Number</th>
               <th class="text-nowrap" id="trs-hd">Email</th>
               <th id="trs-hd"></th>
@@ -28,8 +28,8 @@
           <tbody>
             <% @patients.each do |patient| %>
               <tr class="text-nowrap">
-                <td class="text-nowrap"><%= patient.firstname %></td>
                 <td class="text-nowrap"><%= patient.lastname %></td>
+                <td class="text-nowrap"><%= patient.firstname %></td>
                 <td><%= patient.mobile_number %></td>
                 <td><%= patient.email %></td>
                 <td class="text-center" style="display:flex;">

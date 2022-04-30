@@ -276,7 +276,7 @@ class DoctorsController <  ApplicationController
   end
 
   def set_secretaries
-    @secretaries = Secretary.my_default_scope #.all
+    @secretaries = Secretary.my_default_scope.order(:lastname) #.all
   end
 
   def current_patient
@@ -351,7 +351,7 @@ class DoctorsController <  ApplicationController
 		# return nil if @clinic_queues.empty?
 		@in_progress = ClinicQueue.queue_today.where(status: 2).last
 	end
-  
+
   def secretary_params
     if params[:password].blank? && params[:password_confirmation].blank?
       params[:secretary].delete(:password)

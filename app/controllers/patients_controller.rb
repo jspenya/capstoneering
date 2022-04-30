@@ -6,7 +6,7 @@ class PatientsController <  ApplicationController
   # before_action :authenticate_patient!
 
   def index
-    @patients = User.where(role: 1)
+    @patients = User.where(role: 1).order(:lastname)
   end
 
   def filter_appointments
