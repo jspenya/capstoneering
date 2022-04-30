@@ -223,7 +223,7 @@ class CallbackController < ApplicationController
       end
 
       response = {
-        "text": "Clinic Schedules for #{clinic.name.split('_').join(' ')}:\n\n#{scheds.join('')}\nDisclaimer: Please note that these schedules are subject to change due availability of the doctor.\n\nTo book your appointment, send us a message with your lastname, contact number, and the date of your appointment.\n\n-------\n\nIf this is your first time to book an appointment here, type:\nNEW_PATIENT, [LASTNAME], [MOBILENUMBER], [MONTH_OF_APPOINTMENT] [DAY_OF_APPOINTMENT] [YEAR_OF_APPOINTMENT]\n\nIf you have an existing account in WEBDASS, follow the example:\nEXISTING_PATIENT, Dela Cruz, 09362565221, [YOUR_FACEBOOK_KEY], September 27, 2022\n\nNOTE: Your Account Reference Code was sent to you when your account was created."
+        "text": "Clinic Schedules for #{clinic.name.split('_').join(' ')}:\n\n#{scheds.join('')}\nDisclaimer: Please note that these schedules are subject to change due availability of the doctor.\n\nTo book your appointment, send us a message with your lastname, contact number, and the date of your appointment.\n\n-------\n\nIf this is your first time to book an appointment here, type:\nNEW_PATIENT, [LASTNAME], [MOBILENUMBER], [MONTH_OF_APPOINTMENT] [DAY_OF_APPOINTMENT] [YEAR_OF_APPOINTMENT]\n\nIf you have an existing account in WEBDASS, follow the example:\nEXISTING_PATIENT, Dela Cruz, 09362565221, [ACCOUNT_REFERENCE_CODE], September 27, 2022\n\nNOTE: Your Account Reference Code was sent to you when your account was created."
       }
     else
       clinics = []
