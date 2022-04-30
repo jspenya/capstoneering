@@ -121,7 +121,7 @@ class CallbackController < ApplicationController
 
               if @appointment.save
                 response = {
-                  "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime("%B %d, %A")} at #{@appointment.schedule.strftime("%I:%M %p")}. You can also now login to your WEBDASS account here: https://webdass-staging.herokuapp.com using your Mobile Number and the default password '123456' (Please change this upon logging in). Your Facebook Key is #{u.facebook_key}. This is used for booking appointments here in this portal.\n\nDO NOT SHARE this information with anyone else.\n\nThank you and be safe!"
+                  "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime("%B %d, %A")} at #{@appointment.schedule.strftime("%I:%M %p")}. You can also now login to your WEBDASS account here: https://webdass-staging.herokuapp.com using your Mobile Number and the default password '123456' (Please change this upon logging in). Your Account Reference Code is #{u.facebook_key}. This is used for booking appointments here in this portal.\n\nDO NOT SHARE this information with anyone else.\n\nThank you and be safe!"
                 }
               else
                 response = {
@@ -183,7 +183,7 @@ class CallbackController < ApplicationController
 
                 if @appointment.save
                   response = {
-                    "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime("%B %d, %A")} at #{@appointment.schedule.strftime("%I:%M %p")}. You can also now login to your WEBDASS account here:https://webdass-staging.herokuapp.com using your Mobile Number and the default password '123456' (Please change this upon logging in). Your Facebook Key is #{u.facebook_key}. This is used for booking appointments here in this portal.\n\nDO NOT SHARE this information with anyone else.\n\nThank you and be safe!"
+                    "text": "You have successfully booked an appointment for: #{@appointment.schedule.strftime("%B %d, %A")} at #{@appointment.schedule.strftime("%I:%M %p")}. You can also now login to your WEBDASS account here:https://webdass-staging.herokuapp.com using your Mobile Number and the default password '123456' (Please change this upon logging in). Your Account Reference Code is #{u.facebook_key}. This is used for booking appointments here in this portal.\n\nDO NOT SHARE this information with anyone else.\n\nThank you and be safe!"
                   }
                 else
                   response = {
@@ -192,7 +192,7 @@ class CallbackController < ApplicationController
                 end
               else
                 response = {
-                  "text": "Your facebook key from your account doesn't match. Please try again."
+                  "text": "Your Account Reference code from your account doesn't match. Please try again."
                 }
               end
             else
@@ -223,7 +223,7 @@ class CallbackController < ApplicationController
       end
 
       response = {
-        "text": "Clinic Schedules for #{clinic.name.split('_').join(' ')}:\n\n#{scheds.join('')}\nDisclaimer: Please note that these schedules are subject to change due availability of the doctor.\n\nTo book your appointment, send us a message with your lastname, contact number, and the date of your appointment.\n\n-------\n\nIf this is your first time to book an appointment here, type:\nNEW_PATIENT, [LASTNAME], [MOBILENUMBER], [MONTH_OF_APPOINTMENT] [DAY_OF_APPOINTMENT] [YEAR_OF_APPOINTMENT]\n\nIf you have an existing account in WEBDASS, follow the example:\nEXISTING_PATIENT, Dela Cruz, 09362565221, [YOUR_FACEBOOK_KEY], September 27, 2022\n\nNOTE: Your Facebook Key was sent to you when your account was created."
+        "text": "Clinic Schedules for #{clinic.name.split('_').join(' ')}:\n\n#{scheds.join('')}\nDisclaimer: Please note that these schedules are subject to change due availability of the doctor.\n\nTo book your appointment, send us a message with your lastname, contact number, and the date of your appointment.\n\n-------\n\nIf this is your first time to book an appointment here, type:\nNEW_PATIENT, [LASTNAME], [MOBILENUMBER], [MONTH_OF_APPOINTMENT] [DAY_OF_APPOINTMENT] [YEAR_OF_APPOINTMENT]\n\nIf you have an existing account in WEBDASS, follow the example:\nEXISTING_PATIENT, Dela Cruz, 09362565221, [YOUR_FACEBOOK_KEY], September 27, 2022\n\nNOTE: Your Account Reference Code was sent to you when your account was created."
       }
     else
       clinics = []

@@ -7,7 +7,7 @@
       </div>
       <div class="card-body">
         <% if @user.facebook_key %>
-          Facebook Key: <%= @user.facebook_key %>
+          Account Reference Code: <%= @user.facebook_key %>
         <% end %>
         <%= form_with(model: @user) do |form| %>
           <div style="padding: 2em 1em;">
