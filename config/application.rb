@@ -9,7 +9,7 @@ Bundler.require(*Rails.groups)
 module Rails6Webdass
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.1
+    config.load_defaults 7.0
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -17,7 +17,6 @@ module Rails6Webdass
     # in config/environments, which are processed later.
     #
     # config.time_zone = "Central Time (US & Canada)"
-    # config.time_zone = 'Hong Kong'
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end
