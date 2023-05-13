@@ -18,7 +18,7 @@ import "./aos_stuff"
 // require("jquery-ui")
 // import "./jquery-ui"
 // require("jquery.easy-autocomplete")
-import "./jquery.easy-autocomplete"
+// import "./jquery.easy-autocomplete"
 // require ("jquery")
 // import "./jquery"
 // require ("jquery_ujs")
@@ -32,15 +32,5 @@ import "./jquery.easy-autocomplete"
 // import "./chart.min"
 // import "./homepage"
 // import "./style"
-
-$(function(){
-	// Plain jquery
-	$('#fadeMe').fadeOut(5000);
-
-	// jquery-ui
-	const availableCities = ['Baltimore', 'New York'];
-	$('#cityField').autocomplete( { source: availableCities } );
-	$('#calendarField').datepicker( { dateFormat: 'yy-mm-dd' } );
-})
 
 import * as bootstrap from "bootstrap"
