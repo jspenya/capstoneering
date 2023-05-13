@@ -53,8 +53,6 @@ gem 'vonage'
 
 gem 'kaminari'
 
-# Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
-gem 'webpacker', '~> 5.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -74,6 +72,8 @@ gem 'cancancan'
 gem 'terminal-table'
 
 gem 'slop'
+
+gem 'stimulus-rails', '~> 1.2', '>= 1.2.1'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
@@ -111,3 +111,7 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+gem 'cssbundling-rails', '~> 1.1', '>= 1.1.2'
+
+gem 'jsbundling-rails', '~> 1.1', '>= 1.1.1'
