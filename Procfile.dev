@@ -1,0 +1,2 @@
+js: bundle exec yarn build --reload
+css: yarn build:css --watch

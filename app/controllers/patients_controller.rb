@@ -32,7 +32,7 @@ class PatientsController <  ApplicationController
     @appointment.cancelled = true
     @appointment.destroy
 
-    TwilioClient.new.send_text(@appointment.user, "Your appointment for #{@appointment.schedule.strftime("%B %d, %Y")} at #{@appointment.schedule.strftime("%I:%M %p")} is successfully cancelled.\n\n\**This is an auto-generated message so please do not reply.**")
+    # TwilioClient.new.send_text(@appointment.user, "Your appointment for #{@appointment.schedule.strftime("%B %d, %Y")} at #{@appointment.schedule.strftime("%I:%M %p")} is successfully cancelled.\n\n\**This is an auto-generated message so please do not reply.**")
 
     redirect_to patient_my_appointments_url, notice: 'Appointment was successfully cancelled.'
   end

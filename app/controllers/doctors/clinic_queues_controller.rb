@@ -36,7 +36,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 			user_to_mail = @in_progress.patient
 
 			# UserMailer.with(user: user_to_mail).finished_queue.deliver_now
-      TwilioClient.new.send_text(@in_progress.patient, "Thank you for your visit, #{@in_progress.patient.firstname}. Be well.")
+      # TwilioClient.new.send_text(@in_progress.patient, "Thank you for your visit, #{@in_progress.patient.firstname}. Be well.")
 			@in_progress.update(status: 3)
 		end
 
@@ -50,7 +50,7 @@ class Doctors::ClinicQueuesController < DoctorsController
       user_to_mail = next_for_schedule.patient
 
 			# UserMailer.with(user: user_to_mail).finished_queue.deliver_now
-      TwilioClient.new.send_text(next_for_schedule.patient, "Thank you for your visit, #{next_for_schedule.patient.firstname}. Be well.")
+      # TwilioClient.new.send_text(next_for_schedule.patient, "Thank you for your visit, #{next_for_schedule.patient.firstname}. Be well.")
       next_for_schedule.update(status: 2)
 			@in_progress = next_for_schedule
 		else
@@ -60,7 +60,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 				user_to_mail = next_for_queue.patient
 
 				# UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
-        TwilioClient.new.send_text(next_for_queue.patient, "Hello #{next_for_queue.patient.firstname}, this is from Dr. Peña's clinic. The doctor is now ready to see you. Please proceed to the clinic and show the secretary this message.\n\nThank you for patiently waiting. Have a nice day!\n\n**This is an auto-generated message so please do not reply.**")
+        # TwilioClient.new.send_text(next_for_queue.patient, "Hello #{next_for_queue.patient.firstname}, this is from Dr. Peña's clinic. The doctor is now ready to see you. Please proceed to the clinic and show the secretary this message.\n\nThank you for patiently waiting. Have a nice day!\n\n**This is an auto-generated message so please do not reply.**")
 				@in_progress = next_for_queue
 			else
         # All queues are done
@@ -68,7 +68,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 					if @in_progress = next_for_schedule
 						next_for_schedule.update(status: 3)
 						# UserMailer.with(user: user_to_mail).finished_queue.deliver_now
-            TwilioClient.new.send_text(@in_progress.patient, "Thank you for your visit, #{@in_progress.patient.firstname}. Be well.")
+            # TwilioClient.new.send_text(@in_progress.patient, "Thank you for your visit, #{@in_progress.patient.firstname}. Be well.")
 					# else
 					# 	next_for_schedule.update(status: 2)
 					#	UserMailer.with(user: user_to_mail).turn_is_up.deliver_now
@@ -116,7 +116,7 @@ class Doctors::ClinicQueuesController < DoctorsController
     affected_clinic_queues.each do |cq|
       cq.schedule = cq.schedule + delay_time.to_i.minutes
       cq.save
-      TwilioClient.new.send_text(cq.patient, delay_sms_template(cq.schedule))
+      # TwilioClient.new.send_text(cq.patient, delay_sms_template(cq.schedule))
     end
 
     redirect_to doctor_clinic_queues_path, notice: 'Queue successfully delayed.'
@@ -212,11 +212,11 @@ class Doctors::ClinicQueuesController < DoctorsController
 
     if clinic_queue.skip_for_now?
       clinic_queue.update(skip_for_now: false)
-      TwilioClient.new.send_text(clinic_queue.patient, "Hi #{clinic_queue.patient.firstname}. You have been added back to the queue. Please stand-sby for your turn.")
+      # TwilioClient.new.send_text(clinic_queue.patient, "Hi #{clinic_queue.patient.firstname}. You have been added back to the queue. Please stand-sby for your turn.")
       redirect_to doctor_clinic_queues_path, notice: "#{clinic_queue.patient.fullname} is added back to the queue."
     else
       clinic_queue.update(skip_for_now: true)
-      TwilioClient.new.send_text(clinic_queue.patient, "Hi #{clinic_queue.patient.firstname}. You are currently being skipped. Please proceed to the clinic to go on with your appointment.")
+      # TwilioClient.new.send_text(clinic_queue.patient, "Hi #{clinic_queue.patient.firstname}. You are currently being skipped. Please proceed to the clinic to go on with your appointment.")
       redirect_to doctor_clinic_queues_path, notice: "#{clinic_queue.patient.fullname} is skipped for now."
     end
   end
@@ -252,7 +252,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 
     if @clinic_queue.save
 			# UserMailer.with(user: user).added_to_queue.deliver_now
-      TwilioClient.new.send_text(@clinic_queue.patient, "Hi #{@clinic_queue.patient.firstname}. This is to confirm your walk-in booking with the clinic. You have been added to today's queue. Please stand-sby for your turn. Be safe!")
+      # TwilioClient.new.send_text(@clinic_queue.patient, "Hi #{@clinic_queue.patient.firstname}. This is to confirm your walk-in booking with the clinic. You have been added to today's queue. Please stand-sby for your turn. Be safe!")
       redirect_to doctor_clinic_queues_url, notice: "Patient added to queue successfully!"
     else
       redirect_to doctor_clinic_queues_url, alert: "There was a problem in adding patient to queue. #{@clinic_queue.errors.first.full_message}"
@@ -273,7 +273,7 @@ class Doctors::ClinicQueuesController < DoctorsController
 			user = User.find(@patient.id)
 
       @clinic_queue = ClinicQueue.create!(schedule: Time.now, user_id: user.id, clinic_id: @clinic.id, queue_type: 1, status: 1)
-      TwilioClient.new.send_text(@clinic_queue.patient, "Hi #{@clinic_queue.patient.firstname}. This is to confirm your walk-in booking with the clinic. You have been added to today's queue. Please stand-sby for your turn. Be safe!")
+      # TwilioClient.new.send_text(@clinic_queue.patient, "Hi #{@clinic_queue.patient.firstname}. This is to confirm your walk-in booking with the clinic. You have been added to today's queue. Please stand-sby for your turn. Be safe!")
       redirect_to doctor_clinic_queues_url, notice: "Patient added to queue successfully!"
     else
       redirect_to doctor_clinic_queues_url, alert: "There was a problem in adding patient to queue. #{@clinic_queue.errors.first.full_message}"

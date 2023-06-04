@@ -34,7 +34,7 @@ class Doctors::AppointmentsController < DoctorsController
     @appointment.cancelled = true
     @appointment.schedule = @appointment.schedule - 1.day - 99.minutes
 
-    TwilioClient.new.send_text(@appointment.user, "Hi, sorry but your appointment for #{@appointment.schedule.strftime("%B %d, %Y")} at #{@appointment.schedule.strftime("%I:%M %p")} is cancelled. We are sorry for the inconvenience.\n\n**This is an auto-generated message so please do not reply.**")
+    # TwilioClient.new.send_text(@appointment.user, "Hi, sorry but your appointment for #{@appointment.schedule.strftime("%B %d, %Y")} at #{@appointment.schedule.strftime("%I:%M %p")} is cancelled. We are sorry for the inconvenience.\n\n**This is an auto-generated message so please do not reply.**")
 
     if @appointment.save
       @appointment.destroy

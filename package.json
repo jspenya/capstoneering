@@ -2,20 +2,28 @@
   "name": "rails6-webdass",
   "private": true,
   "dependencies": {
+    "@hotwired/stimulus": "^3.2.1",
+    "@hotwired/turbo-rails": "^7.3.0",
+    "@popperjs/core": "^2.11.7",
     "@rails/actioncable": "^6.0.0",
     "@rails/activestorage": "^6.0.0",
     "@rails/ujs": "^6.0.0",
-    "@rails/webpacker": "5.4.3",
     "aos": "^2.3.4",
+    "bootstrap": "^5.2.3",
+    "bootstrap-icons": "^1.10.5",
+    "chokidar": "^3.5.3",
+    "esbuild": "^0.17.19",
+    "esbuild-rails": "^1.0.4",
     "jquery": "^3.6.0",
     "jquery-ui-dist": "^1.13.1",
     "js-autocomplete": "^1.0.4",
-    "turbolinks": "^5.2.0",
-    "webpack-cli": "^3.3.12"
+    "sass": "^1.62.1",
+    "turbolinks": "^5.2.0"
   },
   "version": "0.1.0",
-  "devDependencies": {
-    "webpack": "^4.46.0",
-    "webpack-dev-server": "^3"
+  "devDependencies": {},
+  "scripts": {
+    "build:css": "sass ./app/assets/stylesheets/application.bootstrap.scss ./app/assets/builds/application.css --no-source-map --load-path=node_modules",
+    "build": "node esbuild-dev.config.mjs"
   }
 }

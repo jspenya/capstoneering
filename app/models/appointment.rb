@@ -129,7 +129,7 @@ class Appointment < ApplicationRecord
   end
 
   def send_appointment_creation_sms
-    TwilioClient.new.send_text(self.user, appointment_creation_sms_text)
+    # TwilioClient.new.send_text(self.user, appointment_creation_sms_text)
   end
 
   def send_appointment_reschedule_mail
@@ -140,7 +140,7 @@ class Appointment < ApplicationRecord
   def send_appointment_reschedule_sms
     return unless saved_change_to_schedule?
     return unless self.user.mobile_number.present?
-    TwilioClient.new.send_text(self.user, appointment_reschedule_sms_text)
+    # TwilioClient.new.send_text(self.user, appointment_reschedule_sms_text)
   end
 
   def appointment_creation_sms_text

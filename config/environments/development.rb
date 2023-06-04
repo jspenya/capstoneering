@@ -36,8 +36,6 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
-
   config.action_mailer.delivery_method = :smtp
 
   config.action_mailer.smtp_settings = {
@@ -86,10 +84,4 @@ Rails.application.configure do
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
-  # webdass
-  config.hosts << "webdass.com"
-  # office.webdass
-  config.hosts << "office.webdass.com"
-
-  config.hosts << "45d3-103-62-152-135.ngrok.io"
 end

@@ -58,7 +58,7 @@ class User < ApplicationRecord
   def generate_password
     generated_pass = SecureRandom.hex(3)
     self.password = generated_pass
-    TwilioClient.new.send_text(self, user_creation_sms_text(generated_pass))
+    # TwilioClient.new.send_text(self, user_creation_sms_text(generated_pass))
   end
 
   def generate_facebook_key
@@ -76,7 +76,7 @@ class User < ApplicationRecord
   end
 
   def send_user_creation_sms
-    TwilioClient.new.send_text(self, user_creation_sms_text)
+    # TwilioClient.new.send_text(self, user_creation_sms_text)
   end
 
   def user_creation_sms_text password
